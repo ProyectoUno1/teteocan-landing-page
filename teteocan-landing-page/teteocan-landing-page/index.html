@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teteocan - Soluciones Digitales Integrales</title>
+    <meta name="description"
+        content="Impulsa tu negocio con Teteocan. Soluciones digitales integrales desde planes gratuitos hasta servicios completos de transformación digital">
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+
+                <!-- Desktop Navigation -->
+                <nav class="nav-desktop">
+                    <div class="logo-area">
+                        <img src="assets/images/teteocan-logo.png" alt="Logo" class="logo-icon" />
+
+                    </div>
+                    <ul class="nav-links">
+                        <li><a href="#planes">Planes</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                    </ul>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars" id="menuIcon"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <nav class="nav-mobile" id="mobileNav">
+                <div class="nav-mobile-content">
+                    <a href="#planes" class="nav-link">Planes</a>
+                    <a href="#contacto" class="nav-link">Contacto</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Impulsa tu negocio con
+                    <span class="hero-title-gradient">Teteocan</span>
+                </h1>
+                <p class="hero-description">
+                    Soluciones digitales integrales para empresas que buscan crecer.
+                    Desde planes gratuitos hasta servicios completos de transformación digital.
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary">
+                        Comenzar gratis
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-secondary">Ver planes</button>
+                </div>
+            </div>
+
+            <!-- Features Cards -->
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon feature-icon-blue">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="feature-title">Rápido y Eficiente</h3>
+                    <p class="feature-description">Implementación inmediata de soluciones digitales que generan
+                        resultados desde el primer día.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon feature-icon-green">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Seguro y Confiable</h3>
+                    <p class="feature-description">Tecnologías robustas y seguras que protegen tu información y la de
+                        tus clientes.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon feature-icon-purple">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Escalable</h3>
+                    <p class="feature-description">Crece con tu negocio. Nuestros planes se adaptan a tus necesidades en
+                        cada etapa.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Pricing Section -->
+    <section id="planes" class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Planes que Crecen Contigo</h2>
+                <p class="section-description">
+                    Desde emprendedores hasta grandes empresas, tenemos el plan perfecto para tu negocio
+                </p>
+            </div>
+
+            <div class="pricing-grid">
+                <!-- Plan Gratis -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <div class="plan-badge plan-badge-gray">Ideal para Empezar</div>
+                        <h3 class="plan-title">Explorador</h3>
+                        <div class="plan-price">
+                            <span class="price-amount">$0</span>
+                            <span class="price-period">/mes</span>
+                        </div>
+                        <p class="plan-description">Perfecto para explorar nuestros servicios</p>
+                    </div>
+                    <div class="pricing-body">
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <i class="fas fa-laptop-code feature-check"></i>
+                                <span>Landing page básico</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-server feature-check"></i>
+                                <span>Hosting básico (1GB)</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-envelope feature-check"></i>
+                                <span>Soporte por email</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-chart-line feature-check"></i>
+                                <span>Analytics básico</span>
+                            </li>
+                            </li>
+                            <li class="feature-item feature-unavailable">
+                                <i class="fas fa-times feature-times"></i>
+                                <span>Personalización avanzada</span>
+                            </li>
+                            <li class="feature-item feature-unavailable">
+                                <i class="fas fa-times feature-times"></i>
+                                <span>E-commerce</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="pricing-footer">
+                        <button class="btn btn-outline">Comenzar Gratis</button>
+                    </div>
+                </div>
+
+                <!-- Plan Digital -->
+                <div class="pricing-card pricing-card-popular">
+                    <div class="pricing-header">
+                        <div class="plan-badge plan-badge-blue">Más Popular</div>
+                        <h3 class="plan-title">Digital</h3>
+                        <div class="plan-price">
+                            <span class="price-amount">$49</span>
+                            <span class="price-period">/mes</span>
+                        </div>
+                        <p class="plan-description">Para pequeñas empresas en crecimiento</p>
+                    </div>
+                    <div class="pricing-body">
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>Todo del plan Gratis</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>Sitio web personalizado</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>SEO básico incluido</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>Hosting premium (10GB)</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>Email marketing (500 contactos)</span>
+                            </li>
+                            <li class="feature-item feature-unavailable">
+                                <i class="fas fa-times feature-times"></i>
+                                <span>App móvil</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="pricing-footer">
+                        <button class="btn btn-primary">Empezar Ahora</button>
+                    </div>
+                </div>
+
+                <!-- Plan Completo -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <div class="plan-badge plan-badge-purple">Profesional</div>
+                        <h3 class="plan-title">Completo</h3>
+                        <div class="plan-price">
+                            <span class="price-amount">$149</span>
+                            <span class="price-period">/mes</span>
+                        </div>
+                        <p class="plan-description">Para empresas establecidas</p>
+                    </div>
+                    <div class="pricing-body">
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>Todo del plan Digital</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>E-commerce completo</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>App móvil básica</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>Analytics avanzado</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>Email marketing (5,000 contactos)</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>Soporte prioritario</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="pricing-footer">
+                        <button class="btn btn-outline">Elegir Plan</button>
+                    </div>
+                </div>
+
+                <!-- Plan Aplastante -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <div class="plan-badge plan-badge-gold">Enterprise</div>
+                        <h3 class="plan-title">Aplastante</h3>
+                        <div class="plan-price">
+                            <span class="price-amount">$399</span>
+                            <span class="price-period">/mes</span>
+                        </div>
+                        <p class="plan-description">Para grandes empresas</p>
+                    </div>
+                    <div class="pricing-body">
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>Todo del plan Completo</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>App móvil avanzada</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>IA y automatización</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>Dashboard ejecutivo</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>Email marketing ilimitado</span>
+                            </li>
+                            <li class="feature-item">
+                                <i class="fas fa-check feature-check"></i>
+                                <span>Consultoría estratégica</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="pricing-footer">
+                        <button class="btn btn-outline">Contactar Ventas</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="contact">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2 class="contact-title">¿Listo para Transformar tu Negocio?</h2>
+                    <p class="contact-description">
+                        Contáctanos hoy mismo y descubre cómo podemos impulsar tu empresa al siguiente nivel.
+                        Nuestro equipo de expertos está listo para ayudarte.
+                    </p>
+                    <div class="contact-features">
+                        <div class="contact-feature">
+                            <i class="fas fa-clock contact-feature-icon"></i>
+                            <span>Respuesta en menos de 24 horas</span>
+                        </div>
+                        <div class="contact-feature">
+                            <i class="fas fa-users contact-feature-icon"></i>
+                            <span>Consulta gratuita con expertos</span>
+                        </div>
+                        <div class="contact-feature">
+                            <i class="fas fa-rocket contact-feature-icon"></i>
+                            <span>Implementación rápida</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-action">
+                    <button class="whatsapp-btn" id="whatsappBtn">
+                        <i class="fab fa-whatsapp"></i>
+                        <div class="whatsapp-content">
+                            <span class="whatsapp-title">Contactar por WhatsApp</span>
+                            <span class="whatsapp-subtitle">Respuesta inmediata</span>
+                        </div>
+                    </button>
+                    <p class="contact-note">
+                        O escríbenos a <a href="mailto:contacto@teteocan.com"
+                            class="contact-email">contacto@teteocan.com</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-main">
+                    <div class="footer-brand">
+                        <div class="logo">
+                            <div class="logo-area">
+                                <img src="assets/images/teteocan-logo.png" alt="Logo" class="logo-icon" />
+                            </div>
+                        </div>
+                        <p class="footer-description">
+                            Transformando negocios a través de soluciones digitales innovadoras y escalables.
+                        </p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4 class="footer-title">Servicios</h4>
+                            <ul class="footer-list">
+                                <li><a href="#" class="footer-link">Desarrollo Web</a></li>
+                                <li><a href="#" class="footer-link">Apps Móviles</a></li>
+                                <li><a href="#" class="footer-link">E-commerce</a></li>
+                                <li><a href="#" class="footer-link">Marketing Digital</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">Planes</h4>
+                            <ul class="footer-list">
+                                <li><a href="#" class="footer-link">Gratis</a></li>
+                                <li><a href="#" class="footer-link">Digital</a></li>
+                                <li><a href="#" class="footer-link">Completo</a></li>
+                                <li><a href="#" class="footer-link">Aplastante</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">Contacto</h4>
+                            <ul class="footer-list">
+                                <li><a href="#" class="footer-link">WhatsApp</a></li>
+                                <li><a href="#" class="footer-link">Email</a></li>
+                                <li><a href="#" class="footer-link">Soporte</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <div class="footer-credits">
+                        <p class="credits-text">
+                            Desarrollado por: <strong>Margarita Moraga, Jozet, Alan Rodriguez, Daniel Santos</strong>
+                        </p>
+                        <p class="credits-date">Fecha de entrega: Junio 2025</p>
+                    </div>
+                    <div class="footer-copyright">
+                        <p>&copy; 2025 Teteocan. Todos los derechos reservados.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
