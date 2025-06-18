@@ -1,0 +1,20 @@
+/*
+
+██╗  ██╗██╗   ██╗███╗   ███╗ █████╗ ███╗   ██╗███████╗
+██║  ██║██║   ██║████╗ ████║██╔══██╗████╗  ██║██╔════╝
+███████║██║   ██║██╔████╔██║███████║██╔██╗ ██║███████╗
+██╔══██║██║   ██║██║╚██╔╝██║██╔══██║██║╚██╗██║╚════██║
+██║  ██║╚██████╔╝██║ ╚═╝ ██║██║  ██║██║ ╚████║███████║
+╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝
+                                                      
+*/
+
+/* TEAM */                  
+Developer: Jozet (Seth) Ramirez
+Site: imbestseth@gmail.com
+Twitter: @ImJozzcr
+
+/* THANKS */
+
+Este archivo esta impulsado por la ideologia de #NosomosRobots
+created by Jozet (Seth) Ramirez, only this file humans.txt
