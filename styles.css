@@ -192,9 +192,11 @@ body {
 /* Features Grid */
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
     margin-top: 4rem;
+    justify-items: center;
+    align-items: start;
 }
 
 .feature-card {
@@ -204,6 +206,10 @@ body {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     text-align: left;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
 }
 
 .feature-card:hover {
@@ -284,9 +290,10 @@ body {
 
 .pricing-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); 
+    grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
-    justify-items: center; 
+    justify-items: center;
+    align-items: stretch;
 }
 
 .pricing-card {
@@ -294,18 +301,46 @@ body {
     border-radius: 1rem;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
+    border: 2px solid transparent;
+    width: 100%;
+    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
 }
 
-.pricing-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}
-
+/* Eliminar el destacado por defecto - ahora todas las tarjetas son iguales */
 .pricing-card-popular {
-    transform: scale(1.05);
-    border: 2px solid #2563eb;
+    border: 2px solid #e5e7eb;
+}
+
+/* Efectos hover individuales para cada tarjeta */
+.pricing-card:hover {
+    transform: scale(1.08) translateY(-10px);
+    box-shadow: 0 25px 50px rgba(37, 99, 235, 0.3), 0 10px 25px rgba(0, 0, 0, 0.15);
+    border-color: #2563eb;
+    z-index: 10;
+}
+
+/* Efecto adicional en el header de la tarjeta hover */
+.pricing-card:hover .pricing-header {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(79, 70, 229, 0.05));
+}
+
+/* Efecto en el contenedor padre cuando hay hover */
+.pricing-grid:hover .pricing-card:not(:hover) {
+    opacity: 0.7;
+    transform: scale(0.98);
+    filter: blur(1px);
+}
+
+/* Animación suave para el botón dentro de la tarjeta hover */
+.pricing-card:hover .btn {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
 }
 
 .pricing-header {
@@ -361,6 +396,7 @@ body {
 
 .pricing-body {
     padding: 0 2rem 2rem;
+    flex-grow: 1;
 }
 
 .features-list {
@@ -397,6 +433,7 @@ body {
 .pricing-footer .btn {
     width: 100%;
     justify-content: center;
+    transition: all 0.3s ease;
 }
 
 /* Contact Section */
@@ -601,7 +638,66 @@ body {
     font-size: 0.875rem;
 }
 
+
+
 /* Responsive Design */
+
+/* Tablets grandes (iPad Air, etc.) - 1024px y menos */
+@media (max-width: 1024px) {
+    .pricing-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        justify-items: center;
+        align-items: stretch;
+    }
+
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+
+    /* Ajustar efectos hover para tablet */
+    .pricing-card:hover {
+        transform: scale(1.05) translateY(-8px);
+    }
+
+    .pricing-grid:hover .pricing-card:not(:hover) {
+        opacity: 0.8;
+        transform: scale(0.99);
+    }
+}
+
+/* Tablets en orientación landscape - específico para iPad Air y similares */
+@media (max-width: 1180px) and (min-width: 820px) and (orientation: landscape) {
+    .pricing-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.8rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.8rem;
+    }
+    
+    .container {
+        padding: 0 2rem;
+    }
+}
+
+/* Tablets en orientación portrait - específico para iPad Air y similares */
+@media (max-width: 820px) and (min-width: 768px) and (orientation: portrait) {
+    .pricing-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+/* Tablets medianas y móviles grandes */
 @media (max-width: 768px) {
     .nav-desktop {
         display: none;
@@ -636,12 +732,10 @@ body {
 
     .pricing-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        justify-items: center;
+        align-items: stretch;
     }
-
-    .pricing-grid {
-        grid-template-columns: 1fr;
-    }
-
 
     .contact-content {
         grid-template-columns: 1fr;
@@ -690,6 +784,34 @@ body {
     .service-card,
     .pricing-card {
         padding: 1.5rem;
+    }
+
+    .pricing-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        justify-items: center;
+        align-items: stretch;
+    }
+
+    /* Desactivar efectos hover complejos en móvil para mejor rendimiento */
+    .pricing-grid:hover .pricing-card:not(:hover) {
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+
+    .pricing-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .pricing-card:hover .pricing-header {
+        background: none;
+    }
+
+    .pricing-card:hover .btn {
+        transform: none;
+        box-shadow: none;
     }
 
     .contact-title {
