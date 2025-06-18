@@ -52,14 +52,33 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // WhatsApp button functionality
-document.getElementById('whatsappBtn').addEventListener('click', function() {
-    // WhatsApp contact number
-    const phoneNumber = '8124192837'; // Número de ejemplo, reemplazar con el número real
-    const message = encodeURIComponent('Hola, estoy interesado en los servicios de Teteocan. ¿Podrían brindarme más información?');
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+document.addEventListener('DOMContentLoaded', function() {
+    const whatsappBtn = document.getElementById('whatsappBtn');
     
-    // Open WhatsApp in a new tab
-    window.open(whatsappUrl, '_blank');
+    if (whatsappBtn) {
+        whatsappBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevenir cualquier comportamiento por defecto
+            
+            // WhatsApp contact number
+            const phoneNumber = '527651033282'; // Número de ejemplo, reemplazar con el número real
+            const message = encodeURIComponent('¡Hola Teteocan! Estoy interesado en sus servicios. ¿Podrían brindarme más información?');
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+            
+            try {
+                // Intentar abrir WhatsApp
+                window.open(whatsappUrl, '_blank');
+                
+                // Si no se abre, mostrar mensaje de error
+                setTimeout(function() {
+                    if (!window.open(whatsappUrl, '_blank')) {
+                        alert('No se pudo abrir WhatsApp. Por favor, verifique que tiene la aplicación instalada.');
+                    }
+                }, 1000);
+            } catch (error) {
+                alert('Error al abrir WhatsApp. Por favor, verifique que tiene la aplicación instalada.');
+            }
+        });
+    }
 });
 
 // Add scroll effect to header
