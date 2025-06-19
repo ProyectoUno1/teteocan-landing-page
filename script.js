@@ -1,4 +1,3 @@
-
 // Mobile menu functionality
 document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -70,11 +69,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Si no se abre, mostrar mensaje de error
                 setTimeout(function() {
-                    if (!window.open(whatsappUrl, '_blank')) {
-                        alert('No se pudo abrir WhatsApp. Por favor, verifique que tiene la aplicación instalada.');
-                    }
+                    // This check is unreliable for security reasons; it's better to just log or inform user
+                    // if (!window.open(whatsappUrl, '_blank')) {
+                    //     alert('No se pudo abrir WhatsApp. Por favor, verifique que tiene la aplicación instalada.');
+                    // }
                 }, 1000);
             } catch (error) {
+                console.error('Error al intentar abrir WhatsApp:', error);
                 alert('Error al abrir WhatsApp. Por favor, verifique que tiene la aplicación instalada.');
             }
         });
@@ -133,13 +134,15 @@ document.querySelectorAll('.btn').forEach(button => {
 // Pricing card hover effects
 document.querySelectorAll('.pricing-card').forEach(card => {
     card.addEventListener('mouseenter', function() {
-        if (!this.classList.contains('pricing-card-popular')) {
+        // Only apply hover effect if not 'pricing-card-popular' and not 'selected'
+        if (!this.classList.contains('pricing-card-popular') && !this.classList.contains('selected')) {
             this.style.transform = 'translateY(-5px) scale(1.02)';
         }
     });
     
     card.addEventListener('mouseleave', function() {
-        if (!this.classList.contains('pricing-card-popular')) {
+        // Only remove hover effect if not 'pricing-card-popular' and not 'selected'
+        if (!this.classList.contains('pricing-card-popular') && !this.classList.contains('selected')) {
             this.style.transform = 'translateY(0) scale(1)';
         }
     });
@@ -190,6 +193,19 @@ document.addEventListener('keydown', function(e) {
             mobileNav.classList.remove('active');
             menuIcon.className = 'fas fa-bars';
         }
+        // Also close modals if open
+        const openModals = document.querySelectorAll('.modal.fade-in');
+        openModals.forEach(modal => {
+            if (modal.id === 'serviceModal') {
+                serviceModal.classList.remove('fade-in');
+                serviceModal.classList.add('fade-out');
+                setTimeout(() => { modal.style.display = 'none'; }, 300);
+            } else if (modal.id === 'confirmModal') {
+                confirmModal.classList.remove('fade-in');
+                confirmModal.classList.add('fade-out');
+                setTimeout(() => { modal.style.display = 'none'; }, 300);
+            }
+        });
     }
 });
 
@@ -251,7 +267,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-const modal = document.getElementById('serviceModal');
+// --- Modal for service details (your original modal) ---
+const serviceModal = document.getElementById('serviceModal');
+const closeModalBtn = document.getElementById('closeModal'); // Este es para serviceModal
 
 document.querySelectorAll('.feature-item').forEach(item => {
   item.addEventListener('click', () => {
@@ -265,29 +283,129 @@ document.querySelectorAll('.feature-item').forEach(item => {
     document.getElementById('modalTitle').innerText = title;
     document.getElementById('modalDescription').innerText = description;
 
-    modal.style.display = 'flex';
-    modal.classList.remove('fade-out');
-    modal.classList.add('fade-in');
+    serviceModal.style.display = 'flex';
+    serviceModal.classList.remove('fade-out');
+    serviceModal.classList.add('fade-in');
   });
 });
 
-document.getElementById('closeModal').addEventListener('click', () => {
-  modal.classList.remove('fade-in');
-  modal.classList.add('fade-out');
+closeModalBtn?.addEventListener('click', () => {
+  serviceModal.classList.remove('fade-in');
+  serviceModal.classList.add('fade-out');
   setTimeout(() => {
-    modal.style.display = 'none';
+    serviceModal.style.display = 'none';
   }, 300);
 });
 
-modal.addEventListener('click', (e) => {
-  if (e.target === modal) {
-    modal.classList.remove('fade-in');
-    modal.classList.add('fade-out');
+serviceModal?.addEventListener('click', (e) => {
+  if (e.target === serviceModal) {
+    serviceModal.classList.remove('fade-in');
+    serviceModal.classList.add('fade-out');
     setTimeout(() => {
-      modal.style.display = 'none';
+      serviceModal.style.display = 'none';
     }, 300);
   }
 });
 
 
+// --- Variable global para almacenar el paquete seleccionado ---
+let selectedPackage = null;
 
+// --- Lógica del Modal de Confirmación ---
+const confirmModal = document.getElementById('confirmModal');
+const confirmPackageName = document.getElementById('confirmPackageName');
+const confirmPackagePrice = document.getElementById('confirmPackagePrice');
+const closeConfirmModalBtn = document.getElementById('closeConfirmModal'); // Este es para confirmModal
+const btnConfirmPurchase = document.getElementById('btnConfirmPurchase');
+const btnCancelPurchase = document.getElementById('btnCancelPurchase');
+
+// Función para abrir el modal de confirmación
+function openConfirmModal() {
+    if (!selectedPackage) {
+        alert('Por favor, selecciona un paquete primero para proceder con la compra.');
+        return;
+    }
+
+    if (confirmPackageName && confirmPackagePrice) { // Asegurarse de que los elementos existan
+        confirmPackageName.innerText = selectedPackage.name;
+        // Comprobar si el precio es '0.00' y mostrar 'Gratis'
+        if (parseFloat(selectedPackage.price) === 0.00) {
+            confirmPackagePrice.innerText = 'Gratis';
+        } else {
+            confirmPackagePrice.innerText = `$${parseFloat(selectedPackage.price).toFixed(2)}/mes`;
+        }
+    }
+
+    confirmModal.style.display = 'flex'; // Hacer el modal visible
+    confirmModal.classList.remove('fade-out');
+    confirmModal.classList.add('fade-in');
+}
+
+// Función para cerrar el modal de confirmación con animación
+function closeConfirmModal() {
+    confirmModal.classList.remove('fade-in');
+    confirmModal.classList.add('fade-out');
+    // Esperar a que termine la animación antes de ocultarlo por completo
+    setTimeout(() => {
+        confirmModal.style.display = 'none';
+    }, 300); // Coincide con la duración de la transición CSS
+}
+
+// Event Listeners para cerrar el modal de confirmación
+closeConfirmModalBtn?.addEventListener('click', closeConfirmModal);
+btnCancelPurchase?.addEventListener('click', closeConfirmModal);
+
+// Cerrar el modal de confirmación si se hace clic fuera del contenido (en el fondo oscuro)
+confirmModal?.addEventListener('click', (e) => {
+    if (e.target === confirmModal) {
+        closeConfirmModal();
+    }
+});
+
+// Event Listener para el botón "Confirmar Compra" dentro del modal
+btnConfirmPurchase?.addEventListener('click', () => {
+    if (selectedPackage) {
+        // --- SIMULACIÓN DE COMPRA ---
+        // Aquí es donde iría la lógica real para procesar la compra (ej. enviar datos a un servidor)
+        // Por ahora, solo mostramos un mensaje de alerta.
+        alert(`¡Felicidades! Has "comprado" el ${selectedPackage.name} por $${parseFloat(selectedPackage.price).toFixed(2)}. ¡Disfruta!`);
+
+        // Después de la "compra" simulada:
+        closeConfirmModal(); // Cierra el modal
+        selectedPackage = null; // Reinicia la variable de selección
+
+        // Remover la clase 'selected' de todas las tarjetas para desmarcar visualmente
+        document.querySelectorAll('.pricing-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+    }
+});
+
+// --- Lógica para la Selección de Paquetes (usando tus clases de botones existentes) ---
+document.querySelectorAll('.pricing-footer button').forEach(button => {
+    button.addEventListener('click', (event) => {
+        // 1. Desmarcar cualquier paquete previamente seleccionado
+        document.querySelectorAll('.pricing-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+
+        // 2. Obtener la tarjeta de paquete (pricing-card) padre del botón clicado
+        const pricingCard = event.target.closest('.pricing-card');
+
+        if (pricingCard) {
+            // 3. Marcar la tarjeta actual como seleccionada
+            pricingCard.classList.add('selected');
+
+            // 4. Almacenar los datos del paquete seleccionado
+            selectedPackage = {
+                id: pricingCard.getAttribute('data-package-id'),
+                name: pricingCard.getAttribute('data-package-name'),
+                price: parseFloat(pricingCard.getAttribute('data-package-price'))
+            };
+            console.log('Paquete seleccionado:', selectedPackage); // Para depuración
+
+            // 5. Abrir el modal de confirmación después de la selección
+            openConfirmModal();
+        }
+    });
+});
