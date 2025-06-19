@@ -936,9 +936,8 @@ body {
     }
 
     .feature-card,
-    .service-card,
-    .pricing-card {
-        padding: 0;
+    .service-card {
+        padding: 1.5rem;
     }
 
     .pricing-grid {
@@ -976,7 +975,9 @@ body {
     .whatsapp-btn {
         padding: 1rem 1.5rem;
     }
-   
+    .pricing-header {
+        padding: 0;
+    }
     
 }
 
