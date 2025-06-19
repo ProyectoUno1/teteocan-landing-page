@@ -102,6 +102,15 @@ body {
     cursor: pointer;
     color: #1f2937;
     padding: 0.5rem;
+
+}
+
+.mobile-logo-area {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
 }
 
 .mobile-logo-area {
@@ -156,6 +165,7 @@ body {
     gap: .5rem;
     align-items: center;
     width: 100%;
+
 }
 
 .mobile-nav-links .nav-link {
@@ -170,6 +180,23 @@ body {
     width: 100%;
     max-width: 200px;
 }
+
+
+}
+
+.mobile-nav-links .nav-link {
+    text-decoration: none;
+    color: #6b7280;
+    font-weight: 500;
+    font-size: 1.2rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    text-align: center;
+    width: 100%;
+    max-width: 200px;
+}
+
 
 /* Hover effect moved to media query for better mobile support */
 
@@ -457,8 +484,16 @@ body {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
 }
 
+.feature-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    background-color: #f0f4ff;
+    border-radius: 8px;
+}
 .feature-check {
     color: #106dbe;
     font-size: 1rem;
@@ -596,6 +631,13 @@ body {
 
 .modal.fade-out .modal-content {
   transform: scale(0.95);
+}
+
+.modal-icon {
+    font-size: 2rem;
+    color: #2563eb;
+    margin-bottom: 1rem;
+    text-align: center;
 }
 
 .close {
@@ -881,6 +923,20 @@ body {
     .footer-link:hover {
         color: white;
     }
+
+    
+    .feature-item {
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        cursor: pointer;
+    }
+
+    .feature-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        background-color: #f0f4ff;
+        border-radius: 8px;
+    }
+
 }
 
 /* Efectos táctiles para dispositivos móviles */

@@ -257,6 +257,10 @@ document.querySelectorAll('.feature-item').forEach(item => {
   item.addEventListener('click', () => {
     const title = item.getAttribute('data-title');
     const description = item.getAttribute('data-description');
+    const iconClass = item.querySelector('i')?.className || '';
+
+    const iconDiv = document.getElementById('modalIcon');
+    iconDiv.innerHTML = `<i class="${iconClass} modal-icon"></i>`;
 
     document.getElementById('modalTitle').innerText = title;
     document.getElementById('modalDescription').innerText = description;
