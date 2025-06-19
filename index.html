@@ -26,7 +26,7 @@
 
                     </div>
                     <ul class="nav-links">
-                        <li><a href="#planes">Planes</a></li>
+                        <li><a href="#planes">Paquetes</a></li>
                         <li><a href="#contacto">Contacto</a></li>
                     </ul>
                 </nav>
@@ -40,7 +40,7 @@
             <!-- Mobile Navigation -->
             <nav class="nav-mobile" id="mobileNav">
                 <div class="nav-mobile-content">
-                    <a href="#planes" class="nav-link">Planes</a>
+                    <a href="#planes" class="nav-link">Paquetes</a>
                     <a href="#contacto" class="nav-link">Contacto</a>
                 </div>
             </nav>
@@ -57,15 +57,9 @@
                 </h1>
                 <p class="hero-description">
                     Soluciones digitales integrales para empresas que buscan crecer.
-                    Desde planes gratuitos hasta servicios completos de transformación digital.
+                    Desde paquetes gratuitos hasta servicios completos de transformación digital.
                 </p>
-                <div class="hero-buttons">
-                    <button class="btn btn-primary">
-                        Comenzar gratis
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                    <button class="btn btn-secondary">Ver planes</button>
-                </div>
+
             </div>
 
             <!-- Features Cards -->
@@ -93,7 +87,8 @@
                         <i class="fas fa-chart-line"></i>
                     </div>
                     <h3 class="feature-title">Escalable</h3>
-                    <p class="feature-description">Crece con tu negocio. Nuestros planes se adaptan a tus necesidades en
+                    <p class="feature-description">Crece con tu negocio. Nuestros paquetes se adaptan a tus necesidades
+                        en
                         cada etapa.</p>
                 </div>
             </div>
@@ -106,17 +101,18 @@
     <section id="planes" class="pricing">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Planes que Crecen Contigo</h2>
+                <h2 class="section-title">Paquetes que Crecen Contigo</h2>
                 <p class="section-description">
                     Desde emprendedores hasta grandes empresas, tenemos el plan perfecto para tu negocio
                 </p>
             </div>
 
-            <div class="pricing-grid">                <!-- Plan Gratis -->
+            <div class="pricing-grid"> <!-- Plan Gratis -->
                 <div class="pricing-card">
                     <div class="pricing-header">
-                        <div class="plan-badge plan-badge-gray">Ideal para Empezar</div>
-                        <h3 class="plan-title">Explorador</h3>
+                        <div class="header-top">
+                            <h3 class="plan-title">PAQUETE EXPLORADOR</h3>
+                        </div>
                         <div class="plan-price">
                             <span class="price-amount">$0</span>
                             <span class="price-period">/mes</span>
@@ -125,32 +121,38 @@
                     </div>
                     <div class="pricing-body">
                         <ul class="features-list">
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="Análisis de Datos (1 dashboard)"
+                                data-description="Visualización interactiva de métricas clave del negocio en un panel digital sencillo.">
+                                <i class="fas fa-chart-bar feature-check"></i>
                                 <span>Análisis de Datos (1 dashboard)</span>
                             </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="1 análisis automático semanal"
+                                data-description="Informe generado semanalmente con información relevante sin intervención manual.">
+                                <i class="fas fa-robot feature-check"></i>
                                 <span>1 análisis automático semanal</span>
                             </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="1 imagen genérica editable (canva)"
+                                data-description="Diseño de una imagen prediseñada para promociones o contenido, editable en Canva.">
+                                <i class="fas fa-image feature-check"></i>
                                 <span>1 imagen genérica editable (canva)</span>
                             </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="Demo de sitio web (canva)"
+                                data-description="Vista previa visual de un sitio web desarrollada en Canva para revisión y aprobación.">
+                                <i class="fas fa-globe feature-check"></i>
                                 <span>Demo de sitio web (canva)</span>
                             </li>
                         </ul>
+
                     </div>
                     <div class="pricing-footer">
-                        <button class="btn btn-outline">Comenzar Gratis</button>
+                        <button class="btn btn-outline">SELECT EXPLORADOR</button>
                     </div>
-                </div>                <!-- Plan Digital -->
+                </div> <!-- Plan Digital -->
                 <div class="pricing-card">
                     <div class="pricing-header">
-                        <div class="plan-badge plan-badge-gold">Básico</div>
-                        <h3 class="plan-title">Paquete Digital</h3>
+                        <div class="header-top">
+                            <h3 class="plan-title">PAQUETE<span class="line-break">DIGITAL</span></h3>
+                        </div>
                         <div class="plan-price">
                             <span class="price-amount">$299.99</span>
                             <span class="price-period">/mes</span>
@@ -159,38 +161,44 @@
                     </div>
                     <div class="pricing-body">
                         <ul class="features-list">
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="Paquete Explorador +"
+                                data-description="Incluye los servicios más básicos más algunos complementos avanzados para comenzar con datos.">
+                                <i class="fas fa-gem feature-check"></i>
                                 <span><b>Paquete Explorador +</b></span>
                             </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="2 Dashboards"
+                                data-description="Te entregamos dos paneles visuales para que veas y analices tus datos de manera clara.">
+                                <i class="fas fa-chart-pie feature-check"></i>
                                 <span>2 Dashboards</span>
                             </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="Sitio web profesional express"
+                                data-description="Desarrollo rápido de un sitio web profesional básico para tu negocio.">
+                                <i class="fas fa-globe feature-check"></i>
                                 <span>Sitio web profesional express</span>
                             </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="Reporte de datos mensual"
+                                data-description="Recibirás un informe mensual con los principales insights obtenidos de tus datos.">
+                                <i class="fas fa-file-alt feature-check"></i>
                                 <span>Reporte de datos mensual</span>
                             </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="Guía de uso"
+                                data-description="Documento simple y claro para entender cómo usar los dashboards y reportes.">
+                                <i class="fas fa-book feature-check"></i>
                                 <span>Guía de uso</span>
                             </li>
                         </ul>
                     </div>
                     <div class="pricing-footer">
-                        <button class="btn btn-outline">Elegir plan</button>
+                        <button class="btn btn-primary">SELECT DIGITAL</button>
                     </div>
                 </div>
 
                 <!-- Plan Completo -->
                 <div class="pricing-card">
                     <div class="pricing-header">
-                        <div class="plan-badge plan-badge-purple">Profesional</div>
-                        <h3 class="plan-title">Completo</h3>
+                        <div class="header-top">
+                            <h3 class="plan-title">PAQUETE COMPLETO</h3>
+                        </div>
                         <div class="plan-price">
                             <span class="price-amount">$359.99</span>
                             <span class="price-period">/mes</span>
@@ -199,37 +207,44 @@
                     </div>
                     <div class="pricing-body">
                         <ul class="features-list">
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="Paquete Digital +"
+                                data-description="Incluye herramientas visuales, contenido para redes sociales y materiales personalizados para mejorar tu presencia digital.">
+                                <i class="fas fa-gem feature-check"></i>
                                 <span><b>Paquete Digital +</b></span>
                             </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="1 Dashboard"
+                                data-description="Visualiza tus datos clave en un panel interactivo y fácil de entender.">
+                                <i class="fas fa-chart-pie feature-check"></i>
                                 <span>1 Dashboard</span>
                             </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="4 imágenes mensuales RRSS"
+                                data-description="Diseños gráficos personalizados para redes sociales, listos para publicar.">
+                                <i class="fas fa-image feature-check"></i>
                                 <span>4 imágenes mensuales RRSS</span>
                             </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="Bienvenida para tus clientes"
+                                data-description="Mensaje o diseño de bienvenida profesional para crear una buena primera impresión.">
+                                <i class="fas fa-book-open feature-check"></i>
                                 <span>Bienvenida para tus clientes</span>
                             </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="Panel Drive cliente"
+                                data-description="Acceso exclusivo a una carpeta en Google Drive con tus archivos, reportes y recursos.">
+                                <i class="fas fa-cloud feature-check"></i>
                                 <span>Panel Drive cliente</span>
                             </li>
                         </ul>
+
                     </div>
                     <div class="pricing-footer">
-                        <button class="btn btn-outline">Elegir Plan</button>
+                        <button class="btn btn-outline">SELECT COMPLETO</button>
                     </div>
-                </div>                <!-- Plan Aplastante -->
+                </div> <!-- Plan Aplastante -->
                 <div class="pricing-card pricing-card-popular">
                     <div class="pricing-header">
-                        <div class="plan-badge plan-badge-blue">Más Popular</div>
-                        <!-- <div class="plan-badge plan-badge-gold">Enterprise</div> -->
-                        <h3 class="plan-title">Aplastante</h3>
+                        <div class="header-top">
+                            <div class="plan-badge plan-badge-blue">Más Popular</div>
+                            <h3 class="plan-title">PAQUETE APLASTANTE</h3>
+                        </div>
                         <div class="plan-price">
                             <span class="price-amount">$399.99</span>
                             <span class="price-period">/mes</span>
@@ -238,35 +253,51 @@
                     </div>
                     <div class="pricing-body">
                         <ul class="features-list">
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="Paquete Completo +"
+                                data-description="Solución integral para empresas que desean profesionalizar su presencia digital y automatizar procesos.">
+                                <i class="fas fa-gem feature-check"></i>
                                 <span><b>Paquete Completo +</b></span>
                             </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="2 Dashboards Avanzados"
+                                data-description="Paneles interactivos con visualizaciones detalladas y personalizadas para la toma de decisiones.">
+                                <i class="fas fa-chart-pie feature-check"></i>
                                 <span>2 Dashboards Avanzados</span>
                             </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="Certificado digital validado"
+                                data-description="Certificado SSL o digital que mejora la seguridad y credibilidad de tu plataforma.">
+                                <i class="fas fa-certificate feature-check"></i>
                                 <span>Certificado digital validado</span>
                             </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
+                            <li class="feature-item" data-title="Catálogo Pro Editable para RSS"
+                                data-description="Catálogo visual editable y profesional para tus productos o servicios, optimizado para redes sociales.">
+                                <i class="fas fa-book-open feature-check"></i>
                                 <span>Catálogo Pro Editable para RSS</span>
                             </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check feature-check"></i>
-                                <span>Asesoria por WhatsApp</span>
+                            <li class="feature-item" data-title="Asesoría por WhatsApp"
+                                data-description="Comunicación directa y personalizada con nuestros expertos para resolver tus dudas en tiempo real.">
+                                <i class="fab fa-whatsapp feature-check"></i>
+                                <span>Asesoría por WhatsApp</span>
                             </li>
                         </ul>
+
                     </div>
                     <div class="pricing-footer">
-                        <button class="btn btn-primary">Elegir plan</button>
+                        <button class="btn btn-outline">SELECT APLASTANTE</button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Modal description of service -->
+    <div id="serviceModal" class="modal">
+        <div class="modal-content">
+            <span id="closeModal" class="close">&times;</span>
+            <h3 id="modalTitle"></h3>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
+
 
     <!-- Contact Section -->
     <section id="contacto" class="contact">
@@ -293,12 +324,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="contact-action">
-                    <p class="contact-note">
-                        O escríbenos a <a href="mailto:contacto@teteocan.com"
-                            class="contact-email">contacto@teteocan.com</a>
-                    </p>
-                </div>
             </div>
         </div>
     </section>
@@ -320,15 +345,6 @@
                     </div>
                     <div class="footer-links">
                         <div class="footer-column">
-                            <h4 class="footer-title">Servicios</h4>
-                            <ul class="footer-list">
-                                <li><a href="#" class="footer-link">Desarrollo Web</a></li>
-                                <li><a href="#" class="footer-link">Apps Móviles</a></li>
-                                <li><a href="#" class="footer-link">E-commerce</a></li>
-                                <li><a href="#" class="footer-link">Marketing Digital</a></li>
-                            </ul>
-                        </div>
-                        <div class="footer-column">
                             <h4 class="footer-title">Planes</h4>
                             <ul class="footer-list">
                                 <li><a href="#" class="footer-link">Gratis</a></li>
@@ -341,8 +357,6 @@
                             <h4 class="footer-title">Contacto</h4>
                             <ul class="footer-list">
                                 <li><a href="#" class="footer-link">WhatsApp</a></li>
-                                <li><a href="#" class="footer-link">Email</a></li>
-                                <li><a href="#" class="footer-link">Soporte</a></li>
                             </ul>
                         </div>
                     </div>
@@ -350,24 +364,11 @@
                 <div class="footer-bottom">
                     <div class="footer-credits">
                         <p class="credits-text">
-                            Desarrollado por: <strong>Margarita Moraga, Jozet, Alan Rodriguez, Daniel Santos</strong>
+                            Desarrollado por: <strong>Margarita Moraga, Jozet Ramíres, Alan Rodríguez, Daniel
+                                Santos</strong>
                         </p>
                         <p class="credits-date">Fecha de entrega: Junio 2025</p>
                     </div>
                     <div class="footer-copyright">
-                        <p>&copy; 2025 Teteocan. Todos los derechos reservados.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
-
-    <!-- Botón flotante de WhatsApp -->
-    <button class="whatsapp-btn" id="whatsappBtn">
-        <i class="fab fa-whatsapp"></i>
-    </button>
-</body>
-
-</html>
+                        <p>&copy; 2025 Teteocan Technologies. Todos los derechos reservados.</p>
+s derechos reservados.</p>

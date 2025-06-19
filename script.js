@@ -249,3 +249,41 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.classList.add('dark-mode');
     }
 });
+
+
+const modal = document.getElementById('serviceModal');
+
+document.querySelectorAll('.feature-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const title = item.getAttribute('data-title');
+    const description = item.getAttribute('data-description');
+
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('modalDescription').innerText = description;
+
+    modal.style.display = 'flex';
+    modal.classList.remove('fade-out');
+    modal.classList.add('fade-in');
+  });
+});
+
+document.getElementById('closeModal').addEventListener('click', () => {
+  modal.classList.remove('fade-in');
+  modal.classList.add('fade-out');
+  setTimeout(() => {
+    modal.style.display = 'none';
+  }, 300);
+});
+
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) {
+    modal.classList.remove('fade-in');
+    modal.classList.add('fade-out');
+    setTimeout(() => {
+      modal.style.display = 'none';
+    }, 300);
+  }
+});
+
+
+
