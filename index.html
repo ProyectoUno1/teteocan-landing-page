@@ -14,12 +14,10 @@
 </head>
 
 <body>
-    <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="header-content">
 
-                <!-- Desktop Navigation -->
                 <nav class="nav-desktop">
                     <div class="logo-area">
                         <img src="assets/images/teteocan-logo.png" alt="Logo" class="logo-icon" id="logo-desktop" />
@@ -33,6 +31,9 @@
 
                 <!-- Mobile Header -->
                 <div class="mobile-header">
+
+                </nav>                <div class="mobile-header">
+
                     <button class="mobile-menu-btn" id="mobileMenuBtn">
                         <i class="fas fa-bars" id="menuIcon"></i>
                     </button>
@@ -43,7 +44,6 @@
                 </div>
             </div>
 
-            <!-- Mobile Navigation -->
             <nav class="nav-mobile" id="mobileNav">
                 <div class="nav-mobile-content">
                     <div class="mobile-nav-links">
@@ -55,7 +55,6 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
@@ -70,7 +69,6 @@
 
             </div>
 
-            <!-- Features Cards -->
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon feature-icon-blue">
@@ -104,7 +102,6 @@
 
 
 
-    <!-- Pricing Section -->
     <section id="planes" class="pricing">
         <div class="container">
             <div class="section-header">
@@ -113,9 +110,9 @@
                     Desde emprendedores hasta grandes empresas, tenemos el plan perfecto para tu negocio
                 </p>
             </div>
-
-            <div class="pricing-grid"> <!-- Plan Gratis -->
-                <div class="pricing-card">
+    
+            <div class="pricing-grid">
+                <div class="pricing-card" data-package-id="explorador" data-package-name="Paquete Explorador" data-package-price="0.00">
                     <div class="pricing-header">
                         <div class="header-top">
                             <h3 class="plan-title">PAQUETE EXPLORADOR</h3>
@@ -149,13 +146,14 @@
                                 <span>Demo de sitio web (canva)</span>
                             </li>
                         </ul>
-
+    
                     </div>
                     <div class="pricing-footer">
                         <button class="btn btn-outline">SELECT EXPLORADOR</button>
                     </div>
-                </div> <!-- Plan Digital -->
-                <div class="pricing-card">
+                </div>
+    
+                <div class="pricing-card" data-package-id="digital" data-package-name="Paquete Digital" data-package-price="299.99">
                     <div class="pricing-header">
                         <div class="header-top">
                             <h3 class="plan-title">PAQUETE<span class="line-break">DIGITAL</span></h3>
@@ -199,9 +197,8 @@
                         <button class="btn btn-primary">SELECT DIGITAL</button>
                     </div>
                 </div>
-
-                <!-- Plan Completo -->
-                <div class="pricing-card">
+    
+                <div class="pricing-card" data-package-id="completo" data-package-name="Paquete Completo" data-package-price="359.99">
                     <div class="pricing-header">
                         <div class="header-top">
                             <h3 class="plan-title">PAQUETE COMPLETO</h3>
@@ -240,13 +237,14 @@
                                 <span>Panel Drive cliente</span>
                             </li>
                         </ul>
-
+    
                     </div>
                     <div class="pricing-footer">
                         <button class="btn btn-outline">SELECT COMPLETO</button>
                     </div>
-                </div> <!-- Plan Aplastante -->
-                <div class="pricing-card pricing-card-popular">
+                </div>
+    
+                <div class="pricing-card pricing-card-popular" data-package-id="aplastante" data-package-name="Paquete Aplastante" data-package-price="399.99">
                     <div class="pricing-header">
                         <div class="header-top">
                             <div class="plan-badge plan-badge-blue">Más Popular</div>
@@ -286,7 +284,7 @@
                                 <span>Asesoría por WhatsApp</span>
                             </li>
                         </ul>
-
+    
                     </div>
                     <div class="pricing-footer">
                         <button class="btn btn-outline">SELECT APLASTANTE</button>
@@ -296,8 +294,7 @@
         </div>
     </section>
 
-    <!-- Modal description of service -->
-     <div id="serviceModal" class="modal">
+    <div id="serviceModal" class="modal">
         <div class="modal-content">
             <span id="closeModal" class="close">&times;</span>
             <div id="modalIcon"></div>
@@ -306,9 +303,23 @@
         </div>
     </div>
 
-    <!-- Comparative of services -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeConfirmModal">&times;</span>
+            <h2>Confirmar Compra</h2>
+            <p>Estás a punto de adquirir el paquete:</p>
+            <h3 id="confirmPackageName"></h3>
+            <p>Por un precio de: <strong id="confirmPackagePrice"></strong></p>
+            <p>¿Deseas continuar con la compra?</p>
+            <div class="modal-actions">
+                <button id="btnConfirmPurchase" class="btn-primary">Confirmar Compra</button>
+                <button id="btnCancelPurchase" class="btn-secondary">Cancelar</button>
+            </div>
+        </div>
+    </div>
 
-     <section class="comparison-section">
+
+    <section class="comparison-section">
         <div class="container">
             <h2 class="section-title">Comparativa de Paquetes</h2>
             <div class="comparison-table-wrapper">
@@ -405,7 +416,6 @@
         </div>
     </section>
 
-    <!-- Contact Section -->
     <section id="contacto" class="contact">
         <div class="container">
             <div class="contact-content">
@@ -434,7 +444,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -497,7 +506,6 @@
 
     <script src="script.js"></script>
 
-    <!-- Botón flotante de WhatsApp -->
     <button class="whatsapp-btn" id="whatsappBtn">
         <i class="fab fa-whatsapp"></i>
     </button>
