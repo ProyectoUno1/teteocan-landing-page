@@ -346,8 +346,7 @@ body {
 }
 
 .pricing-header {
-    padding: 2rem;
-
+    
     text-align: center;
     position: relative;
 }
@@ -428,15 +427,9 @@ body {
 }
 
 .feature-check {
-    color: #059669;
+    color: #106dbe;
     font-size: 1rem;
 }
-
-.feature-times {
-    color: #dc2626;
-    font-size: 1rem;
-}
-
 
 .feature-unavailable {
     opacity: 0.5;
