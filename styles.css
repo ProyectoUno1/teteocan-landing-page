@@ -808,6 +808,9 @@ body {
         opacity: 0.8;
         transform: scale(0.99);
     }
+    .pricing-header {
+        padding: 0;
+    }
 }
 
 /* Tablets en orientación landscape - específico para iPad Air y similares */
@@ -825,6 +828,9 @@ body {
     .container {
         padding: 0 2rem;
     }
+    .pricing-header {
+        padding: 0;
+    }
 }
 
 /* Tablets en orientación portrait - específico para iPad Air y similares */
@@ -837,6 +843,9 @@ body {
     .features-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 1.5rem;
+    }
+    .pricing-header {
+        padding: 0;
     }
 }
 
@@ -904,6 +913,9 @@ body {
         flex-direction: column;
         text-align: center;
     }
+    .pricing-header {
+        padding: 0;
+    }
 }
 
 @media (max-width: 480px) {
@@ -926,7 +938,7 @@ body {
     .feature-card,
     .service-card,
     .pricing-card {
-        padding: 1.5rem;
+        padding: 0;
     }
 
     .pricing-grid {
@@ -948,7 +960,7 @@ body {
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
     }
 
-    .pricing-card:hover .pricing-header {
+    .pricing-card:hover  {
         background: none;
     }
 
@@ -964,6 +976,8 @@ body {
     .whatsapp-btn {
         padding: 1rem 1.5rem;
     }
+   
+    
 }
 
 /* Smooth scrolling */
