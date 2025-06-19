@@ -48,7 +48,7 @@ body {
 .logo-area {
     display: flex;
     align-items: center;
-    gap: 1 rem;
+    gap: 1rem;
     justify-self: start;
 }
 
@@ -59,6 +59,12 @@ body {
     height: auto;
 }
 
+.logo-icon-footer {
+    height: 100px;
+    width: auto;
+    max-width: 100%;
+    max-height: 100px;
+}
 
 .nav-links {
     display: flex;
@@ -78,30 +84,94 @@ body {
     font-size: 1.1rem;
 }
 
-.nav-links a:hover {
-    color: #2563eb;
+/* Hover effect moved to media query for better mobile support */
+
+/* Mobile Header */
+.mobile-header {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 1rem;
 }
 
 .mobile-menu-btn {
-    display: none;
     background: none;
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
     color: #1f2937;
+    padding: 0.5rem;
 }
 
+.mobile-logo-area {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.mobile-logo-icon {
+    max-width: 120px;
+    max-height: 60px;
+    width: auto;
+    height: auto;
+}
+
+.mobile-spacer {
+    width: 2.5rem; /* Same width as menu button to center logo */
+}
+
+/* Mobile Navigation */
 .nav-mobile {
     display: none;
     border-top: 1px solid #e5e7eb;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .nav-mobile-content {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    padding: 1rem 0;
+    gap: 1.5rem;
+    padding: 1rem 1rem;
+    align-items: center;
 }
+
+.mobile-nav-logo-area {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.mobile-nav-logo {
+    max-width: 150px;
+    max-height: 80px;
+    width: auto;
+    height: auto;
+}
+
+.mobile-nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    align-items: center;
+    width: 100%;
+}
+
+.mobile-nav-links .nav-link {
+    text-decoration: none;
+    color: #6b7280;
+    font-weight: 500;
+    font-size: 1.2rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    text-align: center;
+    width: 100%;
+    max-width: 200px;
+}
+
+/* Hover effect moved to media query for better mobile support */
 
 /* Hero Section */
 .hero {
@@ -122,8 +192,7 @@ body {
 }
 
 .hero-title-gradient {
-    background: linear-gradient(135deg, #2563eb, #4f46e5);
-    background: linear-gradient(135deg, #2c54aa, #2c54aa);
+    background: #0AB2DA;
 
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -165,10 +234,7 @@ body {
     color: white;
 }
 
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
-}
+/* Hover effect moved to media query for better mobile support */
 
 .btn-secondary {
     border: 2px solid #2563eb;
@@ -176,9 +242,7 @@ body {
     background: transparent;
 }
 
-.btn-secondary:hover {
-    background: #eff6ff;
-}
+/* Hover effect moved to media query for better mobile support */
 
 .btn-outline {
     border: 2px solid #d1d5db;
@@ -186,10 +250,7 @@ body {
     background: transparent;
 }
 
-.btn-outline:hover {
-    border-color: #2563eb;
-    color: #2563eb;
-}
+/* Hover effect moved to media query for better mobile support */
 
 /* Features Grid */
 .features-grid {
@@ -214,10 +275,7 @@ body {
     flex-direction: column;
 }
 
-.feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}
+/* Hover effect moved to media query for better mobile support */
 
 .feature-icon {
     width: 3rem;
@@ -232,9 +290,7 @@ body {
     
 }
 
-.feature-card:hover .feature-icon {
-    transform: scale(1.1);
-}
+/* Hover effect moved to media query for better mobile support */
 
 .feature-icon-blue {
     background: #dbeafe;
@@ -274,6 +330,7 @@ body {
     font-weight: bold;
     color: #1f2937;
     margin-bottom: 1rem;
+    text-align: center;
 }
 
 .section-description {
@@ -319,31 +376,7 @@ body {
     border: 2px solid #e5e7eb;
 }
 
-/* Efectos hover individuales para cada tarjeta */
-.pricing-card:hover {
-    transform: scale(1.08) translateY(-10px);
-    box-shadow: 0 25px 50px rgba(37, 99, 235, 0.3), 0 10px 25px rgba(0, 0, 0, 0.15);
-    border-color: #2563eb;
-    z-index: 10;
-}
-
-/* Efecto adicional en el header de la tarjeta hover */
-.pricing-card:hover .pricing-header {
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(79, 70, 229, 0.05));
-}
-
-/* Efecto en el contenedor padre cuando hay hover */
-.pricing-grid:hover .pricing-card:not(:hover) {
-    opacity: 0.7;
-    transform: scale(0.98);
-    filter: blur(1px);
-}
-
-/* Animación suave para el botón dentro de la tarjeta hover */
-.pricing-card:hover .btn {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
-}
+/* Hover effects moved to media query for better mobile support */
 
 .pricing-header {
     
@@ -424,8 +457,16 @@ body {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
 }
 
+.feature-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    background-color: #f0f4ff;
+    border-radius: 8px;
+}
 .feature-check {
     color: #106dbe;
     font-size: 1rem;
@@ -526,10 +567,7 @@ body {
   transition: transform 0.2s ease;
 }
 
-.pricing-card .btn-outline:hover,
-.pricing-card .btn-primary:hover {
-  transform: translateY(-2px);
-}
+/* Hover effect moved to media query for better mobile support */
 
 /* Style modal */
 .modal {
@@ -566,6 +604,13 @@ body {
 
 .modal.fade-out .modal-content {
   transform: scale(0.95);
+}
+
+.modal-icon {
+    font-size: 2rem;
+    color: #2563eb;
+    margin-bottom: 1rem;
+    text-align: center;
 }
 
 .close {
@@ -649,10 +694,7 @@ body {
     box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
 }
 
-.whatsapp-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.3);
-}
+/* Hover effect moved to media query for better mobile support */
 
 .whatsapp-btn i {
     font-size: 2rem;
@@ -693,9 +735,7 @@ body {
     text-decoration: none;
 }
 
-.contact-email:hover {
-    text-decoration: underline;
-}
+/* Hover effect moved to media query for better mobile support */
 
 /* Footer */
 .footer {
@@ -752,9 +792,7 @@ body {
     transition: color 0.3s ease;
 }
 
-.footer-link:hover {
-    color: white;
-}
+/* Hover effect moved to media query for better mobile support */
 
 .footer-bottom {
     border-top: 1px solid #374151;
@@ -785,6 +823,175 @@ body {
 
 /* Responsive Design */
 
+/* Efectos hover solo para dispositivos que los soportan */
+@media (hover: hover) and (pointer: fine) {
+    .nav-links a:hover {
+        color: #2563eb;
+    }
+
+    .mobile-nav-links .nav-link:hover {
+        color: #2563eb;
+        background: #eff6ff;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-secondary:hover {
+        background: #eff6ff;
+    }
+
+    .btn-outline:hover {
+        border-color: #2563eb;
+        color: #2563eb;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .feature-card:hover .feature-icon {
+        transform: scale(1.1);
+    }
+
+    .pricing-card:hover {
+        transform: scale(1.08) translateY(-10px);
+        box-shadow: 0 25px 50px rgba(37, 99, 235, 0.3), 0 10px 25px rgba(0, 0, 0, 0.15);
+        border-color: #2563eb;
+        z-index: 10;
+    }
+
+    .pricing-card:hover .pricing-header {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(79, 70, 229, 0.05));
+    }
+
+    .pricing-grid:hover .pricing-card:not(:hover) {
+        opacity: 0.7;
+        transform: scale(0.98);
+        filter: blur(1px);
+    }
+
+    .pricing-card:hover .btn {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+
+    .pricing-card .btn-outline:hover,
+    .pricing-card .btn-primary:hover {
+        transform: translateY(-2px);
+    }
+
+    .whatsapp-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 18px rgba(37, 211, 102, 0.3);
+    }
+
+    .contact-email:hover {
+        text-decoration: underline;
+    }
+
+    .footer-link:hover {
+        color: white;
+    }
+    
+    .feature-item {
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        cursor: pointer;
+    }
+
+    .feature-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        background-color: #f0f4ff;
+        border-radius: 8px;
+    }
+}
+
+/* Efectos táctiles para dispositivos móviles */
+@media (hover: none) and (pointer: coarse) {
+    /* Remover todos los efectos hover y reemplazar con efectos active/focus */
+    .nav-links a:hover,
+    .mobile-nav-links .nav-link:hover,
+    .btn-primary:hover,
+    .btn-secondary:hover,
+    .btn-outline:hover,
+    .feature-card:hover,
+    .pricing-card:hover,
+    .whatsapp-btn:hover,
+    .contact-email:hover,
+    .footer-link:hover {
+        /* Resetear todos los efectos hover */
+        transform: none;
+        box-shadow: none;
+        background: inherit;
+        color: inherit;
+        border-color: inherit;
+        opacity: 1;
+        filter: none;
+        z-index: auto;
+    }
+
+    /* Efectos para toque/tap en móviles */
+    .btn-primary:active {
+        transform: translateY(1px);
+        box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-secondary:active {
+        background: #eff6ff;
+        transform: translateY(1px);
+    }
+
+    .btn-outline:active {
+        border-color: #2563eb;
+        color: #2563eb;
+        transform: translateY(1px);
+    }
+
+    .feature-card:active {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .pricing-card:active {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(37, 99, 235, 0.2);
+        border-color: #2563eb;
+    }
+
+    .whatsapp-btn:active {
+        transform: scale(0.98);
+        box-shadow: 0 3px 10px rgba(37, 211, 102, 0.2);
+    }
+
+    .nav-links a:active {
+        color: #2563eb;
+    }
+
+    .mobile-nav-links .nav-link:active {
+        color: #2563eb;
+        background: #eff6ff;
+    }
+
+    .footer-link:active {
+        color: #2563eb;
+    }
+
+    /* Mejorar feedback visual en elementos interactivos */
+    .btn:focus {
+        outline: 2px solid #2563eb;
+        outline-offset: 2px;
+    }
+
+    .pricing-card:focus-within {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+}
+
 /* Tablets grandes (iPad Air, etc.) - 1024px y menos */
 @media (max-width: 1024px) {
     .pricing-grid {
@@ -797,17 +1004,7 @@ body {
     .features-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 2rem;
-    }
-
-    /* Ajustar efectos hover para tablet */
-    .pricing-card:hover {
-        transform: scale(1.05) translateY(-8px);
-    }
-
-    .pricing-grid:hover .pricing-card:not(:hover) {
-        opacity: 0.8;
-        transform: scale(0.99);
-    }
+    }    /* Hover effects handled by main media queries */
     .pricing-header {
         padding: 0;
     }
@@ -855,8 +1052,8 @@ body {
         display: none;
     }
 
-    .mobile-menu-btn {
-        display: block;
+    .mobile-header {
+        display: flex;
     }
 
     .nav-mobile.active {
@@ -945,28 +1142,7 @@ body {
         gap: 1.5rem;
         justify-items: center;
         align-items: stretch;
-    }
-
-    /* Desactivar efectos hover complejos en móvil para mejor rendimiento */
-    .pricing-grid:hover .pricing-card:not(:hover) {
-        opacity: 1;
-        transform: none;
-        filter: none;
-    }
-
-    .pricing-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-    }
-
-    .pricing-card:hover  {
-        background: none;
-    }
-
-    .pricing-card:hover .btn {
-        transform: none;
-        box-shadow: none;
-    }
+    }    /* Hover effects handled by main media queries */
 
     .contact-title {
         font-size: 1.75rem;
@@ -1034,5 +1210,66 @@ html {
     .pricing,
     .contact {
         break-inside: avoid;
+    }
+}
+
+
+/* ComparisonTable */
+.comparison-section {
+    padding: 4rem 0;
+}
+
+.comparison-table-wrapper {
+    overflow-x: auto;
+}
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+    min-width: 700px;
+    background: white;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.comparison-table th {
+    background: #f3f4f6;
+    font-weight: 600;
+    color: #1f2937;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+}
+
+.comparison-table td:first-child {
+    text-align: left;
+    font-weight: 500;
+    color: #374151;
+}
+
+.comparison-table td {
+    color: #4b5563;
+}
+
+.comparison-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .comparison-table {
+        font-size: 0.9rem;
+    }
+    .comparison-table th,
+    .comparison-table td {
+        padding: 0.75rem;
     }
 }
