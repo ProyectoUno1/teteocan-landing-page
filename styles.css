@@ -1,4 +1,4 @@
-/* Reset and Base Styles */
+
 * {
     margin: 0;
     padding: 0;
@@ -123,6 +123,8 @@ body {
 
 .hero-title-gradient {
     background: linear-gradient(135deg, #2563eb, #4f46e5);
+    background: linear-gradient(135deg, #2c54aa, #2c54aa);
+
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -345,6 +347,7 @@ body {
 
 .pricing-header {
     padding: 2rem;
+
     text-align: center;
     position: relative;
 }
@@ -366,8 +369,18 @@ body {
 .plan-title {
     font-size: 1.5rem;
     font-weight: bold;
+
     color: #1f2937;
     margin-bottom: 0.5rem;
+}
+
+
+.header-top {
+  padding: 1rem 1rem;
+  text-align: center;
+  color: white;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
 }
 
 .plan-price {
@@ -392,6 +405,8 @@ body {
 .plan-description {
     color: #6b7280;
     font-size: 1rem;
+    margin-bottom: 1.5rem;
+
 }
 
 .pricing-body {
@@ -422,6 +437,7 @@ body {
     font-size: 1rem;
 }
 
+
 .feature-unavailable {
     opacity: 0.5;
 }
@@ -436,7 +452,141 @@ body {
     transition: all 0.3s ease;
 }
 
-/* Contact Section */
+
+/* titles plans*/
+
+/* Explorador */
+.pricing-card:nth-child(1) .header-top {
+  background: linear-gradient(135deg, #0099ff, #33ccff);
+  padding: rem;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  color: white;
+}
+
+/* Digital */
+.pricing-card:nth-child(2) .header-top {
+  background: linear-gradient(135deg, #7f00ff, #e100ff);
+  padding: 1rem;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  color: white;
+
+}
+.line-break {
+  display: block;
+}
+
+
+/* Completo */
+.pricing-card:nth-child(3) .header-top {
+  background: linear-gradient(135deg, #0099ff, #33ccff);
+  padding: 1rem;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  color: white;
+}
+
+
+/* Aplastante */
+.pricing-card:nth-child(4) .header-top {
+  background: linear-gradient(135deg, #014386, #005f99);
+  padding: 1rem;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  color: white;
+}
+
+
+.header-top.header-top .plan-title {
+  color: white;
+}
+
+
+/* btns package*/
+.pricing-card:nth-child(1) .btn-outline,
+.pricing-card:nth-child(3) .btn-outline {
+  background: linear-gradient(135deg, #0099ff, #33ccff);
+  color: white;
+  border: none;
+}
+
+.pricing-card:nth-child(2) .btn-primary {
+  background: linear-gradient(135deg, #7f00ff, #e100ff);
+  color: white;
+  border: none;
+}
+
+.pricing-card:nth-child(4) .btn-outline {
+  background: linear-gradient(135deg, #001f3f, #005f99);
+  color: white;
+  border: none;
+}
+
+/* btns */
+.pricing-card .btn-outline,
+.pricing-card .btn-primary {
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.pricing-card .btn-outline:hover,
+.pricing-card .btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+/* Style modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.modal.fade-in {
+  display: flex;
+  opacity: 1;
+}
+
+.modal.fade-out {
+  opacity: 0;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 500px;
+  text-align: center;
+  transform: scale(1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.modal.fade-out .modal-content {
+  transform: scale(0.95);
+}
+
+.close {
+  cursor: pointer;
+  font-size: 2rem;
+  color: rgb(0, 0, 0);
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1001;
+  user-select: none;
+}
+
+
 .contact {
     padding: 4rem 0;
     background: white;
