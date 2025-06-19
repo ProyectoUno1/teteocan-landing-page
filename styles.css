@@ -6,11 +6,12 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Montserrat', sans-serif;
     line-height: 1.6;
     color: #1f2937;
     background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
 }
+
 
 .container {
     max-width: 1200px;
@@ -218,8 +219,8 @@ body {
     line-height: 1.2;
 }
 
-.hero-title-gradient {
-    background: #0AB2DA;
+.hero-title-highlight {
+    background: #00ADD5;
 
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -320,18 +321,8 @@ body {
 /* Hover effect moved to media query for better mobile support */
 
 .feature-icon-blue {
-    background: #dbeafe;
-    color: #2563eb;
-}
-
-.feature-icon-green {
-    background: #d1fae5;
-    color: #059669;
-}
-
-.feature-icon-purple {
-    background: #e9d5ff;
-    color: #7c3aed;
+    background: #03475D;
+    color: white;
 }
 
 .feature-title {
@@ -691,7 +682,7 @@ body {
 }
 
 .contact-feature-icon {
-    color: #2563eb;
+    color: #03475D;
     font-size: 1.25rem;
 }
 
