@@ -14,6 +14,8 @@ Developer: Jozet (Seth) Ramirez
 Site: imbestseth@gmail.com
 Twitter: @ImJozzcr
 
+Developer: Margarita Moraga
+
 /* THANKS */
 
 Este archivo esta impulsado por la ideologia de #NosomosRobots
