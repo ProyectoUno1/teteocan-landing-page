@@ -307,6 +307,34 @@ serviceModal?.addEventListener('click', (e) => {
     }
 });
 
+// Evento para que el logo redirija a la sección de inicio
+document.addEventListener("DOMContentLoaded", function () {
+  function handleLogoClick(e) {
+    e.preventDefault();
+    if (window.scrollY === 0) {
+      location.reload();
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
+  const logoDesktop = document.getElementById("logo-desktop");
+  const logoMobile = document.getElementById("logo-mobile");
+
+  if (logoDesktop) {
+    logoDesktop.addEventListener("click", handleLogoClick);
+    logoDesktop.addEventListener("touchstart", handleLogoClick);
+  }
+
+  if (logoMobile) {
+    logoMobile.addEventListener("click", handleLogoClick);
+    logoMobile.addEventListener("touchstart", handleLogoClick);
+  }
+});
+
+
+
+
 
 // --- Variable global para almacenar el paquete seleccionado ---
 let selectedPackage = null;
