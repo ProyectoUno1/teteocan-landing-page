@@ -67,17 +67,16 @@ document.addEventListener('DOMContentLoaded', function () {
         whatsappBtn.addEventListener('click', function (e) {
             e.preventDefault(); 
 
-            const phoneNumber = '527651033282'; // Número de ejemplo, reemplazar con el número real
+            const phoneNumber = '527651033282';
             const message = encodeURIComponent('¡Hola Teteocan! Estoy interesado en sus servicios. ¿Podrían brindarme más información?');
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+
+            const isMobile = /iPhone|Android|iPad|iPod/i.test(navigator.userAgent);
+            const whatsappUrl = isMobile
+                ? `https://wa.me/${phoneNumber}?text=${message}`
+                : `https://web.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
 
             try {
-               
                 window.open(whatsappUrl, '_blank');
-                
-                setTimeout(function () {
-                   
-                }, 1000);
             } catch (error) {
                 console.error('Error al intentar abrir WhatsApp:', error);
                 alert('Error al abrir WhatsApp. Por favor, verifique que tiene la aplicación instalada.');
