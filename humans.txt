@@ -14,7 +14,11 @@ Developer: Jozet (Seth) Ramirez
 Site: imbestseth@gmail.com
 Twitter: @ImJozzcr
 
+Developer: Alan Rodriguez 
+Site: alanjrr.isc@gmail.com
+GitHub: AlanRanchs
+
 /* THANKS */
 
 Este archivo esta impulsado por la ideologia de #NosomosRobots
-created by Jozet (Seth) Ramirez, only this file humans.txt
+created by Jozet (Seth) Ramirez y AlanRanchs only this file humans.txt
