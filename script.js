@@ -7,45 +7,43 @@ document.addEventListener('DOMContentLoaded', function () {
     
     mobileMenuBtn.addEventListener('click', function() {
         mobileNav.classList.toggle('active');
-        
-        // Change icon
         if (mobileNav.classList.contains('active')) {
             menuIcon.className = 'fas fa-times';
-            document.body.style.overflow = 'hidden'; // Prevent body scroll when menu is open
-            document.body.classList.add('mobile-menu-open'); // Add class for button animation
+            document.body.style.overflow = 'hidden'; 
+            document.body.classList.add('mobile-menu-open'); 
         } else {
             menuIcon.className = 'fas fa-bars';
-            document.body.style.overflow = ''; // Restore body scroll
-            document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
+            document.body.style.overflow = ''; 
+            document.body.classList.remove('mobile-menu-open'); 
         }
-    });    // Close mobile menu when clicking on links
+    });   
     const mobileLinks = mobileNav.querySelectorAll('.nav-link');
     mobileLinks.forEach(link => {
         link.addEventListener('click', function() {
             mobileNav.classList.remove('active');
             menuIcon.className = 'fas fa-bars';
-            document.body.style.overflow = ''; // Restore body scroll
-            document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
+            document.body.style.overflow = '';
+            document.body.classList.remove('mobile-menu-open'); 
         });
-    });    // Close mobile menu when clicking outside
+    });    
     document.addEventListener('click', function(event) {
         if (!mobileMenuBtn.contains(event.target) && !mobileNav.contains(event.target)) {
             mobileNav.classList.remove('active');
             menuIcon.className = 'fas fa-bars';
-            document.body.style.overflow = ''; // Restore body scroll
-            document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
+            document.body.style.overflow = ''; 
+            document.body.classList.remove('mobile-menu-open'); 
         }
-    }); // Close mobile menu when clicking on logo
+    }); 
     const logoMobileNav = document.getElementById('logo-mobile-nav');
     logoMobileNav.addEventListener('click', function() {
         mobileNav.classList.remove('active');
         menuIcon.className = 'fas fa-bars';
-        document.body.style.overflow = ''; // Restore body scroll
-        document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
+        document.body.style.overflow = ''; 
+        document.body.classList.remove('mobile-menu-open'); 
     });
 });
 
-// Smooth scrolling for navigation links
+
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -53,7 +51,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         if (target) {
             const headerHeight = document.querySelector('.header').offsetHeight;
             const targetPosition = target.offsetTop - headerHeight - 20;
-
             window.scrollTo({
                 top: targetPosition,
                 behavior: 'smooth'
@@ -68,23 +65,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (whatsappBtn) {
         whatsappBtn.addEventListener('click', function (e) {
-            e.preventDefault(); // Prevenir cualquier comportamiento por defecto
+            e.preventDefault(); 
 
-            // WhatsApp contact number
             const phoneNumber = '527651033282'; // Número de ejemplo, reemplazar con el número real
             const message = encodeURIComponent('¡Hola Teteocan! Estoy interesado en sus servicios. ¿Podrían brindarme más información?');
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
             try {
-                // Intentar abrir WhatsApp
+               
                 window.open(whatsappUrl, '_blank');
-
-                // Si no se abre, mostrar mensaje de error
+                
                 setTimeout(function () {
-                    // This check is unreliable for security reasons; it's better to just log or inform user
-                    // if (!window.open(whatsappUrl, '_blank')) {
-                    //     alert('No se pudo abrir WhatsApp. Por favor, verifique que tiene la aplicación instalada.');
-                    // }
+                   
                 }, 1000);
             } catch (error) {
                 console.error('Error al intentar abrir WhatsApp:', error);
@@ -94,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// Add scroll effect to header
 window.addEventListener('scroll', function () {
     const header = document.querySelector('.header');
     if (window.scrollY > 100) {
@@ -106,7 +97,6 @@ window.addEventListener('scroll', function () {
     }
 });
 
-// Add animation on scroll for cards
 const observerOptions = {
     threshold: 0.1,
     rootMargin: '0px 0px -50px 0px'
@@ -121,7 +111,6 @@ const observer = new IntersectionObserver(function (entries) {
     });
 }, observerOptions);
 
-// Observe all cards for animation
 document.addEventListener('DOMContentLoaded', function () {
     const cards = document.querySelectorAll('.feature-card, .service-card, .pricing-card');
     cards.forEach((card, index) => {
@@ -132,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Button hover effects
 document.querySelectorAll('.btn').forEach(button => {
     button.addEventListener('mouseenter', function () {
         this.style.transform = 'translateY(-2px)';
@@ -143,17 +131,14 @@ document.querySelectorAll('.btn').forEach(button => {
     });
 });
 
-// Pricing card hover effects
 document.querySelectorAll('.pricing-card').forEach(card => {
     card.addEventListener('mouseenter', function () {
-        // Only apply hover effect if not 'pricing-card-popular' and not 'selected'
         if (!this.classList.contains('pricing-card-popular') && !this.classList.contains('selected')) {
             this.style.transform = 'translateY(-5px) scale(1.02)';
         }
     });
 
     card.addEventListener('mouseleave', function () {
-        // Only remove hover effect if not 'pricing-card-popular' and not 'selected'
         if (!this.classList.contains('pricing-card-popular') && !this.classList.contains('selected')) {
             this.style.transform = 'translateY(0) scale(1)';
         }
@@ -197,7 +182,6 @@ window.addEventListener('error', function (e) {
 
 // Keyboard navigation improvements
 document.addEventListener('keydown', function (e) {
-    // ESC key closes mobile menu
     if (e.key === 'Escape') {
         const mobileNav = document.getElementById('mobileNav');
         const menuIcon = document.getElementById('menuIcon');        if (mobileNav.classList.contains('active')) {
@@ -205,7 +189,6 @@ document.addEventListener('keydown', function (e) {
             menuIcon.className = 'fas fa-bars';
             document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
         }
-        // Also close modals if open
         const openModals = document.querySelectorAll('.modal.fade-in');
         openModals.forEach(modal => {
             if (modal.id === 'serviceModal') {
@@ -221,7 +204,6 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
-// Touch gestures for mobile (basic swipe to close menu)
 let touchStartX = 0;
 let touchEndX = 0;
 
@@ -239,10 +221,9 @@ function handleSwipe() {
     const menuIcon = document.getElementById('menuIcon');
     
     if (touchEndX < touchStartX - 50 && mobileNav.classList.contains('active')) {
-        // Swipe left to close menu
         mobileNav.classList.remove('active');
         menuIcon.className = 'fas fa-bars';
-        document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
+        document.body.classList.remove('mobile-menu-open'); 
     }
 }
 
@@ -280,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-// --- Modal for service details (your original modal) ---
+// Modal for service details
 const serviceModal = document.getElementById('serviceModal');
 const closeModalBtn = document.getElementById('closeModal'); // Este es para serviceModal
 
@@ -320,7 +301,7 @@ serviceModal?.addEventListener('click', (e) => {
     }
 });
 
-// Evento para que el logo redirija a la sección de inicio
+//Mobile menu
 document.addEventListener("DOMContentLoaded", function () {
   function handleLogoClick(e) {
     e.preventDefault();
@@ -351,20 +332,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+//Modal packages
 
-
-// --- Variable global para almacenar el paquete seleccionado ---
 let selectedPackage = null;
-
-// --- Lógica del Modal de Confirmación ---
 const confirmModal = document.getElementById('confirmModal');
 const confirmPackageName = document.getElementById('confirmPackageName');
 const confirmPackagePrice = document.getElementById('confirmPackagePrice');
-const closeConfirmModalBtn = document.getElementById('closeConfirmModal'); // Este es para confirmModal
+const closeConfirmModalBtn = document.getElementById('closeConfirmModal'); 
 const btnConfirmPurchase = document.getElementById('btnConfirmPurchase');
 const btnCancelPurchase = document.getElementById('btnCancelPurchase');
 
-// Función para abrir el modal de confirmación
 function openConfirmModal() {
     if (!selectedPackage) {
         alert('Por favor, selecciona un paquete primero para proceder con la compra.');
@@ -374,14 +351,12 @@ function openConfirmModal() {
     confirmPackageName.innerText = selectedPackage.name;
     confirmPackagePrice.innerText = `$${parseFloat(selectedPackage.price).toFixed(2)}/mes`;
 
-
-    // Obtener la tarjeta del paquete seleccionado
     const selectedCard = document.querySelector(`.pricing-card[data-package-name="${selectedPackage.name}"]`);
     const existingList = selectedCard?.querySelector('.features-list');
     const servicesList = document.getElementById('servicesList');
 
     if (existingList && servicesList) {
-        servicesList.innerHTML = ''; // Limpiar lista anterior
+        servicesList.innerHTML = ''; 
 
         existingList.querySelectorAll('li').forEach(item => {
             const clonedItem = item.cloneNode(true);
@@ -392,38 +367,33 @@ function openConfirmModal() {
         console.warn('No se encontró la lista de servicios o el contenedor.');
     }
 
-    confirmModal.style.display = 'flex'; // Hacer el modal visible
+    confirmModal.style.display = 'flex'; 
     confirmModal.classList.remove('fade-out');
     confirmModal.classList.add('fade-in');
     document.body.classList.add('modal-open');
     document.body.classList.add('body-no-scroll');
 }
 
-// Función para cerrar el modal de confirmación con animación
 function closeConfirmModal() {
     confirmModal.classList.remove('fade-in');
     confirmModal.classList.add('fade-out');
-    // Esperar a que termine la animación antes de ocultarlo por completo
     setTimeout(() => {
         confirmModal.style.display = 'none';
     }, 300);
     document.body.classList.remove('body-no-scroll');
-    
-    // Coincide con la duración de la transición CSS
+
 }
 
-// Event Listeners para cerrar el modal de confirmación
 closeConfirmModalBtn?.addEventListener('click', closeConfirmModal);
 btnCancelPurchase?.addEventListener('click', closeConfirmModal);
 
-// Cerrar el modal de confirmación si se hace clic fuera del contenido (en el fondo oscuro)
 confirmModal?.addEventListener('click', (e) => {
     if (e.target === confirmModal) {
         closeConfirmModal();
     }
 });
 
-// Event Listener para el botón "Confirmar Compra" dentro del modal
+// Event Listener "Confirmar Compra" 
 btnConfirmPurchase?.addEventListener('click', () => {
     if (selectedPackage) {
         const priceText = `$${selectedPackage.price.toFixed(2)}`;
@@ -441,7 +411,6 @@ btnConfirmPurchase?.addEventListener('click', () => {
             buttonsStyling: false 
         });
 
-        // Después de la "compra" simulada:
         closeConfirmModal();
         selectedPackage = null;
 
@@ -452,31 +421,21 @@ btnConfirmPurchase?.addEventListener('click', () => {
 });
 
 
-// --- Lógica para la Selección de Paquetes (usando tus clases de botones existentes) ---
+
 document.querySelectorAll('.pricing-footer button').forEach(button => {
     button.addEventListener('click', (event) => {
-       
-        // 1. Desmarcar cualquier paquete previamente seleccionado
         document.querySelectorAll('.pricing-card').forEach(card => {
             card.classList.remove('selected');
         });
-
-        // 2. Obtener la tarjeta de paquete (pricing-card) padre del botón clicado
         const pricingCard = event.target.closest('.pricing-card');
 
         if (pricingCard) {
-            // 3. Marcar la tarjeta actual como seleccionada
             pricingCard.classList.add('selected');
-
-            // 4. Almacenar los datos del paquete seleccionado
             selectedPackage = {
                 id: pricingCard.getAttribute('data-package-id'),
                 name: pricingCard.getAttribute('data-package-name'),
                 price: parseFloat(pricingCard.getAttribute('data-package-price'))
             };
-            console.log('Paquete seleccionado:', selectedPackage); // Para depuración
-
-            // 5. Abrir el modal de confirmación después de la selección
             openConfirmModal();
         }
     });
