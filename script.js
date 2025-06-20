@@ -2,34 +2,46 @@
 document.addEventListener('DOMContentLoaded', function () {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileNav = document.getElementById('mobileNav');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
     const menuIcon = document.getElementById('menuIcon');
-
-    mobileMenuBtn.addEventListener('click', function () {
+    
+    mobileMenuBtn.addEventListener('click', function() {
         mobileNav.classList.toggle('active');
-
+        
         // Change icon
         if (mobileNav.classList.contains('active')) {
             menuIcon.className = 'fas fa-times';
+            document.body.style.overflow = 'hidden'; // Prevent body scroll when menu is open
+            document.body.classList.add('mobile-menu-open'); // Add class for button animation
         } else {
             menuIcon.className = 'fas fa-bars';
+            document.body.style.overflow = ''; // Restore body scroll
+            document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
         }
-    });
-
-    // Close mobile menu when clicking on links
+    });    // Close mobile menu when clicking on links
     const mobileLinks = mobileNav.querySelectorAll('.nav-link');
     mobileLinks.forEach(link => {
-        link.addEventListener('click', function () {
+        link.addEventListener('click', function() {
             mobileNav.classList.remove('active');
             menuIcon.className = 'fas fa-bars';
+            document.body.style.overflow = ''; // Restore body scroll
+            document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
         });
-    });
-
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', function (event) {
+    });    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
         if (!mobileMenuBtn.contains(event.target) && !mobileNav.contains(event.target)) {
             mobileNav.classList.remove('active');
             menuIcon.className = 'fas fa-bars';
+            document.body.style.overflow = ''; // Restore body scroll
+            document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
         }
+    }); // Close mobile menu when clicking on logo
+    const logoMobileNav = document.getElementById('logo-mobile-nav');
+    logoMobileNav.addEventListener('click', function() {
+        mobileNav.classList.remove('active');
+        menuIcon.className = 'fas fa-bars';
+        document.body.style.overflow = ''; // Restore body scroll
+        document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
     });
 });
 
@@ -188,10 +200,10 @@ document.addEventListener('keydown', function (e) {
     // ESC key closes mobile menu
     if (e.key === 'Escape') {
         const mobileNav = document.getElementById('mobileNav');
-        const menuIcon = document.getElementById('menuIcon');
-        if (mobileNav.classList.contains('active')) {
+        const menuIcon = document.getElementById('menuIcon');        if (mobileNav.classList.contains('active')) {
             mobileNav.classList.remove('active');
             menuIcon.className = 'fas fa-bars';
+            document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
         }
         // Also close modals if open
         const openModals = document.querySelectorAll('.modal.fade-in');
@@ -225,11 +237,12 @@ document.addEventListener('touchend', function (e) {
 function handleSwipe() {
     const mobileNav = document.getElementById('mobileNav');
     const menuIcon = document.getElementById('menuIcon');
-
+    
     if (touchEndX < touchStartX - 50 && mobileNav.classList.contains('active')) {
         // Swipe left to close menu
         mobileNav.classList.remove('active');
         menuIcon.className = 'fas fa-bars';
+        document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
     }
 }
 
@@ -316,10 +329,9 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }
-
-  const logoDesktop = document.getElementById("logo-desktop");
+  }  const logoDesktop = document.getElementById("logo-desktop");
   const logoMobile = document.getElementById("logo-mobile");
+  const logoMobileNav = document.getElementById("logo-mobile-nav");
 
   if (logoDesktop) {
     logoDesktop.addEventListener("click", handleLogoClick);
@@ -329,6 +341,11 @@ document.addEventListener("DOMContentLoaded", function () {
   if (logoMobile) {
     logoMobile.addEventListener("click", handleLogoClick);
     logoMobile.addEventListener("touchstart", handleLogoClick);
+  }
+
+  if (logoMobileNav) {
+    logoMobileNav.addEventListener("click", handleLogoClick);
+    logoMobileNav.addEventListener("touchstart", handleLogoClick);
   }
 });
 
