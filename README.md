@@ -63,8 +63,8 @@ git clone https://proyectouno1.github.io/teteocan-landing-page/
 ## 📬 Contacto
 
 ¿Tienes dudas o sugerencias? ¡Estamos disponibles!  
-- 📧 Email: [email](proyecto.landingpage@gmail.com)  
-- 💻 GitHub: [usuario](https://github.com/ProyectoUno1)
+- 📧 Email: [proyecto.landingpage@gmail.com](proyecto.landingpage@gmail.com)  
+- 💻 GitHub: [https://github.com/ProyectoUno1](https://github.com/ProyectoUno1)
 
 ---
 
