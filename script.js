@@ -1,12 +1,12 @@
 // Mobile menu functionality
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileNav = document.getElementById('mobileNav');
     const menuIcon = document.getElementById('menuIcon');
-    
-    mobileMenuBtn.addEventListener('click', function() {
+
+    mobileMenuBtn.addEventListener('click', function () {
         mobileNav.classList.toggle('active');
-        
+
         // Change icon
         if (mobileNav.classList.contains('active')) {
             menuIcon.className = 'fas fa-times';
@@ -14,18 +14,18 @@ document.addEventListener('DOMContentLoaded', function() {
             menuIcon.className = 'fas fa-bars';
         }
     });
-    
+
     // Close mobile menu when clicking on links
     const mobileLinks = mobileNav.querySelectorAll('.nav-link');
     mobileLinks.forEach(link => {
-        link.addEventListener('click', function() {
+        link.addEventListener('click', function () {
             mobileNav.classList.remove('active');
             menuIcon.className = 'fas fa-bars';
         });
     });
-    
+
     // Close mobile menu when clicking outside
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
         if (!mobileMenuBtn.contains(event.target) && !mobileNav.contains(event.target)) {
             mobileNav.classList.remove('active');
             menuIcon.className = 'fas fa-bars';
@@ -41,7 +41,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         if (target) {
             const headerHeight = document.querySelector('.header').offsetHeight;
             const targetPosition = target.offsetTop - headerHeight - 20;
-            
+
             window.scrollTo({
                 top: targetPosition,
                 behavior: 'smooth'
@@ -51,24 +51,24 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // WhatsApp button functionality
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const whatsappBtn = document.getElementById('whatsappBtn');
-    
+
     if (whatsappBtn) {
-        whatsappBtn.addEventListener('click', function(e) {
+        whatsappBtn.addEventListener('click', function (e) {
             e.preventDefault(); // Prevenir cualquier comportamiento por defecto
-            
+
             // WhatsApp contact number
             const phoneNumber = '527651033282'; // Número de ejemplo, reemplazar con el número real
             const message = encodeURIComponent('¡Hola Teteocan! Estoy interesado en sus servicios. ¿Podrían brindarme más información?');
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-            
+
             try {
                 // Intentar abrir WhatsApp
                 window.open(whatsappUrl, '_blank');
-                
+
                 // Si no se abre, mostrar mensaje de error
-                setTimeout(function() {
+                setTimeout(function () {
                     // This check is unreliable for security reasons; it's better to just log or inform user
                     // if (!window.open(whatsappUrl, '_blank')) {
                     //     alert('No se pudo abrir WhatsApp. Por favor, verifique que tiene la aplicación instalada.');
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Add scroll effect to header
-window.addEventListener('scroll', function() {
+window.addEventListener('scroll', function () {
     const header = document.querySelector('.header');
     if (window.scrollY > 100) {
         header.style.background = 'rgba(255, 255, 255, 0.98)';
@@ -100,7 +100,7 @@ const observerOptions = {
     rootMargin: '0px 0px -50px 0px'
 };
 
-const observer = new IntersectionObserver(function(entries) {
+const observer = new IntersectionObserver(function (entries) {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.style.opacity = '1';
@@ -110,7 +110,7 @@ const observer = new IntersectionObserver(function(entries) {
 }, observerOptions);
 
 // Observe all cards for animation
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const cards = document.querySelectorAll('.feature-card, .service-card, .pricing-card');
     cards.forEach((card, index) => {
         card.style.opacity = '0';
@@ -122,25 +122,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Button hover effects
 document.querySelectorAll('.btn').forEach(button => {
-    button.addEventListener('mouseenter', function() {
+    button.addEventListener('mouseenter', function () {
         this.style.transform = 'translateY(-2px)';
     });
-    
-    button.addEventListener('mouseleave', function() {
+
+    button.addEventListener('mouseleave', function () {
         this.style.transform = 'translateY(0)';
     });
 });
 
 // Pricing card hover effects
 document.querySelectorAll('.pricing-card').forEach(card => {
-    card.addEventListener('mouseenter', function() {
+    card.addEventListener('mouseenter', function () {
         // Only apply hover effect if not 'pricing-card-popular' and not 'selected'
         if (!this.classList.contains('pricing-card-popular') && !this.classList.contains('selected')) {
             this.style.transform = 'translateY(-5px) scale(1.02)';
         }
     });
-    
-    card.addEventListener('mouseleave', function() {
+
+    card.addEventListener('mouseleave', function () {
         // Only remove hover effect if not 'pricing-card-popular' and not 'selected'
         if (!this.classList.contains('pricing-card-popular') && !this.classList.contains('selected')) {
             this.style.transform = 'translateY(0) scale(1)';
@@ -167,9 +167,9 @@ console.log('Teteocan Landing Page loaded successfully');
 console.log('Page load time:', performance.now(), 'ms');
 
 // Performance monitoring
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     console.log('All resources loaded');
-    
+
     // Track loading performance
     const navigation = performance.getEntriesByType('navigation')[0];
     if (navigation) {
@@ -179,12 +179,12 @@ window.addEventListener('load', function() {
 });
 
 // Error handling
-window.addEventListener('error', function(e) {
+window.addEventListener('error', function (e) {
     console.error('Error occurred:', e.error);
 });
 
 // Keyboard navigation improvements
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     // ESC key closes mobile menu
     if (e.key === 'Escape') {
         const mobileNav = document.getElementById('mobileNav');
@@ -213,11 +213,11 @@ document.addEventListener('keydown', function(e) {
 let touchStartX = 0;
 let touchEndX = 0;
 
-document.addEventListener('touchstart', function(e) {
+document.addEventListener('touchstart', function (e) {
     touchStartX = e.changedTouches[0].screenX;
 });
 
-document.addEventListener('touchend', function(e) {
+document.addEventListener('touchend', function (e) {
     touchEndX = e.changedTouches[0].screenX;
     handleSwipe();
 });
@@ -225,7 +225,7 @@ document.addEventListener('touchend', function(e) {
 function handleSwipe() {
     const mobileNav = document.getElementById('mobileNav');
     const menuIcon = document.getElementById('menuIcon');
-    
+
     if (touchEndX < touchStartX - 50 && mobileNav.classList.contains('active')) {
         // Swipe left to close menu
         mobileNav.classList.remove('active');
@@ -260,7 +260,7 @@ function toggleDarkMode() {
 }
 
 // Check for saved dark mode preference
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     if (localStorage.getItem('darkMode') === 'true') {
         document.body.classList.add('dark-mode');
     }
@@ -272,39 +272,39 @@ const serviceModal = document.getElementById('serviceModal');
 const closeModalBtn = document.getElementById('closeModal'); // Este es para serviceModal
 
 document.querySelectorAll('.feature-item').forEach(item => {
-  item.addEventListener('click', () => {
-    const title = item.getAttribute('data-title');
-    const description = item.getAttribute('data-description');
-    const iconClass = item.querySelector('i')?.className || '';
+    item.addEventListener('click', () => {
+        const title = item.getAttribute('data-title');
+        const description = item.getAttribute('data-description');
+        const iconClass = item.querySelector('i')?.className || '';
 
-    const iconDiv = document.getElementById('modalIcon');
-    iconDiv.innerHTML = `<i class="${iconClass} modal-icon"></i>`;
+        const iconDiv = document.getElementById('modalIcon');
+        iconDiv.innerHTML = `<i class="${iconClass} modal-icon"></i>`;
 
-    document.getElementById('modalTitle').innerText = title;
-    document.getElementById('modalDescription').innerText = description;
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalDescription').innerText = description;
 
-    serviceModal.style.display = 'flex';
-    serviceModal.classList.remove('fade-out');
-    serviceModal.classList.add('fade-in');
-  });
+        serviceModal.style.display = 'flex';
+        serviceModal.classList.remove('fade-out');
+        serviceModal.classList.add('fade-in');
+    });
 });
 
 closeModalBtn?.addEventListener('click', () => {
-  serviceModal.classList.remove('fade-in');
-  serviceModal.classList.add('fade-out');
-  setTimeout(() => {
-    serviceModal.style.display = 'none';
-  }, 300);
-});
-
-serviceModal?.addEventListener('click', (e) => {
-  if (e.target === serviceModal) {
     serviceModal.classList.remove('fade-in');
     serviceModal.classList.add('fade-out');
     setTimeout(() => {
-      serviceModal.style.display = 'none';
+        serviceModal.style.display = 'none';
     }, 300);
-  }
+});
+
+serviceModal?.addEventListener('click', (e) => {
+    if (e.target === serviceModal) {
+        serviceModal.classList.remove('fade-in');
+        serviceModal.classList.add('fade-out');
+        setTimeout(() => {
+            serviceModal.style.display = 'none';
+        }, 300);
+    }
 });
 
 // Evento para que el logo redirija a la sección de inicio
@@ -354,19 +354,32 @@ function openConfirmModal() {
         return;
     }
 
-    if (confirmPackageName && confirmPackagePrice) { // Asegurarse de que los elementos existan
-        confirmPackageName.innerText = selectedPackage.name;
-        // Comprobar si el precio es '0.00' y mostrar 'Gratis'
-        if (parseFloat(selectedPackage.price) === 0.00) {
-            confirmPackagePrice.innerText = 'Gratis';
-        } else {
-            confirmPackagePrice.innerText = `$${parseFloat(selectedPackage.price).toFixed(2)}/mes`;
-        }
+    confirmPackageName.innerText = selectedPackage.name;
+    confirmPackagePrice.innerText = `$${parseFloat(selectedPackage.price).toFixed(2)}/mes`;
+
+
+    // Obtener la tarjeta del paquete seleccionado
+    const selectedCard = document.querySelector(`.pricing-card[data-package-name="${selectedPackage.name}"]`);
+    const existingList = selectedCard?.querySelector('.features-list');
+    const servicesList = document.getElementById('servicesList');
+
+    if (existingList && servicesList) {
+        servicesList.innerHTML = ''; // Limpiar lista anterior
+
+        existingList.querySelectorAll('li').forEach(item => {
+            const clonedItem = item.cloneNode(true);
+            clonedItem.removeAttribute('id');
+            servicesList.appendChild(clonedItem);
+        });
+    } else {
+        console.warn('No se encontró la lista de servicios o el contenedor.');
     }
 
     confirmModal.style.display = 'flex'; // Hacer el modal visible
     confirmModal.classList.remove('fade-out');
     confirmModal.classList.add('fade-in');
+    document.body.classList.add('modal-open');
+    document.body.classList.add('body-no-scroll');
 }
 
 // Función para cerrar el modal de confirmación con animación
@@ -376,7 +389,10 @@ function closeConfirmModal() {
     // Esperar a que termine la animación antes de ocultarlo por completo
     setTimeout(() => {
         confirmModal.style.display = 'none';
-    }, 300); // Coincide con la duración de la transición CSS
+    }, 300);
+    document.body.classList.remove('body-no-scroll');
+    
+    // Coincide con la duración de la transición CSS
 }
 
 // Event Listeners para cerrar el modal de confirmación
@@ -393,25 +409,36 @@ confirmModal?.addEventListener('click', (e) => {
 // Event Listener para el botón "Confirmar Compra" dentro del modal
 btnConfirmPurchase?.addEventListener('click', () => {
     if (selectedPackage) {
+        const priceText = `$${selectedPackage.price.toFixed(2)}`;
         // --- SIMULACIÓN DE COMPRA ---
         // Aquí es donde iría la lógica real para procesar la compra (ej. enviar datos a un servidor)
         // Por ahora, solo mostramos un mensaje de alerta.
-        alert(`¡Felicidades! Has "comprado" el ${selectedPackage.name} por $${parseFloat(selectedPackage.price).toFixed(2)}. ¡Disfruta!`);
+        Swal.fire({
+            title: '¡Compra realizada!',
+            text: `Has comprado ${selectedPackage.name} por $${selectedPackage.price.toFixed(2)}/ mes`,
+            icon: 'success',
+            confirmButtonText: 'Aceptar',
+            customClass: {
+                confirmButton: 'custom-alert-button'
+            },
+            buttonsStyling: false 
+        });
 
         // Después de la "compra" simulada:
-        closeConfirmModal(); // Cierra el modal
-        selectedPackage = null; // Reinicia la variable de selección
+        closeConfirmModal();
+        selectedPackage = null;
 
-        // Remover la clase 'selected' de todas las tarjetas para desmarcar visualmente
         document.querySelectorAll('.pricing-card').forEach(card => {
             card.classList.remove('selected');
         });
     }
 });
 
+
 // --- Lógica para la Selección de Paquetes (usando tus clases de botones existentes) ---
 document.querySelectorAll('.pricing-footer button').forEach(button => {
     button.addEventListener('click', (event) => {
+       
         // 1. Desmarcar cualquier paquete previamente seleccionado
         document.querySelectorAll('.pricing-card').forEach(card => {
             card.classList.remove('selected');

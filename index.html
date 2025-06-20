@@ -9,6 +9,8 @@
         content="Impulsa tu negocio con Teteocan. Soluciones digitales integrales desde planes gratuitos hasta servicios completos de transformación digital">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 </head>
@@ -27,13 +29,15 @@
                         <li><a href="#planes">Paquetes</a></li>
                         <li><a href="#contacto">Contacto</a></li>
                     </ul>
+                </nav>
+                <div class="mobile-header">
                 </nav>      
 
                 <!-- Mobile Header -->
                 <div class="mobile-header">
 
-                </nav>                <div class="mobile-header">
-
+                </nav>                
+                <div class="mobile-header">
                     <button class="mobile-menu-btn" id="mobileMenuBtn">
                         <i class="fas fa-bars" id="menuIcon"></i>
                     </button>
@@ -63,7 +67,7 @@
                     <span class="hero-title-highlight">Teteocan</span>
                 </h1>
                 <p class="hero-description">
-                    Impulsa el crecimiento de tu negocio con nuestras soluciones digitales integrales, 
+                    Impulsa el crecimiento de tu negocio con nuestras soluciones digitales integrales,
                     desde paquetes de inicio gratuitos hasta una transformación digital completa.
                 </p>
 
@@ -110,9 +114,10 @@
                     Desde emprendedores hasta grandes empresas, tenemos el plan perfecto para tu negocio
                 </p>
             </div>
-    
+
             <div class="pricing-grid">
-                <div class="pricing-card" data-package-id="explorador" data-package-name="Paquete Explorador" data-package-price="0.00">
+                <div class="pricing-card" data-package-id="explorador" data-package-name="Paquete Explorador"
+                    data-package-price="0.00">
                     <div class="pricing-header">
                         <div class="header-top">
                             <h3 class="plan-title">PAQUETE EXPLORADOR</h3>
@@ -146,14 +151,15 @@
                                 <span>Demo de sitio web (canva)</span>
                             </li>
                         </ul>
-    
+
                     </div>
                     <div class="pricing-footer">
-                        <button class="btn btn-outline">SELECT EXPLORADOR</button>
+                        <button type="button" class="btn btn-outline">SELECT EXPLORADOR</button>
                     </div>
                 </div>
-    
-                <div class="pricing-card" data-package-id="digital" data-package-name="Paquete Digital" data-package-price="299.99">
+
+                <div class="pricing-card" data-package-id="digital" data-package-name="Paquete Digital"
+                    data-package-price="299.99">
                     <div class="pricing-header">
                         <div class="header-top">
                             <h3 class="plan-title">PAQUETE<span class="line-break">DIGITAL</span></h3>
@@ -194,11 +200,12 @@
                         </ul>
                     </div>
                     <div class="pricing-footer">
-                        <button class="btn btn-primary">SELECT DIGITAL</button>
+                        <button type="button" class="btn btn-primary">SELECT DIGITAL</button>
                     </div>
                 </div>
-    
-                <div class="pricing-card" data-package-id="completo" data-package-name="Paquete Completo" data-package-price="359.99">
+
+                <div class="pricing-card" data-package-id="completo" data-package-name="Paquete Completo"
+                    data-package-price="359.99">
                     <div class="pricing-header">
                         <div class="header-top">
                             <h3 class="plan-title">PAQUETE COMPLETO</h3>
@@ -237,14 +244,15 @@
                                 <span>Panel Drive cliente</span>
                             </li>
                         </ul>
-    
+
                     </div>
                     <div class="pricing-footer">
-                        <button class="btn btn-outline">SELECT COMPLETO</button>
+                        <button type="button" class="btn btn-outline">SELECT COMPLETO</button>
                     </div>
                 </div>
-    
-                <div class="pricing-card pricing-card-popular" data-package-id="aplastante" data-package-name="Paquete Aplastante" data-package-price="399.99">
+
+                <div class="pricing-card pricing-card-popular" data-package-id="aplastante"
+                    data-package-name="Paquete Aplastante" data-package-price="399.99">
                     <div class="pricing-header">
                         <div class="header-top">
                             <div class="plan-badge plan-badge-blue">Más Popular</div>
@@ -284,10 +292,10 @@
                                 <span>Asesoría por WhatsApp</span>
                             </li>
                         </ul>
-    
+
                     </div>
                     <div class="pricing-footer">
-                        <button class="btn btn-outline">SELECT APLASTANTE</button>
+                        <button type="button" class="btn btn-outline">SELECT APLASTANTE</button>
                     </div>
                 </div>
             </div>
@@ -307,9 +315,18 @@
         <div class="modal-content">
             <span class="close-button" id="closeConfirmModal">&times;</span>
             <h2>Confirmar Compra</h2>
-            <p>Estás a punto de adquirir el paquete:</p>
+            <p>Estás a punto de adquirir</p>
             <h3 id="confirmPackageName"></h3>
             <p>Por un precio de: <strong id="confirmPackagePrice"></strong></p>
+
+            <!-- Resumen de servicios incluidos -->
+            <div id="confirmPackageSummary" class="package-summary">
+                <h4>Servicios incluidos:</h4>
+                <ul id="servicesList">
+                    <!-- Aquí insertarás los servicios en JS -->
+                </ul>
+            </div>
+
             <p>¿Deseas continuar con la compra?</p>
             <div class="modal-actions">
                 <button id="btnConfirmPurchase" class="btn-primary">Confirmar Compra</button>
@@ -340,7 +357,7 @@
                             <td>2</td>
                             <td>3</td>
                             <td>2 Avanzados</td>
-                       </tr>
+                        </tr>
                         <tr>
                             <td>Análisis automático</td>
                             <td>1/semanal</td>
@@ -471,14 +488,14 @@
                         <div class="footer-column">
                             <h4 class="footer-title">Contacto</h4>
                             <ul class="footer-list">
-                                <li><a href="#" class="footer-link">   
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span>Cuautitlán Izcalli, Estado de México, México</span>
-                                </a></li>
-                                <li><a href="#" class="footer-link">   
-                                    <i class="fas fa-envelope"></i>
-                                    <span>contacto@teteocan.com</span>
-                                </a></li>
+                                <li><a href="#" class="footer-link">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>Cuautitlán Izcalli, Estado de México, México</span>
+                                    </a></li>
+                                <li><a href="#" class="footer-link">
+                                        <i class="fas fa-envelope"></i>
+                                        <span>contacto@teteocan.com</span>
+                                    </a></li>
                             </ul>
                         </div>
                     </div>
@@ -495,9 +512,11 @@
                     <div class="footer-copyright">
                         <p>&copy; 2025 Teteocan Technologies. Todos los derechos reservados.</p>
                         <ul class="footer-list">
-                            <li><a href="https://teteocan.com/politica-privacidad/" class="footer-link">Política de Privacidad</a></li>
-                            <li><a href="https://teteocan.com/tyc-website/" class="footer-link">Términos y Condiciones</a></li>
-                        </ul> 
+                            <li><a href="https://teteocan.com/politica-privacidad/" class="footer-link">Política de
+                                    Privacidad</a></li>
+                            <li><a href="https://teteocan.com/tyc-website/" class="footer-link">Términos y
+                                    Condiciones</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
