@@ -114,8 +114,6 @@ body {
     justify-content: center;
 }
 
-}
-
 .mobile-logo-area {
     flex: 1;
     display: flex;
@@ -210,9 +208,6 @@ body {
     text-align: center;
     width: 100%;
     max-width: 200px;
-}
-
-
 }
 
 .mobile-nav-links .nav-link {
@@ -1344,6 +1339,12 @@ body {
     }    /* Ajustar el botón del menú */
     body.mobile-menu-open .mobile-menu-btn {
         transform: translateX(calc(50vw + 1rem));
+    }
+    
+    /* Ocultar el logo móvil cuando el menú está abierto */
+    body.mobile-menu-open .mobile-logo-icon {
+        opacity: 0;
+        visibility: hidden;
     }
     
     /* Logo del header móvil más pequeño */

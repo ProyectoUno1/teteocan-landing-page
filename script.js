@@ -18,23 +18,30 @@ document.addEventListener('DOMContentLoaded', function () {
             document.body.style.overflow = ''; // Restore body scroll
             document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
         }
-    });
-    
-    // Close mobile menu when clicking on links
+    });    // Close mobile menu when clicking on links
     const mobileLinks = mobileNav.querySelectorAll('.nav-link');
     mobileLinks.forEach(link => {
         link.addEventListener('click', function() {
             mobileNav.classList.remove('active');
             menuIcon.className = 'fas fa-bars';
+            document.body.style.overflow = ''; // Restore body scroll
+            document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
         });
-    });
-    
-    // Close mobile menu when clicking outside
+    });    // Close mobile menu when clicking outside
     document.addEventListener('click', function(event) {
         if (!mobileMenuBtn.contains(event.target) && !mobileNav.contains(event.target)) {
             mobileNav.classList.remove('active');
             menuIcon.className = 'fas fa-bars';
+            document.body.style.overflow = ''; // Restore body scroll
+            document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
         }
+    }); // Close mobile menu when clicking on logo
+    const logoMobileNav = document.getElementById('logo-mobile-nav');
+    logoMobileNav.addEventListener('click', function() {
+        mobileNav.classList.remove('active');
+        menuIcon.className = 'fas fa-bars';
+        document.body.style.overflow = ''; // Restore body scroll
+        document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
     });
 });
 
