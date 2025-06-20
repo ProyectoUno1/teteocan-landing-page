@@ -14,9 +14,13 @@ Developer: Jozet (Seth) Ramirez
 Site: imbestseth@gmail.com
 Twitter: @ImJozzcr
 
+
 Developer: Alan Rodriguez 
 Site: alanjrr.isc@gmail.com
 GitHub: AlanRanchs
+
+Developer: Margarita Moraga
+
 
 /* THANKS */
 
