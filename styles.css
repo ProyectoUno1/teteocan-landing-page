@@ -103,15 +103,15 @@ body {
     cursor: pointer;
     color: #1f2937;
     padding: 0.5rem;
-
+    transition: transform 0.3s ease-in-out;
+    z-index: 1001;
+    position: relative;
 }
 
 .mobile-logo-area {
     flex: 1;
     display: flex;
     justify-content: center;
-}
-
 }
 
 .mobile-logo-area {
@@ -125,26 +125,53 @@ body {
     max-height: 60px;
     width: auto;
     height: auto;
+    cursor: pointer;
 }
 
 .mobile-spacer {
     width: 2.5rem; /* Same width as menu button to center logo */
 }
 
+/* Mobile Menu Overlay */
+.mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    z-index: 999;
+}
+
+.mobile-menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
 /* Mobile Navigation */
 .nav-mobile {
-    display: none;
-    border-top: 1px solid #e5e7eb;
+    position: fixed;
+    top: 0;
+    left: -75%;
+    width: 75%;
+    height: 100vh;
     background: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease-in-out;
+    z-index: 1000;
+    overflow-y: auto;
 }
 
 .nav-mobile-content {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    padding: 1rem 1rem;
+    padding: 2rem 1rem;
     align-items: center;
+    height: 100%;
 }
 
 .mobile-nav-logo-area {
@@ -158,6 +185,7 @@ body {
     max-height: 80px;
     width: auto;
     height: auto;
+    cursor: pointer;
 }
 
 .mobile-nav-links {
@@ -180,9 +208,6 @@ body {
     text-align: center;
     width: 100%;
     max-width: 200px;
-}
-
-
 }
 
 .mobile-nav-links .nav-link {
@@ -1024,31 +1049,84 @@ body {
     .features-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 2rem;
-    }    /* Hover effects handled by main media queries */
+    }
+    
+    /* Ajustes para menú móvil en tablets */
+    .nav-mobile {
+        width: 50%;
+        left: -50%;
+    }
+    
+    .mobile-nav-logo {
+        max-width: 120px;
+        max-height: 60px;
+    }
+    
+    .mobile-nav-links .nav-link {
+        font-size: 1.1rem;
+        padding: 0.6rem 1.2rem;
+        max-width: 180px;
+    }
+    
+    .nav-mobile-content {
+        padding: 1.5rem 1rem;
+        gap: 1.2rem;
+    }
+    
+    /* Hover effects handled by main media queries */
     .pricing-header {
         padding: 0;
     }
 }
 
-/* Tablets en orientación landscape - específico para iPad Air y similares */
-@media (max-width: 1180px) and (min-width: 820px) and (orientation: landscape) {
-    .pricing-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.8rem;
+/* iPad Mini y tablets similares (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    /* Mostrar menú móvil en lugar del desktop */
+    .nav-desktop {
+        display: none;
+    }
+
+    .mobile-header {
+        display: flex;
     }
     
-    .features-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.8rem;
+    .nav-mobile.active {
+        left: 0;
     }
     
-    .container {
-        padding: 0 2rem;
+    /* Menú móvil específico para iPad Mini */
+    .nav-mobile {
+        width: 50%;
+        left: -50%;
     }
-    .pricing-header {
-        padding: 0;
+    
+    .mobile-nav-logo {
+        max-width: 100px;
+        max-height: 50px;
+    }
+    
+    .mobile-nav-links .nav-link {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        max-width: 150px;
+    }
+    
+    .nav-mobile-content {
+        padding: 1.2rem 0.8rem;
+        gap: 0.8rem;
+    }    /* Ajustar el botón del menú */
+    body.mobile-menu-open .mobile-menu-btn {
+        transform: translateX(calc(50vw + 1rem));
+    }
+    
+    /* Logo del header móvil más pequeño */
+    .mobile-logo-icon {
+        max-width: 100px;
+        max-height: 50px;
     }
 }
+
+
 
 /* Tablets en orientación portrait - específico para iPad Air y similares */
 @media (max-width: 820px) and (min-width: 768px) and (orientation: portrait) {
@@ -1061,6 +1139,24 @@ body {
         grid-template-columns: repeat(2, 1fr);
         gap: 1.5rem;
     }
+    
+    /* Menú móvil optimizado para portrait */
+    .nav-mobile {
+        width: 55%;
+        left: -55%;
+    }
+    
+    .mobile-nav-links .nav-link {
+        font-size: 1.1rem;
+        padding: 0.6rem 1.2rem;
+        max-width: 170px;
+    }
+    
+    .nav-mobile-content {
+        padding: 1.4rem 1rem;
+        gap: 1.1rem;
+    }
+    
     .pricing-header {
         padding: 0;
     }
@@ -1075,9 +1171,32 @@ body {
     .mobile-header {
         display: flex;
     }
-
+    
     .nav-mobile.active {
-        display: block;
+        left: 0;
+    }    /* Ajustar el botón del menú según el ancho del menú */
+    body.mobile-menu-open .mobile-menu-btn {
+        transform: translateX(calc(75vw + 1rem));
+    }
+    
+    /* Menú móvil para tablets medianas */
+    .nav-mobile {
+        width: 60%;
+        left: -60%;
+    }
+    
+    .mobile-nav-links .nav-link {
+        font-size: 1.1rem;
+        padding: 0.6rem 1.2rem;
+        max-width: 180px;
+    }
+    
+    .nav-mobile-content {
+        padding: 1.5rem 1rem;
+        gap: 1.2rem;
+    }    /* Ajustar el botón del menú para tablets medianas */
+    body.mobile-menu-open .mobile-menu-btn {
+        transform: translateX(calc(55vw + 1rem));
     }
 
     .hero-title {
@@ -1162,7 +1281,29 @@ body {
         gap: 1.5rem;
         justify-items: center;
         align-items: stretch;
-    }    /* Hover effects handled by main media queries */
+    }
+    
+    /* Menú móvil para pantallas muy pequeñas */
+    .nav-mobile {
+        width: 85%;
+        left: -85%;
+    }
+    
+    .mobile-nav-links .nav-link {
+        font-size: 1.1rem;
+        padding: 0.7rem 1.3rem;
+        max-width: 200px;
+    }
+    
+    .nav-mobile-content {
+        padding: 1.8rem 1.2rem;
+        gap: 1.3rem;
+    }    /* Ajustar el botón del menú para móviles pequeños */
+    body.mobile-menu-open .mobile-menu-btn {
+        transform: translateX(calc(77vw + 1rem));
+    }
+    
+    /* Hover effects handled by main media queries */
 
     .contact-title {
         font-size: 1.75rem;
