@@ -111,7 +111,7 @@ body {
     justify-content: center;
 }
 
-}
+
 
 .mobile-logo-area {
     flex: 1;
@@ -182,7 +182,7 @@ body {
 }
 
 
-}
+
 
 .mobile-nav-links .nav-link {
     text-decoration: none;
@@ -848,6 +848,228 @@ body {
 
 
 
+#confirmModal {
+  display: none; /* oculto por defecto */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(31, 41, 55, 0.75); /* fondo semitransparente oscuro */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* Contenido del modal */
+#confirmModal .modal-content {
+  background: white;
+  padding: 2.5rem 3rem;
+  border-radius: 12px;
+  max-width: 700px;     /* Más ancho que antes */
+  width: 90%;           /* Que ocupe 90% del ancho en pantallas chicas */
+  max-height: 80vh;     /* Para no superar el alto visible */
+  overflow-y: auto;     /* Scroll interno si el contenido es muy largo */
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  text-align: left; 
+}
+
+/* Botón cerrar */
+.close-button {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #6b7280;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.close-button:hover {
+  color: #2563eb;
+}
+
+/* Títulos principales */
+#confirmModal h2 {
+  font-size: 2.3rem;
+  margin: 0;
+  font-weight: 700;
+  text-align: center;
+  color: #03475D;
+}
+
+#confirmModal h3 {
+  font-size: 2rem;
+  margin: 0;
+  font-weight: 600;
+  text-align: center;
+  color:  #00ADD5;
+}
+
+/* Texto explicativo */
+#confirmModal p {
+  font-size: 1.2rem;
+  color:  #03475D;
+  text-align: center;
+  margin: 0;
+  line-height: 1;
+}
+
+/* Resumen servicios incluidos */
+.package-summary {
+  text-align: left;
+  margin-top: 1.5rem;
+  max-height: 280px;
+  overflow-y: auto;
+  border: 1px solid #e0e7ff;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  background-color: #f9fafb;
+}
+
+.package-summary h4 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  color: #03475D;
+  border-bottom: 2px solid #2563eb;
+  padding-bottom: 0.5rem;
+}
+
+.package-summary ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.package-summary ul li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1rem;
+  color: #374151;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #e0e7ff;
+}
+
+.package-summary ul li:last-child {
+  border-bottom: none;
+}
+
+.package-summary ul li i {
+  color: #2563eb;
+  font-size: 1.5rem;
+  min-width: 28px;
+  text-align: center;
+}
+
+
+/* Acciones: botones */
+.modal-actions {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary, .btn-secondary {
+  font-size: 1.25rem;
+  padding: 0.75rem 2.5rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  min-width: 160px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-weight: 600;
+}
+
+.btn-primary {
+   background: linear-gradient(135deg, #0099ff, #33ccff);
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #1e40af;
+}
+
+.btn-secondary {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.btn-secondary:hover {
+  background-color: #d1d5db;
+}
+.body-no-scroll {
+  overflow: hidden;
+  height: 100vh;
+  position: fixed;
+  width: 100%;
+}
+
+.custom-alert-button {
+  background: linear-gradient(135deg, #0099ff, #33ccff);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 153, 255, 0.3);
+  transition: background 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.custom-alert-button:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #008ae6, #2eb8ff);
+}
+
+
+/* Responsive para móviles */
+@media (max-width: 480px) {
+  #confirmModal .modal-content {
+    padding: 2rem 1.5rem;
+    max-width: 90%;
+  }
+
+  #confirmModal h2 {
+    font-size: 1.75rem;
+  }
+
+  #confirmModal h3 {
+    font-size: 1.25rem;
+  }
+
+  .package-summary {
+    max-height: 200px;
+    padding: 1rem;
+  }
+
+  .package-summary h4 {
+    font-size: 1.25rem;
+  }
+
+  .package-summary ul li {
+    font-size: 1rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+
 /* Responsive Design */
 
 /* Efectos hover solo para dispositivos que los soportan */
@@ -1171,7 +1393,8 @@ body {
         gap: 1.5rem;
         justify-items: center;
         align-items: stretch;
-    }    /* Hover effects handled by main media queries */
+    }    
+    /* Hover effects handled by main media queries */
 
     .contact-title {
         font-size: 1.75rem;
