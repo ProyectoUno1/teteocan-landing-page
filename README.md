@@ -40,7 +40,7 @@ Bienvenido al repositorio de la **Landing Page interna de Teteocan Technologies*
 - 🧠 **JavaScript** – Interacciones básicas (modales y botones simulados).  
 - 🎯 **FontAwesome** – Íconos intuitivos para cada servicio.  
 - 🚀 **GitHub Pages** – Despliegue y visualización en línea.  
-- 
+
 
 ---
 
