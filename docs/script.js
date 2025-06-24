@@ -469,27 +469,86 @@ function setPackageBasePrice(price) {
     confirmPackagePrice.textContent = `$${basePrice.toLocaleString('es-MX')} MXN`;
 }
 
-// Confirm purchase
-btnConfirmPurchase?.addEventListener('click', () => {
+btnConfirmPurchase?.addEventListener('click', async () => {
     if (!selectedPackage) return;
 
-    Swal.fire({
-        title: '¡Compra realizada!',
-        text: `Has comprado ${selectedPackage.name} por $${finalPrice.toFixed(2)} MXN`,
-        icon: 'success',
-        confirmButtonText: 'Aceptar',
-        customClass: {
-            confirmButton: 'custom-alert-button'
-        },
-        buttonsStyling: false
+    // Pide el correo del cliente antes de continuar
+    const { value: clienteEmail } = await Swal.fire({
+        title: 'Ingresa tu correo electrónico',
+        input: 'email',
+        inputLabel: 'Correo',
+        inputPlaceholder: 'tucorreo@ejemplo.com',
+        showCancelButton: true,
+        confirmButtonText: 'Enviar',
+        cancelButtonText: 'Cancelar',
+        inputValidator: (value) => {
+            if (!value) return 'Debes ingresar un correo válido';
+        }
     });
 
-    closeConfirmModal();
+    if (!clienteEmail) return;
 
-    selectedPackage = null;
-    document.querySelectorAll('.pricing-card').forEach(card => {
-        card.classList.remove('selected');
+    // 1. Obtén los servicios base
+    const servicios = [];
+    document.querySelectorAll('#servicesList li').forEach(li => {
+        servicios.push(li.innerText.trim());
     });
+
+    // 2. Obtén los servicios extra seleccionados y suma su precio
+    let extrasSeleccionados = [];
+    let extrasTotal = 0;
+    document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(checkbox => {
+        const label = checkbox.parentElement.textContent.trim();
+        extrasSeleccionados.push(label);
+        extrasTotal += Number(checkbox.dataset.price || 0);
+    });
+
+    // 3. Suma el precio base + extras
+    const montoBase = Number(selectedPackage.price || 0);
+    const montoFinal = montoBase + extrasTotal;
+
+    // 4. Une todos los servicios para el resumen
+    const resumenServicios = [...servicios, ...extrasSeleccionados].join(', ');
+
+    // 5. Datos para el backend
+    const orderData = {
+        nombrePaquete: selectedPackage.name,
+        resumenServicios,
+        monto: montoFinal,
+        fecha: new Date().toLocaleDateString('es-MX'),
+        clienteEmail,
+        mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos."
+    };
+
+    try {
+        await fetch('http://localhost:3000/api/orden-pago', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        });
+
+        await fetch('http://localhost:3000/api/confirmar-pago', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        });
+
+        Swal.fire({
+            title: '¡Compra realizada!',
+            text: `Has comprado ${selectedPackage.name} por $${montoFinal.toFixed(2)} MXN. Revisa tu correo.`,
+            icon: 'success',
+            confirmButtonText: 'Aceptar',
+            customClass: { confirmButton: 'custom-alert-button' },
+            buttonsStyling: false
+        });
+
+        closeConfirmModal();
+        selectedPackage = null;
+        document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
+    } catch (error) {
+        Swal.fire('Error', 'No se pudo completar la compra. Intenta de nuevo.', 'error');
+        console.error(error);
+    }
 });
 
 // Select package and open modal

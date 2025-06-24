@@ -1,33 +1,135 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Confirmación de Compra</title>
+    <meta charset="UTF-8">
+    <title>Confirmación de Compra - Tlatec</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .details { margin-top: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 5px; }
-        .details p { margin: 5px 0; }
-        .message { margin-top: 30px; padding: 15px; background-color: #f0f8ff; border-left: 5px solid #007bff; }
-        .footer { text-align: center; margin-top: 50px; font-size: 0.8em; color: #555; }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: #f6f8fa;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background: #fff;
+            max-width: 650px;
+            margin: 40px auto;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(55, 115, 187, 0.10);
+            padding: 36px 48px;
+        }
+        .logo {
+            width: 120px;
+            margin-bottom: 18px;
+            display: block;
+        }
+        .badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #3773B8 60%, #03C2BB 100%);
+            color: #fff;
+            border-radius: 8px;
+            padding: 4px 18px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+            letter-spacing: 1px;
+        }
+        h1 {
+            color: #03C2BB;
+            font-size: 2.1rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .subtitle {
+            color: #3773B8;
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+        .agradecimiento {
+            background: #F5F9FF;
+            border-left: 5px solid #03C2BB;
+            padding: 18px 22px;
+            margin-bottom: 28px;
+            font-size: 1.08rem;
+            color: #222;
+        }
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+        .details-table td {
+            padding: 10px 0;
+            font-size: 1rem;
+        }
+        .details-table td:first-child {
+            font-weight: 600;
+            color: #3773B8;
+            width: 180px;
+        }
+        .highlight {
+            color: #03C2BB;
+            font-weight: 700;
+        }
+        .footer {
+            margin-top: 32px;
+            font-size: 0.97rem;
+            color: #5F8FC5;
+            border-top: 1px solid #A2A2A2;
+            padding-top: 16px;
+            text-align: center;
+        }
+        .contacto {
+            margin-top: 18px;
+            font-size: 1rem;
+            color: #36CFC9;
+        }
+        .web-link {
+            color: #36CFC9;
+            text-decoration: none;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>¡Gracias por tu compra!</h1>
-        <p>Tu paquete ha sido confirmado.</p>
-    </div>
-    <div class="details">
-        <p><strong>Nombre del Paquete:</strong> {{nombrePaquete}}</p>
-        <p><strong>Resumen de Servicios:</strong> {{resumenServicios}}</p>
-        <p><strong>Monto Total:</strong> ${{monto}}</p>
-        <p><strong>Fecha de Compra:</strong> {{fecha}}</p>
-    </div>
-    <div class="message">
-        <p><strong>Mensaje importante:</strong></p>
-        <p>{{mensajeContinuar}}</p>
-    </div>
-    <div class="footer">
-        <p>Este es un correo automático. Si tienes alguna pregunta, por favor contacta a nuestro equipo de soporte.</p>
+    <div class="container">
+        <img src="" alt="Tlatec Logo" class="logo">
+        <div class="badge">CONFIRMACIÓN DE COMPRA</div>
+        <h1>¡Gracias por tu confianza!</h1>
+        <div class="subtitle">Tu compra ha sido registrada exitosamente</div>
+        <div class="agradecimiento">
+            Hemos recibido tu solicitud y uno de nuestros especialistas se pondrá en contacto contigo pronto para continuar con el proceso.<br>
+            <b>¡Bienvenido a la transformación digital con TLATEC!</b>
+        </div>
+        <table class="details-table">
+            <tr>
+                <td>Paquete contratado:</td>
+                <td class="highlight">{{nombrePaquete}}</td>
+            </tr>
+            <tr>
+                <td>Servicios incluidos:</td>
+                <td>{{resumenServicios}}</td>
+            </tr>
+            <tr>
+                <td>Monto pagado:</td>
+                <td class="highlight">${{monto}}</td>
+            </tr>
+            <tr>
+                <td>Fecha:</td>
+                <td>{{fecha}}</td>
+            </tr>
+        </table>
+        <div class="contacto">
+            ¿Dudas? Escríbenos a <a href="mailto:contacto@teoteocan.com" class="web-link">contacto@tlatec.com</a>
+        </div>
+        <div class="footer">
+            TLATEC · Soluciones Digitales Integrales<br>
+            <a href="https://tlatec.teteocan.com/" class="web-link">tlatec.com</a>
+        </div>
     </div>
 </body>
 </html>
