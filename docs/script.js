@@ -521,13 +521,13 @@ btnConfirmPurchase?.addEventListener('click', async () => {
     };
 
     try {
-        await fetch('https://tlatec-backend.onrender.com/api/orden-pago', {
+        await fetch('https://tlatec-backend.onrender.com/api/orden', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(orderData)
         });
 
-        await fetch('https://tlatec-backend.onrender.com/api/confirmar-pago', {
+        await fetch('https://tlatec-backend.onrender.com/api/confirmar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(orderData)

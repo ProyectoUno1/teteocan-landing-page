@@ -17,7 +17,7 @@ const emailController = require('./pdf/controllers/emailController');
 
 // --- Rutas de Prueba ---
 // Ruta para simular la generación de una orden de pago (envío a la empresa)
-app.post('/api/orden-pago', async (req, res) => {
+app.post('/api/orden', async (req, res) => {
     try {
         const { nombrePaquete, resumenServicios, monto, fecha } = req.body;
         await emailController.sendOrderConfirmationToCompany(req, res); // Llama a la función del controlador
@@ -28,7 +28,7 @@ app.post('/api/orden-pago', async (req, res) => {
 });
 
 // Ruta para simular la confirmación de pago (envío al cliente)
-app.post('/api/confirmar-pago', async (req, res) => {
+app.post('/api/confirmar', async (req, res) => {
     try {
         const { nombrePaquete, resumenServicios, monto, fecha, clienteEmail } = req.body;
         req.body.mensajeContinuar = "La empresa se pondrá en contacto con usted para continuar con los siguientes pasos."; // Mensaje fijo para el cliente
