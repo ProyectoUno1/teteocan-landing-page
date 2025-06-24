@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Orden de Pago</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .details { margin-top: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 5px; }
+        .details p { margin: 5px 0; }
+        .footer { text-align: center; margin-top: 50px; font-size: 0.8em; color: #555; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Detalles de la Nueva Orden de Pago</h1>
+    </div>
+    <div class="details">
+        <p><strong>Nombre del Paquete:</strong> {{nombrePaquete}}</p>
+        <p><strong>Resumen de Servicios:</strong> {{resumenServicios}}</p>
+        <p><strong>Monto:</strong> ${{monto}}</p>
+        <p><strong>Fecha de Orden:</strong> {{fecha}}</p>
+    </div>
+    <div class="footer">
+        <p>Este es un correo automático, por favor no responder a esta dirección.</p>
+    </div>
+</body>
+</html>
