@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirmación de Compra</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .details { margin-top: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 5px; }
+        .details p { margin: 5px 0; }
+        .message { margin-top: 30px; padding: 15px; background-color: #f0f8ff; border-left: 5px solid #007bff; }
+        .footer { text-align: center; margin-top: 50px; font-size: 0.8em; color: #555; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>¡Gracias por tu compra!</h1>
+        <p>Tu paquete ha sido confirmado.</p>
+    </div>
+    <div class="details">
+        <p><strong>Nombre del Paquete:</strong> {{nombrePaquete}}</p>
+        <p><strong>Resumen de Servicios:</strong> {{resumenServicios}}</p>
+        <p><strong>Monto Total:</strong> ${{monto}}</p>
+        <p><strong>Fecha de Compra:</strong> {{fecha}}</p>
+    </div>
+    <div class="message">
+        <p><strong>Mensaje importante:</strong></p>
+        <p>{{mensajeContinuar}}</p>
+    </div>
+    <div class="footer">
+        <p>Este es un correo automático. Si tienes alguna pregunta, por favor contacta a nuestro equipo de soporte.</p>
+    </div>
+</body>
+</html>
