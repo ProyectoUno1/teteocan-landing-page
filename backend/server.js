@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const dotenv = require('dotenv'); // Importa dotenv
 const path = require('path');
@@ -8,6 +9,7 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(express.json()); // Para parsear JSON en las peticiones
 
 // Importa el controlador de email
