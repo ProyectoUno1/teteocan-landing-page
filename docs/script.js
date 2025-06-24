@@ -4,42 +4,42 @@ document.addEventListener('DOMContentLoaded', function () {
     const mobileNav = document.getElementById('mobileNav');
     const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
     const menuIcon = document.getElementById('menuIcon');
-    
-    mobileMenuBtn.addEventListener('click', function() {
+
+    mobileMenuBtn.addEventListener('click', function () {
         mobileNav.classList.toggle('active');
         if (mobileNav.classList.contains('active')) {
             menuIcon.className = 'fas fa-times';
-            document.body.style.overflow = 'hidden'; 
-            document.body.classList.add('mobile-menu-open'); 
+            document.body.style.overflow = 'hidden';
+            document.body.classList.add('mobile-menu-open');
         } else {
             menuIcon.className = 'fas fa-bars';
-            document.body.style.overflow = ''; 
-            document.body.classList.remove('mobile-menu-open'); 
+            document.body.style.overflow = '';
+            document.body.classList.remove('mobile-menu-open');
         }
-    });   
+    });
     const mobileLinks = mobileNav.querySelectorAll('.nav-link');
     mobileLinks.forEach(link => {
-        link.addEventListener('click', function() {
+        link.addEventListener('click', function () {
             mobileNav.classList.remove('active');
             menuIcon.className = 'fas fa-bars';
             document.body.style.overflow = '';
-            document.body.classList.remove('mobile-menu-open'); 
+            document.body.classList.remove('mobile-menu-open');
         });
-    });    
-    document.addEventListener('click', function(event) {
+    });
+    document.addEventListener('click', function (event) {
         if (!mobileMenuBtn.contains(event.target) && !mobileNav.contains(event.target)) {
             mobileNav.classList.remove('active');
             menuIcon.className = 'fas fa-bars';
-            document.body.style.overflow = ''; 
-            document.body.classList.remove('mobile-menu-open'); 
+            document.body.style.overflow = '';
+            document.body.classList.remove('mobile-menu-open');
         }
-    }); 
+    });
     const logoMobileNav = document.getElementById('logo-mobile-nav');
-    logoMobileNav.addEventListener('click', function() {
+    logoMobileNav.addEventListener('click', function () {
         mobileNav.classList.remove('active');
         menuIcon.className = 'fas fa-bars';
-        document.body.style.overflow = ''; 
-        document.body.classList.remove('mobile-menu-open'); 
+        document.body.style.overflow = '';
+        document.body.classList.remove('mobile-menu-open');
     });
 });
 
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (whatsappBtn) {
         whatsappBtn.addEventListener('click', function (e) {
-            e.preventDefault(); 
+            e.preventDefault();
 
             const phoneNumber = '527651033282';
             const message = encodeURIComponent('¡Hola Teteocan! Estoy interesado en sus servicios. ¿Podrían brindarme más información?');
@@ -183,7 +183,7 @@ window.addEventListener('error', function (e) {
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
         const mobileNav = document.getElementById('mobileNav');
-        const menuIcon = document.getElementById('menuIcon');        if (mobileNav.classList.contains('active')) {
+        const menuIcon = document.getElementById('menuIcon'); if (mobileNav.classList.contains('active')) {
             mobileNav.classList.remove('active');
             menuIcon.className = 'fas fa-bars';
             document.body.classList.remove('mobile-menu-open'); // Remove class for button animation
@@ -218,11 +218,11 @@ document.addEventListener('touchend', function (e) {
 function handleSwipe() {
     const mobileNav = document.getElementById('mobileNav');
     const menuIcon = document.getElementById('menuIcon');
-    
+
     if (touchEndX < touchStartX - 50 && mobileNav.classList.contains('active')) {
         mobileNav.classList.remove('active');
         menuIcon.className = 'fas fa-bars';
-        document.body.classList.remove('mobile-menu-open'); 
+        document.body.classList.remove('mobile-menu-open');
     }
 }
 
@@ -300,47 +300,25 @@ serviceModal?.addEventListener('click', (e) => {
     }
 });
 
-//Mobile menu
-document.addEventListener("DOMContentLoaded", function () {
-  function handleLogoClick(e) {
-    e.preventDefault();
-    if (window.scrollY === 0) {
-      location.reload();
-    } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }  const logoDesktop = document.getElementById("logo-desktop");
-  const logoMobile = document.getElementById("logo-mobile");
-  const logoMobileNav = document.getElementById("logo-mobile-nav");
-
-  if (logoDesktop) {
-    logoDesktop.addEventListener("click", handleLogoClick);
-    logoDesktop.addEventListener("touchstart", handleLogoClick);
-  }
-
-  if (logoMobile) {
-    logoMobile.addEventListener("click", handleLogoClick);
-    logoMobile.addEventListener("touchstart", handleLogoClick);
-  }
-
-  if (logoMobileNav) {
-    logoMobileNav.addEventListener("click", handleLogoClick);
-    logoMobileNav.addEventListener("touchstart", handleLogoClick);
-  }
-});
 
 
-
-//Modal packages
+// Services and purchase confirmation modal
 
 let selectedPackage = null;
 const confirmModal = document.getElementById('confirmModal');
 const confirmPackageName = document.getElementById('confirmPackageName');
 const confirmPackagePrice = document.getElementById('confirmPackagePrice');
-const closeConfirmModalBtn = document.getElementById('closeConfirmModal'); 
+const closeConfirmModalBtn = document.getElementById('closeConfirmModal');
 const btnConfirmPurchase = document.getElementById('btnConfirmPurchase');
 const btnCancelPurchase = document.getElementById('btnCancelPurchase');
+const toggleExtrasBtn = document.getElementById('toggleExtrasBtn');
+const extraServicesForm = document.getElementById('extraServicesForm');
+const servicesList = document.getElementById('servicesList');
 
+let basePrice = 0;
+let finalPrice = 0; // Extra prices
+
+// Function open modal
 function openConfirmModal() {
     if (!selectedPackage) {
         alert('Por favor, selecciona un paquete primero para proceder con la compra.');
@@ -348,14 +326,20 @@ function openConfirmModal() {
     }
 
     confirmPackageName.innerText = selectedPackage.name;
-    confirmPackagePrice.innerText = `$${parseFloat(selectedPackage.price).toFixed(2)}/mes`;
+
+    setPackageBasePrice(selectedPackage.price);
+
+    updateExtraPricesInForm();
+
+    extraServicesForm.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    extraServicesForm.style.display = 'none';
+    toggleExtrasBtn.textContent = '➕ Añadir servicios extra';
 
     const selectedCard = document.querySelector(`.pricing-card[data-package-name="${selectedPackage.name}"]`);
     const existingList = selectedCard?.querySelector('.features-list');
-    const servicesList = document.getElementById('servicesList');
 
     if (existingList && servicesList) {
-        servicesList.innerHTML = ''; 
+        servicesList.innerHTML = '';
 
         existingList.querySelectorAll('li').forEach(item => {
             const clonedItem = item.cloneNode(true);
@@ -366,12 +350,13 @@ function openConfirmModal() {
         console.warn('No se encontró la lista de servicios o el contenedor.');
     }
 
-    confirmModal.style.display = 'flex'; 
+    confirmModal.style.display = 'flex';
     confirmModal.classList.remove('fade-out');
     confirmModal.classList.add('fade-in');
     document.body.classList.add('modal-open');
     document.body.classList.add('body-no-scroll');
 }
+
 
 function closeConfirmModal() {
     confirmModal.classList.remove('fade-in');
@@ -380,7 +365,6 @@ function closeConfirmModal() {
         confirmModal.style.display = 'none';
     }, 300);
     document.body.classList.remove('body-no-scroll');
-
 }
 
 closeConfirmModalBtn?.addEventListener('click', closeConfirmModal);
@@ -392,35 +376,123 @@ confirmModal?.addEventListener('click', (e) => {
     }
 });
 
-// Event Listener "Confirmar Compra" 
-btnConfirmPurchase?.addEventListener('click', () => {
-    if (selectedPackage) {
-        const priceText = `$${selectedPackage.price.toFixed(2)}`;
-        // --- SIMULACIÓN DE COMPRA ---
-        // Aquí es donde iría la lógica real para procesar la compra (ej. enviar datos a un servidor)
-        // Por ahora, solo mostramos un mensaje de alerta.
-        Swal.fire({
-            title: '¡Compra realizada!',
-            text: `Has comprado ${selectedPackage.name} por $${selectedPackage.price.toFixed(2)}/ mes`,
-            icon: 'success',
-            confirmButtonText: 'Aceptar',
-            customClass: {
-                confirmButton: 'custom-alert-button'
-            },
-            buttonsStyling: false 
-        });
 
-        closeConfirmModal();
-        selectedPackage = null;
-
-        document.querySelectorAll('.pricing-card').forEach(card => {
-            card.classList.remove('selected');
-        });
+toggleExtrasBtn.addEventListener('click', function () {
+    const isVisible = extraServicesForm.style.display === 'block';
+    if (isVisible) {
+        extraServicesForm.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        updatePriceWithExtras(); 
     }
+    extraServicesForm.style.display = isVisible ? 'none' : 'block';
+    toggleExtrasBtn.textContent = isVisible ? '➕ Añadir servicios extra' : '➖ Ocultar servicios extra';
 });
 
+//Diferents prices in package 
+function updateExtraPricesInForm() {
+    if (!selectedPackage) return;
+
+    const isAplastante = selectedPackage.name.toLowerCase().includes('aplastante');
+    const labels = extraServicesForm.querySelectorAll('label');
+
+    const freeExtrasInAplastante = ['negocios', 'tpv', 'logotipo'];
+
+    labels.forEach(label => {
+        const priceSpan = label.querySelector('.extra-price');
+        if (!priceSpan) return;
+
+        const checkbox = label.querySelector('input[type="checkbox"]');
+        const originalPrice = parseFloat(checkbox.dataset.price).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+
+        if (isAplastante && freeExtrasInAplastante.includes(checkbox.value)) {
+            priceSpan.textContent = 'Gratis';
+            priceSpan.style.color = ' #33BDDD';  
+            priceSpan.style.fontWeight = '600';
+        } else {
+            switch (checkbox.value) {
+                case 'scraping':
+                    priceSpan.textContent = `${originalPrice} / 500 registros`;
+                    break;
+                case 'basededatos':
+                    priceSpan.textContent = `${originalPrice} / 500 registros`;
+                    break;
+                case 'negocios':
+                case 'tpv':
+                case 'logotipo':
+                    priceSpan.textContent = originalPrice;
+                    break;
+                default:
+                    priceSpan.textContent = originalPrice;
+            }
+            priceSpan.style.color = '';
+            priceSpan.style.fontWeight = '';
+        }
+    });
+}
+
+//Update Price
+function updatePriceWithExtras() {
+    let extrasTotal = 0;
+    const checkedBoxes = extraServicesForm.querySelectorAll('input[type="checkbox"]:checked');
+    const isAplastante = selectedPackage?.name.toLowerCase().includes('aplastante');
+
+    const freeExtrasInAplastante = ['negocios', 'tpv', 'logotipo'];
+    const prevExtras = servicesList.querySelectorAll('.extra-item');
+    prevExtras.forEach(e => e.remove());
+
+    checkedBoxes.forEach(cb => {
+        const price = parseFloat(cb.dataset.price) || 0;
+        const isFreeInAplastante = isAplastante && freeExtrasInAplastante.includes(cb.value);
+
+        if (!isFreeInAplastante) {
+            extrasTotal += price;
+        }
+
+        const li = document.createElement('li');
+        li.classList.add('extra-item');
+        const icon = cb.parentElement.querySelector('i')?.outerHTML || '';
+        const text = cb.parentElement.innerText.trim();
+        li.innerHTML = `${icon} ${text}`;
+        servicesList.appendChild(li);
+    });
+
+    finalPrice = basePrice + extrasTotal;
+    confirmPackagePrice.textContent = `$${finalPrice.toLocaleString('es-MX')} MXN`;
+}
 
 
+// Update base price 
+extraServicesForm.addEventListener('change', updatePriceWithExtras);
+
+function setPackageBasePrice(price) {
+    basePrice = parseFloat(price) || 0;
+    finalPrice = basePrice;
+    confirmPackagePrice.textContent = `$${basePrice.toLocaleString('es-MX')} MXN`;
+}
+
+// Confirm purchase
+btnConfirmPurchase?.addEventListener('click', () => {
+    if (!selectedPackage) return;
+
+    Swal.fire({
+        title: '¡Compra realizada!',
+        text: `Has comprado ${selectedPackage.name} por $${finalPrice.toFixed(2)} MXN`,
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        customClass: {
+            confirmButton: 'custom-alert-button'
+        },
+        buttonsStyling: false
+    });
+
+    closeConfirmModal();
+
+    selectedPackage = null;
+    document.querySelectorAll('.pricing-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+});
+
+// Select package and open modal
 document.querySelectorAll('.pricing-footer button').forEach(button => {
     button.addEventListener('click', (event) => {
         document.querySelectorAll('.pricing-card').forEach(card => {
@@ -438,4 +510,36 @@ document.querySelectorAll('.pricing-footer button').forEach(button => {
             openConfirmModal();
         }
     });
+});
+
+
+
+
+//Mobile menu
+document.addEventListener("DOMContentLoaded", function () {
+    function handleLogoClick(e) {
+        e.preventDefault();
+        if (window.scrollY === 0) {
+            location.reload();
+        } else {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    } const logoDesktop = document.getElementById("logo-desktop");
+    const logoMobile = document.getElementById("logo-mobile");
+    const logoMobileNav = document.getElementById("logo-mobile-nav");
+
+    if (logoDesktop) {
+        logoDesktop.addEventListener("click", handleLogoClick);
+        logoDesktop.addEventListener("touchstart", handleLogoClick);
+    }
+
+    if (logoMobile) {
+        logoMobile.addEventListener("click", handleLogoClick);
+        logoMobile.addEventListener("touchstart", handleLogoClick);
+    }
+
+    if (logoMobileNav) {
+        logoMobileNav.addEventListener("click", handleLogoClick);
+        logoMobileNav.addEventListener("touchstart", handleLogoClick);
+    }
 });

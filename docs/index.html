@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
 </head>
 
@@ -29,36 +30,39 @@
                         <li><a href="#package">Paquetes</a></li>
                         <li><a href="#contacto">Contacto</a></li>
                     </ul>
-                </nav>      
+                </nav>
 
                 <!-- Mobile Header -->
                 <div class="mobile-header">
 
-                </nav>                <div class="mobile-header">
+                    </nav>
+                    <div class="mobile-header">
 
-                    <button class="mobile-menu-btn" id="mobileMenuBtn">
-                        <i class="fas fa-bars" id="menuIcon"></i>
-                    </button>
-                    <div class="mobile-logo-area">
-                        <img src="assets/images/teteocan-logo.png" alt="Logo" class="mobile-logo-icon" id="logo-mobile" />
+                        <button class="mobile-menu-btn" id="mobileMenuBtn">
+                            <i class="fas fa-bars" id="menuIcon"></i>
+                        </button>
+                        <div class="mobile-logo-area">
+                            <img src="assets/images/teteocan-logo.png" alt="Logo" class="mobile-logo-icon"
+                                id="logo-mobile" />
+                        </div>
+                        <div class="mobile-spacer"></div>
                     </div>
-                    <div class="mobile-spacer"></div>
-                </div>
-            </div>            <!-- Mobile Menu Overlay -->
-            <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
-            
-            <nav class="nav-mobile" id="mobileNav">
-                <div class="nav-mobile-content">
-                    <div class="mobile-nav-logo-area">
-                        <img src="assets/images/teteocan-logo.png" alt="Logo" class="mobile-nav-logo" id="logo-mobile-nav" />
+                </div> <!-- Mobile Menu Overlay -->
+                <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+                <nav class="nav-mobile" id="mobileNav">
+                    <div class="nav-mobile-content">
+                        <div class="mobile-nav-logo-area">
+                            <img src="assets/images/teteocan-logo.png" alt="Logo" class="mobile-nav-logo"
+                                id="logo-mobile-nav" />
+                        </div>
+                        <div class="mobile-nav-links">
+                            <a href="#package" class="nav-link">Paquetes</a>
+                            <a href="#contacto" class="nav-link">Contacto</a>
+                        </div>
                     </div>
-                    <div class="mobile-nav-links">
-                        <a href="#package" class="nav-link">Paquetes</a>
-                        <a href="#contacto" class="nav-link">Contacto</a>
-                    </div>
-                </div>
-            </nav>
-        </div>
+                </nav>
+            </div>
     </header>
 
     <section class="hero">
@@ -105,7 +109,7 @@
             </div>
         </div>
     </section>
-    
+
     <section id="package" class="pricing">
         <div class="container">
             <div class="section-header">
@@ -323,9 +327,44 @@
             <div id="confirmPackageSummary" class="package-summary">
                 <h4>Servicios incluidos:</h4>
                 <ul id="servicesList">
-                    <!-- Aquí insertarás los servicios en JS -->
+                    <!-- Inserción automatica -->
                 </ul>
             </div>
+
+            <button id="toggleExtrasBtn" class="btn-tertiary">➕ Añadir servicios extra</button>
+            <form id="extraServicesForm">
+                <h4 id="extraServicesTitle">Servicios Extra:</h4>
+
+                <label>
+                    <input type="checkbox" name="extras" value="scraping" data-price="1000">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Scraping por slots (Google Maps) — <span class="extra-price">$1,000 / 500 registros</span>
+                </label><br>
+
+                <label>
+                    <input type="checkbox" name="extras" value="basededatos" data-price="1000">
+                    <i class="fa-solid fa-database"></i>
+                    Bases de datos listas — <span class="extra-price">$1,000 / 500 registros</span>
+                </label><br>
+
+                <label>
+                    <input type="checkbox" name="extras" value="negocios" data-price="999">
+                    <i class="fa-solid fa-briefcase"></i>
+                    Asesoría de negocios — <span class="extra-price">$999</span>
+                </label><br>
+
+                <label>
+                    <input type="checkbox" name="extras" value="tpv" data-price="1500">
+                    <i class="fa-solid fa-credit-card"></i>
+                    TPV — <span class="extra-price">$1,500</span>
+                </label><br>
+
+                <label>
+                    <input type="checkbox" name="extras" value="logotipo" data-price="3999">
+                    <i class="fa-solid fa-pen-nib"></i>
+                    Diseño de logotipo — <span class="extra-price">$3,999</span>
+                </label>
+            </form>
 
             <p>¿Deseas continuar con la compra?</p>
             <div class="modal-actions">
@@ -334,7 +373,6 @@
             </div>
         </div>
     </div>
-
 
     <section class="comparison-section">
         <div class="container">
@@ -495,7 +533,7 @@
                                 <li><a href="#" class="footer-link">
                                         <i class="fas fa-envelope"></i>
                                         <span>contacto@teteocan.com</span>
-                                    </a></li>   
+                                    </a></li>
                             </ul>
                         </div>
                     </div>
