@@ -381,7 +381,7 @@ toggleExtrasBtn.addEventListener('click', function () {
     const isVisible = extraServicesForm.style.display === 'block';
     if (isVisible) {
         extraServicesForm.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-        updatePriceWithExtras(); 
+        updatePriceWithExtras();
     }
     extraServicesForm.style.display = isVisible ? 'none' : 'block';
     toggleExtrasBtn.textContent = isVisible ? '➕ Añadir servicios extra' : '➖ Ocultar servicios extra';
@@ -405,7 +405,7 @@ function updateExtraPricesInForm() {
 
         if (isAplastante && freeExtrasInAplastante.includes(checkbox.value)) {
             priceSpan.textContent = 'Gratis';
-            priceSpan.style.color = ' #33BDDD';  
+            priceSpan.style.color = ' #33BDDD';
             priceSpan.style.fontWeight = '600';
         } else {
             switch (checkbox.value) {
@@ -521,17 +521,18 @@ btnConfirmPurchase?.addEventListener('click', async () => {
     };
 
     try {
-        await fetch('https://tlatec-backend.onrender.com/', {
+        await fetch('https://tlatec-backend.onrender.com/api/orden-pago', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(orderData)
         });
 
-        await fetch('https://tlatec-backend.onrender.com/', {
+        await fetch('https://tlatec-backend.onrender.com/api/confirmar-pago', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(orderData)
         });
+
 
         Swal.fire({
             title: '¡Compra realizada!',
