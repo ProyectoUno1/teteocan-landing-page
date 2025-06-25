@@ -518,8 +518,9 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         fecha: new Date().toLocaleDateString('es-MX'),
         clienteEmail,
         mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos."
+        
     };
-
+console.log("Datos enviados a /api/orden:", orderData);
 
 try {
     await fetch('https://tlatec-backend.onrender.com/api/orden', {
