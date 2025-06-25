@@ -520,36 +520,37 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos."
     };
 
-    try {
-        await fetch('https://tlatec-backend.onrender.com/api/orden', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(orderData)
-        });
 
-        await fetch('https://tlatec-backend.onrender.com/api/confirmar', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(orderData)
-        });
+try {
+    await fetch('https://tlatec-backend.onrender.com/api/orden', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+    });
 
+    await fetch('https://tlatec-backend.onrender.com/api/confirmar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+    });
 
-        Swal.fire({
-            title: '¡Compra realizada!',
-            text: `Has comprado ${selectedPackage.name} por $${montoFinal.toFixed(2)} MXN. Revisa tu correo.`,
-            icon: 'success',
-            confirmButtonText: 'Aceptar',
-            customClass: { confirmButton: 'custom-alert-button' },
-            buttonsStyling: false
-        });
+    Swal.fire({
+        title: '¡Compra realizada!',
+        text: `Has comprado ${selectedPackage.name} por $${montoFinal.toFixed(2)} MXN. Revisa tu correo.`,
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        customClass: { confirmButton: 'custom-alert-button' },
+        buttonsStyling: false
+    });
 
-        closeConfirmModal();
-        selectedPackage = null;
-        document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
-    } catch (error) {
-        Swal.fire('Error', 'No se pudo completar la compra. Intenta de nuevo.', 'error');
-        console.error(error);
-    }
+    closeConfirmModal();
+    selectedPackage = null;
+    document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
+} catch (error) {
+    Swal.fire('Error', 'No se pudo completar la compra. Intenta de nuevo.', 'error');
+    console.error(error);
+}
+
 });
 
 // Select package and open modal
