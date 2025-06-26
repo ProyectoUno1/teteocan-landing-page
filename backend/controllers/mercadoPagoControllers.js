@@ -1,4 +1,6 @@
 const fetch = require('node-fetch');
+const emailController = require('../pdf/controllers/emailController');
+
 
 const ordenesPendientes = {};
 
@@ -70,7 +72,7 @@ const webhookSuscripcion = async (req, res) => {
     const topic = req.query.topic || mpNotification.type || mpNotification.topic;
     const action = mpNotification.action;
 
-    console.log('📩 Webhook recibido:', topic, action);
+    console.log('Webhook recibido:', topic, action);
 
     // PAGO CREADO 
     if (topic === 'payment' || mpNotification.type === 'payment') {
