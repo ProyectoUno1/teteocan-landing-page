@@ -515,6 +515,8 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos."
     };
 
+    console.log('orderData antes de enviar:', orderData);
+
     // 3. Mostrar loader
     Swal.fire({
         title: 'Procesando...',
