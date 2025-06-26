@@ -63,6 +63,8 @@ const crearSuscripcionDinamica = async (req, res) => {
   }
 };
 
+
+
 const webhookSuscripcion = async (req, res) => {
   try {
     const mpNotification = req.body;
@@ -72,24 +74,41 @@ const webhookSuscripcion = async (req, res) => {
     if (topic === 'preapproval' && action === 'authorized') {
       const preapproval_id = mpNotification.data.id;
 
-      // recuperamos la orden real asociada
+      // Busca la orden guardada en memoria
       const orden = ordenesPendientes[preapproval_id];
 
       if (!orden) {
         console.log('Orden no encontrada para preapproval_id:', preapproval_id);
-        return res.status(404).send('Orden no encontrada');
+
+        // crear orden mínima para enviar correos igual (prueba rápida)
+        const orderData = {
+          nombrePaquete: mpNotification.reason || 'Paquete sin nombre',
+          resumenServicios: 'Servicios no especificados',
+          monto: mpNotification.auto_recurring?.transaction_amount || 0,
+          fecha: new Date().toLocaleDateString('es-MX'),
+          clienteEmail: mpNotification.payer_email || 'cliente@example.com',
+          mensajeContinuar: "Gracias por tu suscripción. Pronto nos pondremos en contacto contigo."
+        };
+
+        const reqMock = { body: orderData };
+        const resMock = { status: () => ({ json: () => {} }) };
+
+        const emailController = require('../pdf/controllers/emailController');
+        await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+        await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+
+        return res.status(200).send('Webhook recibido, orden no encontrada, correos enviados con datos mínimos.');
       }
 
-      // llamar a los servicios de email con los datos reales
+      // Orden encontrada, envía correos con datos reales
       const emailController = require('../pdf/controllers/emailController');
-
       const reqMock = { body: orden.orderData };
       const resMock = { status: () => ({ json: () => {} }) };
 
       await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
       await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
 
-      //eliminar la orden para no almacenar datos viejos
+      // Eliminar orden de memoria
       delete ordenesPendientes[preapproval_id];
 
       return res.status(200).send('Webhook recibido y correos enviados.');
@@ -97,6 +116,7 @@ const webhookSuscripcion = async (req, res) => {
 
     return res.status(200).send('Evento no relevante.');
   } catch (error) {
+    console.error('Error procesando webhook:', error);
     return res.status(500).send('Error interno del servidor');
   }
 };
