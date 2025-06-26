@@ -7,7 +7,10 @@ const crearSuscripcionDinamica = async (req, res) => {
   try {
     const { clienteEmail, orderData } = req.body;
 
+    console.log('Datos recibidos para crear suscripción:', { clienteEmail, orderData });
+
     if (!clienteEmail || !orderData || !orderData.monto) {
+      console.log('Faltan datos obligatorios');
       return res.status(400).json({ message: 'Datos incompletos' });
     }
 
@@ -25,12 +28,17 @@ const crearSuscripcionDinamica = async (req, res) => {
       payer_email: clienteEmail,
     };
 
+    console.log('Datos para crear preapproval:', preapproval_data);
+
     const response = await mercadopago.preapproval.create(preapproval_data);
+    
+    console.log('Respuesta de Mercado Pago:', response);
+
     res.json({ init_point: response.body.init_point });
 
   } catch (error) {
     console.error('Error al crear suscripción dinámica:', error);
-    res.status(500).json({ message: 'Error al crear suscripción' });
+    res.status(500).json({ message: 'Error al crear suscripción', error: error.message });
   }
 };
 
