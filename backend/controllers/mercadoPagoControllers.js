@@ -1,9 +1,7 @@
-const mercadopago = require('mercadopago');
+const { MercadoPago } = require('mercadopago');
 const { sendOrderConfirmationToCompany, sendPaymentConfirmationToClient } = require('../pdf/controllers/emailController');
 
-mercadopago.configure({
-  access_token: process.env.MP_ACCESS_TOKEN,
-});
+const mercadopago = new MercadoPago(process.env.MP_ACCESS_TOKEN);
 
 const crearSuscripcionDinamica = async (req, res) => {
   try {
@@ -55,8 +53,12 @@ const webhookSuscripcion = async (req, res) => {
           mensajeContinuar: "Gracias por tu suscripción. Pronto nos pondremos en contacto contigo."
         };
 
+        // Simular objetos req y res para reutilizar controladores de email
         const reqMock = { body: orderData };
-        const resMock = { status: () => ({ json: () => {} }) };
+        const resMock = {
+          status: () => ({ json: () => {} }),
+          json: () => {},
+        };
 
         await sendOrderConfirmationToCompany(reqMock, resMock);
         await sendPaymentConfirmationToClient(reqMock, resMock);
