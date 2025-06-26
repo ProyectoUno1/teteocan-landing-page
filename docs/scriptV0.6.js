@@ -315,6 +315,7 @@ const toggleExtrasBtn = document.getElementById('toggleExtrasBtn');
 const extraServicesForm = document.getElementById('extraServicesForm');
 const servicesList = document.getElementById('servicesList');
 
+
 let basePrice = 0;
 let finalPrice = 0; // Extra prices
 
@@ -470,6 +471,8 @@ function setPackageBasePrice(price) {
 }
 
 btnConfirmPurchase?.addEventListener('click', async () => {
+    const paquetesConSuscripcion = ['impulso', 'dominio', 'titan'];
+
     if (!selectedPackage) return;
 
     // 1. Pedir correo
@@ -528,56 +531,58 @@ btnConfirmPurchase?.addEventListener('click', async () => {
     });
 
     try {
-        if (selectedPackage && selectedPackage.planId) {
-  // Paquete con suscripción (requiere planId)
-  const res = await fetch('https://tlatec-backend.onrender.com/api/suscripcion', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      planId: selectedPackage.planId,
-      clienteEmail,
-      orderData
-    })
-  });
+        const esConSuscripcion = paquetesConSuscripcion.includes(selectedPackage.id.toLowerCase());
 
-  const result = await res.json();
+        if (esConSuscripcion) {
+            // Paquete con suscripción (requiere planId)
+            const res = await fetch('https://tlatec-backend.onrender.com/api/suscripcion', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    planId: selectedPackage.id, // ahora usamos el ID como planId
+                    clienteEmail,
+                    orderData
+                })
+            });
 
-  if (!res.ok || !result.init_point) {
-    throw new Error(result.message || 'Error al crear suscripción');
-  }
+            const result = await res.json();
 
-  Swal.close();
-  window.location.href = result.init_point;
+            if (!res.ok || !result.init_point) {
+                throw new Error(result.message || 'Error al crear suscripción');
+            }
 
-} else {
-  // Paquete gratuito — solo registra y confirma
-  await Promise.all([
-    fetch('https://tlatec-backend.onrender.com/api/orden', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(orderData)
-    }),
-    fetch('https://tlatec-backend.onrender.com/api/confirmar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(orderData)
-    })
-  ]);
+            Swal.close();
+            window.location.href = result.init_point;
 
-  Swal.close();
-  Swal.fire({
-    title: '¡Registro completo!',
-    text: `Te has registrado al paquete ${selectedPackage.name}. Revisa tu correo.`,
-    icon: 'success',
-    confirmButtonText: 'Aceptar',
-    customClass: { confirmButton: 'custom-alert-button' },
-    buttonsStyling: false
-  });
+        } else {
+            // Paquete gratuito — solo registra y confirma si sen cambio hostinguer
+            await Promise.all([
+                fetch('https://tlatec-backend.onrender.com/api/orden', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                }),
+                fetch('https://tlatec-backend.onrender.com/api/confirmar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                })
+            ]);
 
-  closeConfirmModal();
-  selectedPackage = null;
-  document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
-}
+            Swal.close();
+            Swal.fire({
+                title: '¡Registro completo!',
+                text: `Te has registrado al paquete ${selectedPackage.name}. Revisa tu correo.`,
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+                customClass: { confirmButton: 'custom-alert-button' },
+                buttonsStyling: false
+            });
+
+            closeConfirmModal();
+            selectedPackage = null;
+            document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
+        }
 
     } catch (error) {
         const resBody = await error.response?.json().catch(() => null);

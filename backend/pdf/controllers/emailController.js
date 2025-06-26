@@ -11,9 +11,15 @@ async function sendOrderConfirmationToCompany(req, res) {
     try {
         const { nombrePaquete, resumenServicios, monto, fecha } = req.body;
 
-        if (!nombrePaquete || !resumenServicios || !monto || !fecha) {
+        if (
+            !nombrePaquete ||
+            !resumenServicios ||
+            monto === undefined || monto === null || isNaN(monto) ||
+            !fecha
+        ) {
             return res.status(400).json({ message: 'Faltan datos para generar la orden de pago.' });
         }
+
 
         const data = { nombrePaquete, resumenServicios, monto, fecha };
         const templatePath = path.resolve(__dirname, '../templates/empresa.html');
@@ -43,9 +49,17 @@ async function sendPaymentConfirmationToClient(req, res) {
     try {
         const { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, mensajeContinuar } = req.body;
 
-        if (!nombrePaquete || !resumenServicios || !monto || !fecha || !clienteEmail || !mensajeContinuar) {
+        if (
+            !nombrePaquete ||
+            !resumenServicios ||
+            monto === undefined || monto === null || isNaN(monto) ||
+            !fecha ||
+            !clienteEmail ||
+            !mensajeContinuar
+        ) {
             return res.status(400).json({ message: 'Faltan datos para confirmar el pago al cliente.' });
         }
+
 
         const data = { nombrePaquete, resumenServicios, monto, fecha, mensajeContinuar };
         const templatePath = path.resolve(__dirname, '../templates/cliente.html');
