@@ -315,6 +315,7 @@ const toggleExtrasBtn = document.getElementById('toggleExtrasBtn');
 const extraServicesForm = document.getElementById('extraServicesForm');
 const servicesList = document.getElementById('servicesList');
 
+
 let basePrice = 0;
 let finalPrice = 0; // Extra prices
 
@@ -470,6 +471,8 @@ function setPackageBasePrice(price) {
 }
 
 btnConfirmPurchase?.addEventListener('click', async () => {
+    const paquetesConSuscripcion = ['impulso', 'dominio', 'titan'];
+
     if (!selectedPackage) return;
 
     // 1. Pedir correo
@@ -528,18 +531,19 @@ btnConfirmPurchase?.addEventListener('click', async () => {
     });
 
     try {
-        if (selectedPackage) {
-            // 4. Redirigir a Mercado Pago con suscripción dinámica
+        const esConSuscripcion = paquetesConSuscripcion.includes(selectedPackage.id.toLowerCase());
+
+        if (esConSuscripcion) {
+            // Paquete con suscripción (requiere planId)
             const res = await fetch('https://tlatec-backend.onrender.com/api/suscripcion', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    planId: selectedPackage.planId,
+                    planId: selectedPackage.id, // ahora usamos el ID como planId
                     clienteEmail,
                     orderData
                 })
             });
-
 
             const result = await res.json();
 
@@ -548,12 +552,10 @@ btnConfirmPurchase?.addEventListener('click', async () => {
             }
 
             Swal.close();
-
-            // 5. Redirigir
             window.location.href = result.init_point;
 
         } else {
-            // 6. Si es gratis, solo registrar y confirmar directamente
+            // Paquete gratuito — solo registra y confirma si sen cambio hostinguer
             await Promise.all([
                 fetch('https://tlatec-backend.onrender.com/api/orden', {
                     method: 'POST',
