@@ -528,59 +528,56 @@ btnConfirmPurchase?.addEventListener('click', async () => {
     });
 
     try {
-        if (selectedPackage) {
-            // 4. Redirigir a Mercado Pago con suscripción dinámica
-            const res = await fetch('https://tlatec-backend.onrender.com/api/suscripcion', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    planId: selectedPackage.planId,
-                    clienteEmail,
-                    orderData
-                })
-            });
+        if (selectedPackage && selectedPackage.planId) {
+  // Paquete con suscripción (requiere planId)
+  const res = await fetch('https://tlatec-backend.onrender.com/api/suscripcion', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      planId: selectedPackage.planId,
+      clienteEmail,
+      orderData
+    })
+  });
 
+  const result = await res.json();
 
-            const result = await res.json();
+  if (!res.ok || !result.init_point) {
+    throw new Error(result.message || 'Error al crear suscripción');
+  }
 
-            if (!res.ok || !result.init_point) {
-                throw new Error(result.message || 'Error al crear suscripción');
-            }
+  Swal.close();
+  window.location.href = result.init_point;
 
-            Swal.close();
+} else {
+  // Paquete gratuito — solo registra y confirma
+  await Promise.all([
+    fetch('https://tlatec-backend.onrender.com/api/orden', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData)
+    }),
+    fetch('https://tlatec-backend.onrender.com/api/confirmar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData)
+    })
+  ]);
 
-            // 5. Redirigir
-            window.location.href = result.init_point;
+  Swal.close();
+  Swal.fire({
+    title: '¡Registro completo!',
+    text: `Te has registrado al paquete ${selectedPackage.name}. Revisa tu correo.`,
+    icon: 'success',
+    confirmButtonText: 'Aceptar',
+    customClass: { confirmButton: 'custom-alert-button' },
+    buttonsStyling: false
+  });
 
-        } else {
-            // 6. Si es gratis, solo registrar y confirmar directamente
-            await Promise.all([
-                fetch('https://tlatec-backend.onrender.com/api/orden', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderData)
-                }),
-                fetch('https://tlatec-backend.onrender.com/api/confirmar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderData)
-                })
-            ]);
-
-            Swal.close();
-            Swal.fire({
-                title: '¡Registro completo!',
-                text: `Te has registrado al paquete ${selectedPackage.name}. Revisa tu correo.`,
-                icon: 'success',
-                confirmButtonText: 'Aceptar',
-                customClass: { confirmButton: 'custom-alert-button' },
-                buttonsStyling: false
-            });
-
-            closeConfirmModal();
-            selectedPackage = null;
-            document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
-        }
+  closeConfirmModal();
+  selectedPackage = null;
+  document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
+}
 
     } catch (error) {
         const resBody = await error.response?.json().catch(() => null);
