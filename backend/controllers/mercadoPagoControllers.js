@@ -22,7 +22,7 @@ const crearSuscripcionDinamica = async (req, res) => {
         end_date: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString(),
       },
       back_url: "https://tlatec.teteocan.com",
-      payer_email: clienteEmail,
+      //payer_email: clienteEmail,
     };
 
     console.log('Datos para crear preapproval:', preapproval_data);
