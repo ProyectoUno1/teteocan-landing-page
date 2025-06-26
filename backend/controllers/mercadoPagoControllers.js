@@ -1,5 +1,7 @@
 const fetch = require('node-fetch');
 
+const ordenesPendientes = {};
+
 const crearSuscripcionDinamica = async (req, res) => {
   try {
     const { clienteEmail, orderData } = req.body;
@@ -11,7 +13,7 @@ const crearSuscripcionDinamica = async (req, res) => {
       return res.status(400).json({ message: 'Datos incompletos' });
     }
 
-    // 👇 lógica para usar un correo de test en entorno de pruebas
+    // correo de test en entorno de pruebas
     const isSandbox = process.env.NODE_ENV !== 'production';
     const payerEmail = isSandbox
       ? process.env.MP_PAYER_EMAIL // correo de test user
@@ -44,33 +46,57 @@ const crearSuscripcionDinamica = async (req, res) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Error en API Mercado Pago:', errorText);
       return res.status(500).json({ message: 'Error en Mercado Pago', error: errorText });
     }
 
     const data = await response.json();
-    console.log('Respuesta de Mercado Pago:', data);
 
-    // clienteEmail se conserva para uso interno (envío de correos, etc.)
+    // guardar la orden en memoria con el preapproval_id que nos da Mercado Pago
+    ordenesPendientes[data.id] = { clienteEmail, orderData };
+
+    // enviar el link para redirigir al checkout
     res.json({ init_point: data.init_point });
 
   } catch (error) {
-    console.error('Error al crear suscripción dinámica:', error);
     res.status(500).json({ message: 'Error al crear suscripción', error: error.message });
   }
 };
 
 const webhookSuscripcion = async (req, res) => {
   try {
-    const topic = req.query.topic || req.body.type;
-    const id = req.query.id || req.body.data?.id;
+    const mpNotification = req.body;
+    const topic = req.query.topic || mpNotification.type || mpNotification.topic;
+    const action = mpNotification.action;
 
-    console.log('Webhook recibido:', req.body);
+    if (topic === 'preapproval' && action === 'authorized') {
+      const preapproval_id = mpNotification.data.id;
 
-    res.sendStatus(200);
+      // recuperamos la orden real asociada
+      const orden = ordenesPendientes[preapproval_id];
+
+      if (!orden) {
+        console.log('Orden no encontrada para preapproval_id:', preapproval_id);
+        return res.status(404).send('Orden no encontrada');
+      }
+
+      // llamar a los servicios de email con los datos reales
+      const emailController = require('../pdf/controllers/emailController');
+
+      const reqMock = { body: orden.orderData };
+      const resMock = { status: () => ({ json: () => {} }) };
+
+      await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+      await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+
+      //eliminar la orden para no almacenar datos viejos
+      delete ordenesPendientes[preapproval_id];
+
+      return res.status(200).send('Webhook recibido y correos enviados.');
+    }
+
+    return res.status(200).send('Evento no relevante.');
   } catch (error) {
-    console.error('Error en webhook suscripción:', error);
-    res.sendStatus(500);
+    return res.status(500).send('Error interno del servidor');
   }
 };
 
