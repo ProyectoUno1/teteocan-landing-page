@@ -530,7 +530,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    planId: selectedPackage.planId,   
+                    planId: selectedPackage.planId,
                     clienteEmail,
                     orderData
                 })
@@ -579,9 +579,9 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         }
 
     } catch (error) {
-        Swal.close();
-        Swal.fire('Error', error.message || 'No se pudo procesar la suscripción.', 'error');
-        console.error(error);
+        const resBody = await error.response?.json().catch(() => null);
+        console.error('Error detallado:', resBody);
+        Swal.fire('Error', (resBody?.message || error.message) + '', 'error');
     }
 });
 
