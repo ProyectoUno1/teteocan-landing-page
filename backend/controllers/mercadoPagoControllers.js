@@ -46,6 +46,7 @@ const crearSuscripcionDinamica = async (req, res) => {
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.error('Error en API Mercado Pago:', errorText);
       return res.status(500).json({ message: 'Error en Mercado Pago', error: errorText });
     }
 
