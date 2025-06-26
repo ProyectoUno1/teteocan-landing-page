@@ -1,7 +1,4 @@
-const mercadopago = require('mercadopago');
-const { sendOrderConfirmationToCompany, sendPaymentConfirmationToClient } = require('../pdf/controllers/emailController');
-
-mercadopago.access_token = process.env.MP_ACCESS_TOKEN;
+const fetch = require('node-fetch'); 
 
 const crearSuscripcionDinamica = async (req, res) => {
   try {
@@ -30,52 +27,30 @@ const crearSuscripcionDinamica = async (req, res) => {
 
     console.log('Datos para crear preapproval:', preapproval_data);
 
-    const response = await mercadopago.preapproval.create(preapproval_data);
-    
-    console.log('Respuesta de Mercado Pago:', response);
+    // Llamada directa a API REST Mercado Pago
+    const response = await fetch('https://api.mercadopago.com/preapproval', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.MP_ACCESS_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(preapproval_data)
+    });
 
-    res.json({ init_point: response.body.init_point });
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Error en API Mercado Pago:', errorText);
+      return res.status(500).json({ message: 'Error en Mercado Pago', error: errorText });
+    }
+
+    const data = await response.json();
+
+    console.log('Respuesta de Mercado Pago:', data);
+
+    res.json({ init_point: data.init_point });
 
   } catch (error) {
     console.error('Error al crear suscripción dinámica:', error);
     res.status(500).json({ message: 'Error al crear suscripción', error: error.message });
   }
 };
-
-const webhookSuscripcion = async (req, res) => {
-  try {
-    const topic = req.query.topic || req.body.type;
-    const id = req.query.id || req.body.data?.id;
-
-    if (topic === 'preapproval' && id) {
-      const response = await mercadopago.preapproval.findById(id);
-      const subscription = response.body;
-
-      if (subscription.status === 'authorized' || subscription.status === 'active') {
-        const orderData = {
-          nombrePaquete: subscription.reason || 'Sin nombre',
-          resumenServicios: 'Servicios incluidos (no especificados en webhook)',
-          monto: subscription.auto_recurring.transaction_amount,
-          fecha: new Date().toLocaleDateString('es-MX'),
-          clienteEmail: subscription.payer_email,
-          mensajeContinuar: "Gracias por tu suscripción. Pronto nos pondremos en contacto contigo."
-        };
-
-        const reqMock = { body: orderData };
-        const resMock = { status: () => ({ json: () => {} }) };
-
-        await sendOrderConfirmationToCompany(reqMock, resMock);
-        await sendPaymentConfirmationToClient(reqMock, resMock);
-
-        console.log(`Suscripción ${subscription.id} confirmada y correos enviados.`);
-      }
-    }
-
-    res.sendStatus(200);
-  } catch (error) {
-    console.error('Error en webhook suscripción:', error);
-    res.sendStatus(500);
-  }
-};
-
-module.exports = { crearSuscripcionDinamica, webhookSuscripcion };
