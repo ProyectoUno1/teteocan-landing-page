@@ -1,7 +1,7 @@
 const mercadopago = require('mercadopago');
 const { sendOrderConfirmationToCompany, sendPaymentConfirmationToClient } = require('../pdf/controllers/emailController');
 
-mercadopago.configurations.setAccessToken(process.env.MP_ACCESS_TOKEN);
+mercadopago.access_token = process.env.MP_ACCESS_TOKEN;
 
 const crearSuscripcionDinamica = async (req, res) => {
   try {
