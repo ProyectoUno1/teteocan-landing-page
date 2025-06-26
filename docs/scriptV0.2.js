@@ -523,18 +523,34 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 console.log("Datos enviados a /api/orden:", orderData);
 
 try {
-    await fetch('https://tlatec-backend.onrender.com/api/orden', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
+    // Mostrar notificación de espera
+    Swal.fire({
+        title: 'Procesando compra...',
+        html: 'Por favor espera unos segundos mientras se confirma tu pedido.',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
     });
 
-    await fetch('https://tlatec-backend.onrender.com/api/confirmar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
-    });
+    // Ejecutar ambas peticiones al mismo tiempo
+    await Promise.all([
+        fetch('https://tlatec-backend.onrender.com/api/orden', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        }),
+        fetch('https://tlatec-backend.onrender.com/api/confirmar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        })
+    ]);
 
+    // Cerrar notificación de carga
+    Swal.close();
+
+    // Mostrar confirmación
     Swal.fire({
         title: '¡Compra realizada!',
         text: `Has comprado ${selectedPackage.name} por $${montoFinal.toFixed(2)} MXN. Revisa tu correo.`,
@@ -547,10 +563,13 @@ try {
     closeConfirmModal();
     selectedPackage = null;
     document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
+
 } catch (error) {
+    Swal.close();
     Swal.fire('Error', 'No se pudo completar la compra. Intenta de nuevo.', 'error');
     console.error(error);
 }
+
 
 });
 
