@@ -11,6 +11,12 @@ const crearSuscripcionDinamica = async (req, res) => {
       return res.status(400).json({ message: 'Datos incompletos' });
     }
 
+    // 👇 lógica para usar un correo de test en entorno de pruebas
+    const isSandbox = process.env.NODE_ENV !== 'production';
+    const payerEmail = isSandbox
+      ? process.env.MP_PAYER_EMAIL // correo de test user
+      : clienteEmail;             // correo real en producción
+
     const preapproval_data = {
       reason: `Suscripción ${orderData.nombrePaquete}`,
       auto_recurring: {
@@ -22,12 +28,11 @@ const crearSuscripcionDinamica = async (req, res) => {
         end_date: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString(),
       },
       back_url: "https://tlatec.teteocan.com",
-      payer_email: clienteEmail,
+      payer_email: payerEmail,
     };
 
     console.log('Datos para crear preapproval:', preapproval_data);
 
-    // Llamada directa a API REST Mercado Pago
     const response = await fetch('https://api.mercadopago.com/preapproval', {
       method: 'POST',
       headers: {
@@ -44,9 +49,9 @@ const crearSuscripcionDinamica = async (req, res) => {
     }
 
     const data = await response.json();
-
     console.log('Respuesta de Mercado Pago:', data);
 
+    // clienteEmail se conserva para uso interno (envío de correos, etc.)
     res.json({ init_point: data.init_point });
 
   } catch (error) {
@@ -61,7 +66,6 @@ const webhookSuscripcion = async (req, res) => {
     const id = req.query.id || req.body.data?.id;
 
     console.log('Webhook recibido:', req.body);
-
 
     res.sendStatus(200);
   } catch (error) {
