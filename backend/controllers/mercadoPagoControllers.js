@@ -1,4 +1,4 @@
-const fetch = require('node-fetch'); 
+const fetch = require('node-fetch');
 
 const crearSuscripcionDinamica = async (req, res) => {
   try {
@@ -54,3 +54,20 @@ const crearSuscripcionDinamica = async (req, res) => {
     res.status(500).json({ message: 'Error al crear suscripción', error: error.message });
   }
 };
+
+const webhookSuscripcion = async (req, res) => {
+  try {
+    const topic = req.query.topic || req.body.type;
+    const id = req.query.id || req.body.data?.id;
+
+    console.log('Webhook recibido:', req.body);
+
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error en webhook suscripción:', error);
+    res.sendStatus(500);
+  }
+};
+
+module.exports = { crearSuscripcionDinamica, webhookSuscripcion };
