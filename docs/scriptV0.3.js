@@ -488,6 +488,8 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 
     if (!clienteEmail) return;
 
+    updatePriceWithExtras();
+
     // 2. Obtener servicios seleccionados
     const servicios = [];
     document.querySelectorAll('#servicesList li').forEach(li => {
@@ -601,7 +603,7 @@ document.querySelectorAll('.pricing-footer button').forEach(button => {
                 id: pricingCard.getAttribute('data-package-id'),
                 name: pricingCard.getAttribute('data-package-name'),
                 price: parseFloat(pricingCard.getAttribute('data-package-price')),
-                planId: pricingCard.getAttribute('data-plan-id')  // <-- aquí
+                planId: pricingCard.getAttribute('data-package-id')  // <-- aquí
             };
 
             openConfirmModal();
