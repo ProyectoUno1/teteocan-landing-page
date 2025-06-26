@@ -110,6 +110,7 @@ const webhookSuscripcion = async (req, res) => {
 
       // Eliminar orden de memoria
       delete ordenesPendientes[preapproval_id];
+      console.log('Evento payment.created recibido.');
 
       return res.status(200).send('Webhook recibido y correos enviados.');
     }
