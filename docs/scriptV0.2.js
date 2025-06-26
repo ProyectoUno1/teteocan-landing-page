@@ -472,7 +472,7 @@ function setPackageBasePrice(price) {
 btnConfirmPurchase?.addEventListener('click', async () => {
     if (!selectedPackage) return;
 
-    // Pide el correo del cliente antes de continuar
+    // 1. Pedir correo
     const { value: clienteEmail } = await Swal.fire({
         title: 'Ingresa tu correo electrónico',
         input: 'email',
@@ -488,13 +488,12 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 
     if (!clienteEmail) return;
 
-    // 1. Obtén los servicios base
+    // 2. Obtener servicios seleccionados
     const servicios = [];
     document.querySelectorAll('#servicesList li').forEach(li => {
         servicios.push(li.innerText.trim());
     });
 
-    // 2. Obtén los servicios extra seleccionados y suma su precio
     let extrasSeleccionados = [];
     let extrasTotal = 0;
     document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(checkbox => {
@@ -503,14 +502,10 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         extrasTotal += Number(checkbox.dataset.price || 0);
     });
 
-    // 3. Suma el precio base + extras
     const montoBase = Number(selectedPackage.price || 0);
     const montoFinal = montoBase + extrasTotal;
-
-    // 4. Une todos los servicios para el resumen
     const resumenServicios = [...servicios, ...extrasSeleccionados].join(', ');
 
-    // 5. Datos para el backend
     const orderData = {
         nombrePaquete: selectedPackage.name,
         resumenServicios,
@@ -518,59 +513,75 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         fecha: new Date().toLocaleDateString('es-MX'),
         clienteEmail,
         mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos."
-        
     };
-console.log("Datos enviados a /api/orden:", orderData);
 
-try {
-    // Mostrar notificación de espera
+    // 3. Mostrar loader
     Swal.fire({
-        title: 'Procesando compra...',
-        html: 'Por favor espera unos segundos mientras se confirma tu pedido.',
+        title: 'Procesando...',
+        html: 'Espera un momento mientras se inicia la suscripción.',
         allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
+        didOpen: () => Swal.showLoading()
+    });
+
+    try {
+        if (selectedPackage) {
+            // 4. Redirigir a Mercado Pago con suscripción dinámica
+            const res = await fetch('https://tlatec-backend.onrender.com/api/suscripcion', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    clienteEmail,
+                    orderData
+                })
+            });
+
+
+            const result = await res.json();
+
+            if (!res.ok || !result.init_point) {
+                throw new Error(result.message || 'Error al crear suscripción');
+            }
+
+            Swal.close();
+
+            // 5. Redirigir
+            window.location.href = result.init_point;
+
+        } else {
+            // 6. Si es gratis, solo registrar y confirmar directamente
+            await Promise.all([
+                fetch('https://tlatec-backend.onrender.com/api/orden', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                }),
+                fetch('https://tlatec-backend.onrender.com/api/confirmar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                })
+            ]);
+
+            Swal.close();
+            Swal.fire({
+                title: '¡Registro completo!',
+                text: `Te has registrado al paquete ${selectedPackage.name}. Revisa tu correo.`,
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+                customClass: { confirmButton: 'custom-alert-button' },
+                buttonsStyling: false
+            });
+
+            closeConfirmModal();
+            selectedPackage = null;
+            document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
         }
-    });
 
-    // Ejecutar ambas peticiones al mismo tiempo
-    await Promise.all([
-        fetch('https://tlatec-backend.onrender.com/api/orden', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(orderData)
-        }),
-        fetch('https://tlatec-backend.onrender.com/api/confirmar', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(orderData)
-        })
-    ]);
-
-    // Cerrar notificación de carga
-    Swal.close();
-
-    // Mostrar confirmación
-    Swal.fire({
-        title: '¡Compra realizada!',
-        text: `Has comprado ${selectedPackage.name} por $${montoFinal.toFixed(2)} MXN. Revisa tu correo.`,
-        icon: 'success',
-        confirmButtonText: 'Aceptar',
-        customClass: { confirmButton: 'custom-alert-button' },
-        buttonsStyling: false
-    });
-
-    closeConfirmModal();
-    selectedPackage = null;
-    document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
-
-} catch (error) {
-    Swal.close();
-    Swal.fire('Error', 'No se pudo completar la compra. Intenta de nuevo.', 'error');
-    console.error(error);
-}
-
-
+    } catch (error) {
+        Swal.close();
+        Swal.fire('Error', error.message || 'No se pudo procesar la suscripción.', 'error');
+        console.error(error);
+    }
 });
 
 // Select package and open modal
@@ -586,8 +597,10 @@ document.querySelectorAll('.pricing-footer button').forEach(button => {
             selectedPackage = {
                 id: pricingCard.getAttribute('data-package-id'),
                 name: pricingCard.getAttribute('data-package-name'),
-                price: parseFloat(pricingCard.getAttribute('data-package-price'))
+                price: parseFloat(pricingCard.getAttribute('data-package-price')),
+                planId: pricingCard.getAttribute('data-plan-id')  // <-- aquí
             };
+
             openConfirmModal();
         }
     });
