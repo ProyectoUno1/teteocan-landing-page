@@ -85,15 +85,39 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-window.addEventListener('scroll', function () {
-    const header = document.querySelector('.header');
-    if (window.scrollY > 100) {
-        header.style.background = 'linear-gradient(180deg, #ffffff 20%, #c3d8ee 100%)';
-        header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
-    } else {
-        header.style.background = 'linear-gradient(180deg, #ffffff 20%, #c3d8ee 100%)';
-        header.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
-    }
+let lastScroll = 0;
+let ticking = false;
+
+const updateHeader = () => {
+  const header = document.querySelector('.header');
+  const currentScroll = window.scrollY;
+  
+  if (currentScroll > 80) {
+    header.classList.add('scrolled');
+  } else {
+    header.classList.remove('scrolled');
+  }
+  
+  lastScroll = currentScroll;
+  ticking = false;
+};
+
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    window.requestAnimationFrame(updateHeader);
+    ticking = true;
+  }
+});
+
+// Suavizar el efecto al cargar la página
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.querySelector('.header').style.transition = `
+      background var(--transition-time) var(--transition-easing),
+      box-shadow var(--transition-time) var(--transition-easing),
+      padding var(--transition-time) var(--transition-easing)
+    `;
+  }, 100);
 });
 
 const observerOptions = {
