@@ -5,13 +5,16 @@ const path = require('path');
 
 const ordenesPendientes = {};
 
+// Rutas absolutas de los archivos temporales
+const rutaArchivoCrearSuscripcion = path.join(__dirname, 'tempDatosCrearSuscripcion.json');
+const rutaArchivoWebhook = path.join(__dirname, 'tempDatosWebhook.json');
+
 const crearSuscripcionDinamica = async (req, res) => {
   try {
     const { clienteEmail, orderData } = req.body;
 
     // Guardar datos recibidos temporalmente
-    const rutaArchivo = path.join(__dirname, 'tempDatosCrearSuscripcion.json');
-    fs.writeFile(rutaArchivo, JSON.stringify({ clienteEmail, orderData }, null, 2), (err) => {
+    fs.writeFile(rutaArchivoCrearSuscripcion, JSON.stringify({ clienteEmail, orderData }, null, 2), (err) => {
       if (err) {
         console.error('Error guardando archivo temporal en crearSuscripcionDinamica:', err);
       } else {
@@ -77,12 +80,28 @@ async function procesarEnvioCorreosConOrden(orderData) {
 
   await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
   await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+
+  // Si quieres borrar los archivos aquí, puedes llamarlo fuera para mejor control
+}
+
+// Función para borrar archivos si existen
+function borrarArchivoSiExiste(rutaArchivo) {
+  fs.access(rutaArchivo, fs.constants.F_OK, (err) => {
+    if (!err) {
+      fs.unlink(rutaArchivo, (err) => {
+        if (err) {
+          console.error(`Error borrando archivo ${rutaArchivo}:`, err);
+        } else {
+          console.log(`Archivo ${rutaArchivo} borrado correctamente`);
+        }
+      });
+    }
+  });
 }
 
 const webhookSuscripcion = async (req, res) => {
   try {
     // Guardar datos del webhook temporalmente
-    const rutaArchivoWebhook = path.join(__dirname, 'tempDatosWebhook.json');
     fs.writeFile(rutaArchivoWebhook, JSON.stringify(req.body, null, 2), (err) => {
       if (err) {
         console.error('Error guardando archivo temporal en webhookSuscripcion:', err);
@@ -118,6 +137,11 @@ const webhookSuscripcion = async (req, res) => {
       if (orden) {
         console.log('orden.orderData en webhook:', orden.orderData);
         await procesarEnvioCorreosConOrden(orden.orderData);
+
+        // Borra los archivos temporales porque ya se enviaron los correos
+        borrarArchivoSiExiste(rutaArchivoCrearSuscripcion);
+        borrarArchivoSiExiste(rutaArchivoWebhook);
+
         delete ordenesPendientes[preapprovalId];
       } else {
         const nombrePaquete = paymentInfo.description || 'Suscripción';
@@ -129,6 +153,10 @@ const webhookSuscripcion = async (req, res) => {
 
         const orderDataFallback = { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, mensajeContinuar };
         await procesarEnvioCorreosConOrden(orderDataFallback);
+
+        // Borra también los archivos si llegas aquí
+        borrarArchivoSiExiste(rutaArchivoCrearSuscripcion);
+        borrarArchivoSiExiste(rutaArchivoWebhook);
       }
 
       return res.status(200).send('Webhook procesado correctamente');
@@ -140,6 +168,11 @@ const webhookSuscripcion = async (req, res) => {
 
       if (orden) {
         await procesarEnvioCorreosConOrden(orden.orderData);
+
+        // Borra los archivos
+        borrarArchivoSiExiste(rutaArchivoCrearSuscripcion);
+        borrarArchivoSiExiste(rutaArchivoWebhook);
+
         delete ordenesPendientes[preapproval_id];
         return res.status(200).send('Webhook preapproval autorizado y correos enviados');
       }
