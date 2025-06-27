@@ -430,7 +430,7 @@ button {
 .toggle-features {
   background: none;
   border: none;
-  color: #3b82f6;
+  color: #3773B8;
   cursor: pointer;
   margin-top: 1rem;
   font-weight: 600;
@@ -728,7 +728,6 @@ button {
 
 .modal-icon {
     font-size: 2rem;
-    color: #2563eb;
     margin-bottom: 1rem;
     text-align: center;
 }
@@ -788,7 +787,7 @@ button {
 }
 
 .close-button:hover {
-    color: #2563eb;
+    color: #03475D;
 }
 
 
@@ -859,7 +858,6 @@ button {
 }
 
 .package-summary ul li i {
-    color: #2563eb;
     font-size: 1.5rem;
     min-width: 28px;
     text-align: center;
@@ -888,7 +886,7 @@ button {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #0099ff, #33ccff);
+    background: linear-gradient(90deg, #36CFC9, #3773B8);
     color: white;
     border: none;
 }
@@ -1025,7 +1023,7 @@ button {
 
 #extraServicesForm i {
     font-size: 1rem;
-    color: #2563eb;
+    color: #03475D;
     width: 20px;
     text-align: center;
     flex-shrink: 0;
@@ -1033,7 +1031,7 @@ button {
 
 
 #toggleExtrasBtn {
-    background: linear-gradient(135deg, #0099ff, #33ccff);
+background: linear-gradient(90deg, #36CFC9, #3773B8);
     color: white;
     border: none;
     padding: 0.6rem 1.4rem;
@@ -1786,6 +1784,13 @@ html {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.swal2-confirm {
+    background: #3773B8;
+}
+.swal2-confirm:hover {
+    background: #5c8cc4
 }
 
 .feature-card,
