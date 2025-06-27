@@ -13,6 +13,12 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
+app.use(express.json());
+
+app.use('/api/pagos', pagosRoutes);         
+app.use('/api/webhook', webhookRoutes);   
+
 // Importa el controlador de email
 const emailController = require('./pdf/controllers/emailController');
 
