@@ -12,24 +12,6 @@ const webhookRoutes = require('./routes/webhook');
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const PORT = process.env.PORT || 3000;
-<<<<<<< HEAD
-
-app.use(cors({
-  origin: 'https://tlatec.teteocan.com',
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type']
-}));
-
-app.use(express.json()); // Para parsear JSON en las peticiones
-=======
-//cors
-app.use(cors());
-app.use(express.json());
-
-app.use('/api/pagos', pagosRoutes);         
-app.use('/api/webhook', webhookRoutes);     
-
->>>>>>> f83f2ecc7cdd184cc28223dc8ecd18bb9cd71d60
 
 // Importa el controlador de email
 const emailController = require('./pdf/controllers/emailController');
