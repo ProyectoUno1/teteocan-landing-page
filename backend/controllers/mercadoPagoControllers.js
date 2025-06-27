@@ -1,26 +1,11 @@
 const fetch = require('node-fetch');
 const emailController = require('../pdf/controllers/emailController');
-const fs = require('fs');
-const path = require('path');
 
 const ordenesPendientes = {};
-
-// Rutas absolutas de los archivos temporales
-const rutaArchivoCrearSuscripcion = path.join(__dirname, 'tempDatosCrearSuscripcion.json');
-const rutaArchivoWebhook = path.join(__dirname, 'tempDatosWebhook.json');
 
 const crearSuscripcionDinamica = async (req, res) => {
   try {
     const { clienteEmail, orderData } = req.body;
-
-    // Guardar datos recibidos temporalmente
-    fs.writeFile(rutaArchivoCrearSuscripcion, JSON.stringify({ clienteEmail, orderData }, null, 2), (err) => {
-      if (err) {
-        console.error('Error guardando archivo temporal en crearSuscripcionDinamica:', err);
-      } else {
-        console.log('Datos de crearSuscripcionDinamica guardados temporalmente');
-      }
-    });
 
     console.log('Datos recibidos para crear suscripción:', { clienteEmail, orderData });
 
@@ -74,42 +59,8 @@ const crearSuscripcionDinamica = async (req, res) => {
   }
 };
 
-async function procesarEnvioCorreosConOrden(orderData) {
-  const reqMock = { body: orderData };
-  const resMock = { status: () => ({ json: () => {} }) };
-
-  await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
-  await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
-
-  // Si quieres borrar los archivos aquí, puedes llamarlo fuera para mejor control
-}
-
-// Función para borrar archivos si existen
-function borrarArchivoSiExiste(rutaArchivo) {
-  fs.access(rutaArchivo, fs.constants.F_OK, (err) => {
-    if (!err) {
-      fs.unlink(rutaArchivo, (err) => {
-        if (err) {
-          console.error(`Error borrando archivo ${rutaArchivo}:`, err);
-        } else {
-          console.log(`Archivo ${rutaArchivo} borrado correctamente`);
-        }
-      });
-    }
-  });
-}
-
 const webhookSuscripcion = async (req, res) => {
   try {
-    // Guardar datos del webhook temporalmente
-    fs.writeFile(rutaArchivoWebhook, JSON.stringify(req.body, null, 2), (err) => {
-      if (err) {
-        console.error('Error guardando archivo temporal en webhookSuscripcion:', err);
-      } else {
-        console.log('Datos de webhookSuscripcion guardados temporalmente');
-      }
-    });
-
     const mpNotification = req.body;
     const topic = req.query.topic || mpNotification.type || mpNotification.topic;
     const action = mpNotification.action;
@@ -118,6 +69,7 @@ const webhookSuscripcion = async (req, res) => {
 
     if (topic === 'payment' || mpNotification.type === 'payment') {
       const paymentId = mpNotification.data?.id;
+
       if (!paymentId) {
         console.log('ID de pago no recibido');
         return res.status(400).send('Falta ID de pago');
@@ -128,6 +80,7 @@ const webhookSuscripcion = async (req, res) => {
           Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
         },
       });
+
       const paymentInfo = await response.json();
 
       const preapprovalId = mpNotification.preapproval_id || mpNotification.data?.preapproval_id;
@@ -136,11 +89,10 @@ const webhookSuscripcion = async (req, res) => {
 
       if (orden) {
         console.log('orden.orderData en webhook:', orden.orderData);
-        await procesarEnvioCorreosConOrden(orden.orderData);
-
-        // Borra los archivos temporales porque ya se enviaron los correos
-        borrarArchivoSiExiste(rutaArchivoCrearSuscripcion);
-        borrarArchivoSiExiste(rutaArchivoWebhook);
+        const reqMock = { body: orden.orderData };
+        const resMock = { status: () => ({ json: () => {} }) };
+        await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+        await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
 
         delete ordenesPendientes[preapprovalId];
       } else {
@@ -148,15 +100,17 @@ const webhookSuscripcion = async (req, res) => {
         const monto = paymentInfo.transaction_amount || 0;
         const clienteEmail = paymentInfo.payer?.email || 'cliente@example.com';
         const fecha = new Date().toLocaleDateString('es-MX');
-        const resumenServicios = '';
+
+        const resumenServicios = 'Suscripción activa con Mercado Pago';
         const mensajeContinuar = 'La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.';
 
-        const orderDataFallback = { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, mensajeContinuar };
-        await procesarEnvioCorreosConOrden(orderDataFallback);
+        const reqMock = {
+          body: { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, mensajeContinuar }
+        };
+        const resMock = { status: () => ({ json: () => {} }) };
 
-        // Borra también los archivos si llegas aquí
-        borrarArchivoSiExiste(rutaArchivoCrearSuscripcion);
-        borrarArchivoSiExiste(rutaArchivoWebhook);
+        await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+        await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
       }
 
       return res.status(200).send('Webhook procesado correctamente');
@@ -167,11 +121,13 @@ const webhookSuscripcion = async (req, res) => {
       const orden = ordenesPendientes[preapproval_id];
 
       if (orden) {
-        await procesarEnvioCorreosConOrden(orden.orderData);
 
-        // Borra los archivos
-        borrarArchivoSiExiste(rutaArchivoCrearSuscripcion);
-        borrarArchivoSiExiste(rutaArchivoWebhook);
+    
+        const reqMock = { body: orden.orderData };
+        const resMock = { status: () => ({ json: () => {} }) };
+
+        await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+        await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
 
         delete ordenesPendientes[preapproval_id];
         return res.status(200).send('Webhook preapproval autorizado y correos enviados');
@@ -182,7 +138,7 @@ const webhookSuscripcion = async (req, res) => {
 
     return res.status(200).send('Evento no relevante');
   } catch (error) {
-    console.error('Error en webhook:', error);
+    console.error(' Error en webhook:', error);
     return res.status(500).send('Error interno del servidor');
   }
 };
