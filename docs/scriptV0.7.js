@@ -643,10 +643,7 @@ document.addEventListener("DOMContentLoaded", function () {
         logoMobileNav.addEventListener("click", handleLogoClick);
         logoMobileNav.addEventListener("touchstart", handleLogoClick);
     }
-});
-
-
- 
+}); 
 
 document.querySelectorAll('.pricing-card').forEach(card => {
     const list = card.querySelector('.features-list');
@@ -661,10 +658,9 @@ document.querySelectorAll('.pricing-card').forEach(card => {
       button.addEventListener('click', () => {
         list.classList.toggle('expanded');
         list.classList.toggle('collapsed');
-        button.textContent = list.classList.contains('expanded') ? 'Ver menos' : 'Ver más';
+        button.textContent = list.classList.contains('expanded') ? 'VER MENOS' : 'VER MÁS';
       });
     } else {
-      // Menos o igual a 5 elementos, no necesita botón
       button.style.display = 'none';
     }
 });
