@@ -1,11 +1,23 @@
 const fetch = require('node-fetch');
 const emailController = require('../pdf/controllers/emailController');
+const fs = require('fs');
+const path = require('path');
 
 const ordenesPendientes = {};
 
 const crearSuscripcionDinamica = async (req, res) => {
   try {
     const { clienteEmail, orderData } = req.body;
+
+    // Guardar datos recibidos temporalmente
+    const rutaArchivo = path.join(__dirname, 'tempDatosCrearSuscripcion.json');
+    fs.writeFile(rutaArchivo, JSON.stringify({ clienteEmail, orderData }, null, 2), (err) => {
+      if (err) {
+        console.error('Error guardando archivo temporal en crearSuscripcionDinamica:', err);
+      } else {
+        console.log('Datos de crearSuscripcionDinamica guardados temporalmente');
+      }
+    });
 
     console.log('Datos recibidos para crear suscripción:', { clienteEmail, orderData });
 
@@ -69,6 +81,16 @@ async function procesarEnvioCorreosConOrden(orderData) {
 
 const webhookSuscripcion = async (req, res) => {
   try {
+    // Guardar datos del webhook temporalmente
+    const rutaArchivoWebhook = path.join(__dirname, 'tempDatosWebhook.json');
+    fs.writeFile(rutaArchivoWebhook, JSON.stringify(req.body, null, 2), (err) => {
+      if (err) {
+        console.error('Error guardando archivo temporal en webhookSuscripcion:', err);
+      } else {
+        console.log('Datos de webhookSuscripcion guardados temporalmente');
+      }
+    });
+
     const mpNotification = req.body;
     const topic = req.query.topic || mpNotification.type || mpNotification.topic;
     const action = mpNotification.action;
@@ -102,7 +124,7 @@ const webhookSuscripcion = async (req, res) => {
         const monto = paymentInfo.transaction_amount || 0;
         const clienteEmail = paymentInfo.payer?.email || 'cliente@example.com';
         const fecha = new Date().toLocaleDateString('es-MX');
-        const resumenServicios = ''; 
+        const resumenServicios = '';
         const mensajeContinuar = 'La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.';
 
         const orderDataFallback = { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, mensajeContinuar };
@@ -127,10 +149,9 @@ const webhookSuscripcion = async (req, res) => {
 
     return res.status(200).send('Evento no relevante');
   } catch (error) {
-    console.error(' Error en webhook:', error);
+    console.error('Error en webhook:', error);
     return res.status(500).send('Error interno del servidor');
   }
 };
-
 
 module.exports = { crearSuscripcionDinamica, webhookSuscripcion };
