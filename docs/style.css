@@ -395,18 +395,41 @@ body {
 }
 
 .pricing-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: fit-content;
+    border: 2px solid transparent;
+    border-radius: 1rem;
     background: white;
     border-radius: 2rem;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     width: 100%;
     max-width: 350px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     height: 100%;
+}
+
+/* Oculta parte de la lista al inicio */
+.features-list.collapsed li:nth-child(n+6) {
+  display: none;
+}
+
+.features-list.expanded li {
+  display: list-item;
+}
+
+.toggle-features {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
 .pricing-card-popular {

@@ -647,3 +647,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
  
+
+document.querySelectorAll('.pricing-card').forEach(card => {
+    const list = card.querySelector('.features-list');
+    const button = card.querySelector('.toggle-features');
+
+    const featureItems = list.querySelectorAll('li');
+
+    if (featureItems.length > 5) {
+      list.classList.add('collapsed');
+      button.style.display = 'inline-block';
+
+      button.addEventListener('click', () => {
+        list.classList.toggle('expanded');
+        list.classList.toggle('collapsed');
+        button.textContent = list.classList.contains('expanded') ? 'Ver menos' : 'Ver más';
+      });
+    } else {
+      // Menos o igual a 5 elementos, no necesita botón
+      button.style.display = 'none';
+    }
+});
