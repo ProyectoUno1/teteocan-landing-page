@@ -8,6 +8,7 @@
     "express": "^5.1.0",
     "mercadopago": "^2.8.0",
     "nodemailer": "^7.0.3",
-    "pdf-creator-node": "^2.3.5"
+    "pdf-creator-node": "^2.3.5",
+    "sqlite3": "^5.1.7"
   }
 }

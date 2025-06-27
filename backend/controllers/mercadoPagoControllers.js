@@ -1,7 +1,6 @@
 const fetch = require('node-fetch');
 const emailController = require('../pdf/controllers/emailController');
-
-const ordenesPendientes = {};
+const db = require('../db');
 
 const crearSuscripcionDinamica = async (req, res) => {
   try {
@@ -49,8 +48,28 @@ const crearSuscripcionDinamica = async (req, res) => {
     }
 
     const data = await response.json();
+    const preapprovalId = data.id;
 
-    ordenesPendientes[data.id] = { clienteEmail, orderData };
+    // Guardar en SQLite
+    db.run(`
+      INSERT OR REPLACE INTO ordenes (
+        preapproval_id, cliente_email, nombre_paquete, resumen_servicios, monto, fecha, mensaje_continuar
+      ) VALUES (?, ?, ?, ?, ?, ?, ?)
+    `, [
+      preapprovalId,
+      clienteEmail,
+      orderData.nombrePaquete,
+      orderData.resumenServicios,
+      orderData.monto,
+      orderData.fecha,
+      orderData.mensajeContinuar || 'La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.'
+    ], (err) => {
+      if (err) {
+        console.error('Error al guardar la orden en SQLite:', err);
+      } else {
+        console.log(`Orden con preapproval_id ${preapprovalId} guardada en SQLite`);
+      }
+    });
 
     res.json({ init_point: data.init_point });
 
@@ -67,78 +86,84 @@ const webhookSuscripcion = async (req, res) => {
 
     console.log('Webhook recibido:', topic, action);
 
-    if (topic === 'payment' || mpNotification.type === 'payment') {
-      const paymentId = mpNotification.data?.id;
-
-      if (!paymentId) {
-        console.log('ID de pago no recibido');
-        return res.status(400).send('Falta ID de pago');
-      }
+    if ((topic === 'payment' || mpNotification.type === 'payment') && mpNotification.data?.id) {
+      const paymentId = mpNotification.data.id;
 
       const response = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
-        headers: {
-          Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
-        },
+        headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}` },
       });
 
       const paymentInfo = await response.json();
-
       const preapprovalId = mpNotification.preapproval_id || mpNotification.data?.preapproval_id;
 
-      const orden = ordenesPendientes[preapprovalId];
+      db.get(`SELECT * FROM ordenes WHERE preapproval_id = ?`, [preapprovalId], async (err, row) => {
+        if (err) {
+          console.error('Error consultando orden en SQLite:', err);
+          return res.status(500).send('Error al buscar orden');
+        }
 
-      if (orden) {
-        console.log('orden.orderData en webhook:', orden.orderData);
-        const reqMock = { body: orden.orderData };
-        const resMock = { status: () => ({ json: () => {} }) };
-        await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
-        await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+        if (row) {
+          const reqMock = {
+            body: {
+              nombrePaquete: row.nombre_paquete,
+              resumenServicios: row.resumen_servicios,
+              monto: row.monto,
+              fecha: row.fecha,
+              clienteEmail: row.cliente_email,
+              mensajeContinuar: row.mensaje_continuar
+            }
+          };
+          const resMock = { status: () => ({ json: () => {} }) };
 
-        delete ordenesPendientes[preapprovalId];
-      } else {
-        const nombrePaquete = paymentInfo.description || 'Suscripción';
-        const monto = paymentInfo.transaction_amount || 0;
-        const clienteEmail = paymentInfo.payer?.email || 'cliente@example.com';
-        const fecha = new Date().toLocaleDateString('es-MX');
+          await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+          await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
 
-        const resumenServicios = 'Suscripción activa con Mercado Pago';
-        const mensajeContinuar = 'La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.';
-
-        const reqMock = {
-          body: { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, mensajeContinuar }
-        };
-        const resMock = { status: () => ({ json: () => {} }) };
-
-        await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
-        await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
-      }
-
-      return res.status(200).send('Webhook procesado correctamente');
+          db.run('DELETE FROM ordenes WHERE preapproval_id = ?', [preapprovalId]);
+          return res.status(200).send('Webhook procesado y correos enviados');
+        } else {
+          console.log('Orden no encontrada en DB para preapproval_id:', preapprovalId);
+          return res.status(200).send('Webhook recibido pero sin orden asociada');
+        }
+      });
     }
 
     if (topic === 'preapproval' && action === 'authorized') {
-      const preapproval_id = mpNotification.data?.id;
-      const orden = ordenesPendientes[preapproval_id];
+      const preapprovalId = mpNotification.data?.id;
 
-      if (orden) {
+      db.get(`SELECT * FROM ordenes WHERE preapproval_id = ?`, [preapprovalId], async (err, row) => {
+        if (err) {
+          console.error('Error consultando orden en SQLite:', err);
+          return res.status(500).send('Error al buscar orden');
+        }
 
-    
-        const reqMock = { body: orden.orderData };
-        const resMock = { status: () => ({ json: () => {} }) };
+        if (row) {
+          const reqMock = {
+            body: {
+              nombrePaquete: row.nombre_paquete,
+              resumenServicios: row.resumen_servicios,
+              monto: row.monto,
+              fecha: row.fecha,
+              clienteEmail: row.cliente_email,
+              mensajeContinuar: row.mensaje_continuar
+            }
+          };
+          const resMock = { status: () => ({ json: () => {} }) };
 
-        await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
-        await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+          await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+          await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
 
-        delete ordenesPendientes[preapproval_id];
-        return res.status(200).send('Webhook preapproval autorizado y correos enviados');
-      }
-
-      return res.status(200).send('Webhook preapproval recibido pero sin orden en memoria');
+          db.run('DELETE FROM ordenes WHERE preapproval_id = ?', [preapprovalId]);
+          return res.status(200).send('Webhook preapproval autorizado y correos enviados');
+        } else {
+          console.log('Orden preapproval no encontrada en DB:', preapprovalId);
+          return res.status(200).send('Webhook preapproval sin orden');
+        }
+      });
     }
 
     return res.status(200).send('Evento no relevante');
   } catch (error) {
-    console.error(' Error en webhook:', error);
+    console.error('Error en webhook:', error);
     return res.status(500).send('Error interno del servidor');
   }
 };
