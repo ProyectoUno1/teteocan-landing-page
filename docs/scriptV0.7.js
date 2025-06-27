@@ -392,10 +392,10 @@ toggleExtrasBtn.addEventListener('click', function () {
 function updateExtraPricesInForm() {
     if (!selectedPackage) return;
 
-    const isAplastante = selectedPackage.name.toLowerCase().includes('aplastante');
+    const isTitan = selectedPackage.name.toLowerCase().includes('titan');
     const labels = extraServicesForm.querySelectorAll('label');
 
-    const freeExtrasInAplastante = ['negocios', 'tpv', 'logotipo'];
+    const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
 
     labels.forEach(label => {
         const priceSpan = label.querySelector('.extra-price');
@@ -404,7 +404,7 @@ function updateExtraPricesInForm() {
         const checkbox = label.querySelector('input[type="checkbox"]');
         const originalPrice = parseFloat(checkbox.dataset.price).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
 
-        if (isAplastante && freeExtrasInAplastante.includes(checkbox.value)) {
+        if (isTitan && freeExtrasInTitan.includes(checkbox.value)) {
             priceSpan.textContent = 'Gratis';
             priceSpan.style.color = ' #33BDDD';
             priceSpan.style.fontWeight = '600';
@@ -434,17 +434,17 @@ function updateExtraPricesInForm() {
 function updatePriceWithExtras() {
     let extrasTotal = 0;
     const checkedBoxes = extraServicesForm.querySelectorAll('input[type="checkbox"]:checked');
-    const isAplastante = selectedPackage?.name.toLowerCase().includes('aplastante');
+    const isTitan = selectedPackage?.name.toLowerCase().includes('titan');
 
-    const freeExtrasInAplastante = ['negocios', 'tpv', 'logotipo'];
+    const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
     const prevExtras = servicesList.querySelectorAll('.extra-item');
     prevExtras.forEach(e => e.remove());
 
     checkedBoxes.forEach(cb => {
         const price = parseFloat(cb.dataset.price) || 0;
-        const isFreeInAplastante = isAplastante && freeExtrasInAplastante.includes(cb.value);
+        const isFreeInTitan = isTitan && freeExtrasInTitan.includes(cb.value);
 
-        if (!isFreeInAplastante) {
+        if (!isFreeInTitan) {
             extrasTotal += price;
         }
 
