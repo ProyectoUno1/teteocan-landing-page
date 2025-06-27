@@ -60,29 +60,40 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // WhatsApp button functionality
-document.addEventListener('DOMContentLoaded', function () {
-    const whatsappBtn = document.getElementById('whatsappBtn');
-
-    if (whatsappBtn) {
-        whatsappBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-
-            const phoneNumber = '527651033282';
-            const message = encodeURIComponent('¡Hola Teteocan! Estoy interesado en sus servicios. ¿Podrían brindarme más información?');
-
-            const isMobile = /iPhone|Android|iPad|iPod/i.test(navigator.userAgent);
-            const whatsappUrl = isMobile
-                ? `https://wa.me/${phoneNumber}?text=${message}`
-                : `https://web.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
-
-            try {
-                window.open(whatsappUrl, '_blank');
-            } catch (error) {
-                console.error('Error al intentar abrir WhatsApp:', error);
-                alert('Error al abrir WhatsApp. Por favor, verifique que tiene la aplicación instalada.');
-            }
-        });
+document.addEventListener('DOMContentLoaded', function() {
+  const whatsappBtn = document.getElementById('whatsappBtn');
+  
+  if (whatsappBtn) {
+    // Función para manejar el clic/touch
+    function handleClick(e) {
+      e.preventDefault();
+      
+      // Restaurar opacidad inmediatamente (para móvil)
+      this.style.opacity = '1';
+      
+      const phoneNumber = '527651033282';
+      const message = encodeURIComponent('¡Hola! Estoy interesado en sus servicios. ¿Podrían brindarme más información?');
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      const whatsappUrl = isMobile 
+        ? `https://wa.me/${phoneNumber}?text=${message}`
+        : `https://web.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
+      
+      // Abrir enlace
+      window.open(whatsappUrl, '_blank');
     }
+    
+    // Eventos para desktop y móvil
+    whatsappBtn.addEventListener('click', handleClick);
+    
+    // Solución específica para el problema de transparencia en móvil
+    whatsappBtn.addEventListener('touchstart', function() {
+      this.style.opacity = '0.9';
+    });
+    
+    whatsappBtn.addEventListener('touchend', function() {
+      this.style.opacity = '1';
+    });
+  }
 });
 
 let lastScroll = 0;
