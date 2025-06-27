@@ -5,10 +5,10 @@
 }
 
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Poppins', sans-serif;
     line-height: 1.6;
     color: #1f2937;
-    background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+    background: linear-gradient(180deg, #eaf6ff 0%, #f6fcff 60%, #b6f0ef 100%);
 }
 
 
@@ -20,13 +20,13 @@ body {
 
 /* Header Styles */
 .header {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    background: linear-gradient(180deg, #ffffff 20%, #c3d8ee 100%);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 1000;
+    
 }
 
 .header-content {
@@ -53,8 +53,8 @@ body {
 }
 
 .logo-icon {
-    max-width: 200px;
-    max-height: 200px;
+    max-width: 75px;
+    max-height: 75px;
     width: auto;
     height: auto;
 }
@@ -76,13 +76,29 @@ body {
     align-items: center;
 }
 
-.nav-links a {
+
+
+.boton-nav {
+    padding: 10px 20px;
+    border-radius: 30px;
+    /* borde redondo tipo píldora */
+    background: #03C2BB;
+    color: rgb(255, 255, 255);
     text-decoration: none;
-    color: #6b7280;
-    font-weight: 500;
-    transition: color 0.3s ease;
-    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    display: inline-block;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+
+.boton-nav:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    color: white;
+    text-decoration: none;
+}
+
 
 
 
@@ -237,13 +253,13 @@ body {
 .hero-title {
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: bold;
-    color: #1f2937;
+    color: #3773B8;
     margin-bottom: 1.5rem;
     line-height: 1.2;
 }
 
 .hero-title-highlight {
-    background: #00ADD5;
+    background: #03C2BB;
 
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -252,7 +268,7 @@ body {
 
 .hero-description {
     font-size: 1.25rem;
-    color: #6b7280;
+    color: #3773B8;
     margin-bottom: 2rem;
     max-width: 48rem;
     margin-left: auto;
@@ -280,22 +296,6 @@ body {
     font-size: 1rem;
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, #2563eb, #4f46e5);
-    color: white;
-}
-
-.btn-secondary {
-    border: 2px solid #2563eb;
-    color: #2563eb;
-    background: transparent;
-}
-
-.btn-outline {
-    border: 2px solid #d1d5db;
-    color: #374151;
-    background: transparent;
-}
 
 
 /* Features Grid */
@@ -307,6 +307,7 @@ body {
     justify-items: center;
     align-items: start;
 }
+
 
 .feature-card {
     background: white;
@@ -335,22 +336,30 @@ body {
 
 }
 
+.feature-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
 .feature-icon-blue {
-    background: #03475D;
+    background: #03C2BB;
     color: white;
+    border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .feature-title {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
-    color: #1f2937;
+    color: #3773B8;
 }
 
 .feature-description {
-    color: #6b7280;
+    color: #3773B8;
     line-height: 1.6;
+    text-align: center;
 }
 
 /* Section Styles */
@@ -376,10 +385,6 @@ body {
 
 
 /* Pricing Section */
-.pricing {
-    padding: 4rem 0;
-    background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
-}
 
 .pricing-grid {
     display: grid;
@@ -391,12 +396,11 @@ body {
 
 .pricing-card {
     background: white;
-    border-radius: 1rem;
+    border-radius: 2rem;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    border: 2px solid transparent;
     width: 100%;
     max-width: 350px;
     display: flex;
@@ -448,18 +452,21 @@ body {
 .plan-title {
     font-size: 1.5rem;
     font-weight: bold;
-
-    color: #1f2937;
+    text-shadow:
+    1px 1px 1px rgb(6, 0, 0),
+    1px 1px 1px rgb(0, 0, 0);
     margin-bottom: 0.5rem;
 }
 
 
 .header-top {
-    padding: 1rem 1rem;
+    padding-top: 1rem;
     text-align: center;
     color: white;
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
+    border-top-left-radius: 2rem;
+    border-top-right-radius: 2rem;
+    border-bottom-right-radius: 2rem;
+    border-bottom-left-radius: 2rem;
 }
 
 .plan-price {
@@ -470,21 +477,28 @@ body {
 }
 
 .price-amount {
-    font-size: 3rem;
+    font-size: 3.5rem;
+    text-shadow:
+    1px 1px 1px rgb(6, 0, 0),
+    1px 1px 1px rgb(0, 0, 0);
     font-weight: bold;
-    color: #1f2937;
+    color: #ffffff;
 }
 
 .price-period {
     font-size: 1rem;
-    color: #6b7280;
+    color: #ffffff;
     margin-left: 0.25rem;
+    text-shadow:
+    1px 1px 1px rgb(6, 0, 0),
+    1px 1px 1px rgb(0, 0, 0);
+    
 }
 
 .plan-description {
-    color: #6b7280;
+    color: #3773B8;
     font-size: 1rem;
-    margin-bottom: 1.5rem;
+    margin: 1rem;
 
 }
 
@@ -539,21 +553,29 @@ body {
 
 /* Explorador */
 .pricing-card:nth-child(1) .header-top {
-    background: linear-gradient(135deg, #0099ff, #33ccff);
+    background: #36CFC9;
     padding: rem;
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
     color: white;
 }
 
-/* Digital */
+.pricing-card:nth-child(1) {
+    border: 5px solid #36CFC9;
+}
+
+/* Impulso */
 .pricing-card:nth-child(2) .header-top {
-    background: linear-gradient(135deg, #7f00ff, #e100ff);
+    background: #03C2BB;
     padding: 1rem;
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
     color: white;
 
+}
+
+.pricing-card:nth-child(2) {
+    border: 5px solid #03C2BB;
 }
 
 .line-break {
@@ -561,23 +583,31 @@ body {
 }
 
 
-/* Completo */
+/* Dominio */
 .pricing-card:nth-child(3) .header-top {
-    background: linear-gradient(135deg, #0099ff, #33ccff);
+    background: #5F8FC5;
     padding: 1rem;
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
     color: white;
 }
 
+.pricing-card:nth-child(3) {
+    border: 5px solid #5F8FC5;
+}
 
-/* Aplastante */
+
+/* Titan */
 .pricing-card:nth-child(4) .header-top {
-    background: linear-gradient(135deg, #014386, #005f99);
+    background: #3773B8;
     padding: 1rem;
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
     color: white;
+}
+
+.pricing-card:nth-child(4) {
+    border: 5px solid #3773B8;
 }
 
 
@@ -587,34 +617,47 @@ body {
 
 
 /* btns package*/
-.pricing-card:nth-child(1) .btn-outline,
-.pricing-card:nth-child(3) .btn-outline {
-    background: linear-gradient(135deg, #0099ff, #33ccff);
+.pricing-card:nth-child(1) .btn-outline {
+    background: #36CFC9;
     color: white;
-    border: none;
-}
-
-.pricing-card:nth-child(2) .btn-primary {
-    background: linear-gradient(135deg, #7f00ff, #e100ff);
-    color: white;
-    border: none;
-}
-
-.pricing-card:nth-child(4) .btn-outline {
-    background: linear-gradient(135deg, #001f3f, #005f99);
-    color: white;
-    border: none;
-}
-
-/* btns */
-.pricing-card .btn-outline,
-.pricing-card .btn-primary {
     padding: 12px 24px;
     border-radius: 25px;
     font-weight: 600;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
 }
+
+.pricing-card:nth-child(2) .btn-primary {
+    background: #03C2BB;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+
+}
+
+.pricing-card:nth-child(3) .btn-outline {
+    background: #5F8FC5;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.pricing-card:nth-child(4) .btn-outline {
+    background: #3773B8;
+    color: white;
+    border-radius: 25px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+
+}
+
 
 /* Style modal */
 .modal {
@@ -804,6 +847,7 @@ body {
 }
 
 .btn-primary,
+.btnConfirmSubscription,
 .btn-secondary {
     font-size: 1.25rem;
     padding: 0.75rem 2.5rem;
@@ -996,13 +1040,13 @@ body {
 .contact-title {
     font-size: 2.5rem;
     font-weight: bold;
-    color: #1f2937;
+    color: #3773B8;
     margin-bottom: 1rem;
 }
 
 .contact-description {
     font-size: 1.125rem;
-    color: #6b7280;
+    color: #3773B8;
     margin-bottom: 2rem;
     line-height: 1.6;
 }
@@ -1015,12 +1059,13 @@ body {
 
 .contact-feature {
     display: flex;
+    color: #3773B8;
     align-items: center;
     gap: 0.75rem;
 }
 
 .contact-feature-icon {
-    color: #03475D;
+    color: #3773B8;
     font-size: 1.25rem;
 }
 
@@ -1093,7 +1138,7 @@ body {
 
 /* Footer */
 .footer {
-    background: #1f2937;
+    background: #3773B8;
     color: white;
     padding: 3rem 0 1rem;
 }
@@ -1115,7 +1160,7 @@ body {
 }
 
 .footer-description {
-    color: #9ca3af;
+    color: white;
     margin-top: 1rem;
     line-height: 1.6;
 }
@@ -1141,7 +1186,7 @@ body {
 }
 
 .footer-link {
-    color: #9ca3af;
+    color: white;
     text-decoration: none;
     transition: color 0.3s ease;
 }
@@ -1163,12 +1208,12 @@ body {
 }
 
 .credits-date {
-    color: #9ca3af;
+    color: white;
     font-size: 0.875rem;
 }
 
 .footer-copyright {
-    color: #9ca3af;
+    color: white;
     font-size: 0.875rem;
 }
 
@@ -1209,7 +1254,8 @@ body {
     }
 
     .btn-primary,
-    .btn-secondary {
+    .btn-secondary,
+    .btn-outline {
         width: 100%;
         min-width: auto;
     }
@@ -1224,7 +1270,7 @@ body {
 
 @media (hover: hover) and (pointer: fine) {
     .nav-links a:hover {
-        color: #2563eb;
+        color: #ffffff;
     }
 
     .mobile-nav-links .nav-link:hover {
@@ -1307,7 +1353,13 @@ body {
         background-color: #f0f4ff;
         border-radius: 8px;
     }
-   
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-outline {
+        width: 100%;
+        min-width: auto;
+    }
 
 }
 
@@ -1388,7 +1440,7 @@ body {
         border-color: #2563eb;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
-    
+
 }
 
 @media (max-width: 1024px) {
@@ -1427,6 +1479,13 @@ body {
 
     .pricing-header {
         padding: 0;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-outline {
+        width: 100%;
+        min-width: auto;
     }
 }
 
@@ -1478,7 +1537,14 @@ body {
         max-width: 100px;
         max-height: 50px;
     }
-   
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-outline {
+        width: 100%;
+        min-width: auto;
+    }
+
 }
 
 
@@ -1514,7 +1580,14 @@ body {
     .pricing-header {
         padding: 0;
     }
-   
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-outline {
+        width: 100%;
+        min-width: auto;
+    }
+
 }
 
 /* Medium tablets and large mobile phones */
@@ -1610,6 +1683,13 @@ body {
     .pricing-header {
         padding: 0;
     }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-outline {
+        width: 100%;
+        min-width: auto;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1651,6 +1731,13 @@ body {
 
     .pricing-header {
         padding: 0;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-outline {
+        width: 100%;
+        min-width: auto;
     }
 
 }

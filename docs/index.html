@@ -4,15 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teteocan - Soluciones Digitales Integrales</title>
+    <title>Tlatec - Soluciones Digitales</title>
     <meta name="description"
         content="Impulsa tu negocio con Teteocan. Soluciones digitales integrales desde paquetes gratuitos hasta servicios completos de transformación digital">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+
 
 </head>
 
@@ -23,12 +24,12 @@
 
                 <nav class="nav-desktop">
                     <div class="logo-area">
-                        <img src="assets/images/teteocan-logo.png" alt="Logo" class="logo-icon" id="logo-desktop" />
+                        <img src="assets/images/LogoTlatec.png" alt="Logo" class="logo-icon" id="logo-desktop" />   <!-- Aca el logo-icon en el css es el que cambia el tamaño de la imagen del logo -->
 
                     </div>
                     <ul class="nav-links">
-                        <li><a href="#package">Paquetes</a></li>
-                        <li><a href="#contacto">Contacto</a></li>
+                        <li><a href="#package" class="boton-nav">Paquetes</a></li>
+                        <li><a href="#contacto" class="boton-nav">Contacto</a></li>
                     </ul>
                 </nav>
 
@@ -42,7 +43,7 @@
                             <i class="fas fa-bars" id="menuIcon"></i>
                         </button>
                         <div class="mobile-logo-area">
-                            <img src="assets/images/teteocan-logo.png" alt="Logo" class="mobile-logo-icon"
+                            <img src="assets/images/LogoTlatec.png" alt="Logo" class="mobile-logo-icon"
                                 id="logo-mobile" />
                         </div>
                         <div class="mobile-spacer"></div>
@@ -53,7 +54,7 @@
                 <nav class="nav-mobile" id="mobileNav">
                     <div class="nav-mobile-content">
                         <div class="mobile-nav-logo-area">
-                            <img src="assets/images/teteocan-logo.png" alt="Logo" class="mobile-nav-logo"
+                            <img src="assets/images/LogoTlatec.png" alt="Logo" class="mobile-nav-logo"
                                 id="logo-mobile-nav" />
                         </div>
                         <div class="mobile-nav-links">
@@ -69,42 +70,51 @@
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title">
-                    Impulsa tu negocio con
-                    <span class="hero-title-highlight">Teteocan</span>
+                    IMPULSA TU NEGOCIO
+                    <span class="hero-title-highlight">TLATEC</span>
                 </h1>
                 <p class="hero-description">
-                    Impulsa el crecimiento de tu negocio con nuestras soluciones digitales integrales,
-                    desde paquetes de inicio gratuitos hasta una transformación digital completa.
+                    IMPULSA EL CRECIMIENTO DE TU NEGOCIO CON NUESTRAS SOLUCIONES DIGITALES
+                    INTEGRALES, DESDE PAQUETES DE INICIO GRATUITOS HASTA UNA TRANSFORMACIÓN
+                    DIGITAL COMPLETA.
                 </p>
 
             </div>
 
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon feature-icon-blue">
-                        <i class="fas fa-bolt"></i>
+                    <div class="feature-header">
+                        <div class="feature-icon feature-icon-blue">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3 class="feature-title">RÁPIDO Y EFICIENTE</h3>
                     </div>
-                    <h3 class="feature-title">Rápido y Eficiente</h3>
-                    <p class="feature-description">Implementación inmediata de soluciones digitales que generan
-                        resultados desde el primer día.</p>
+                    <p class="feature-description">
+                        IMPLEMENTACIÓN INMEDIATA DE SOLUCIONES DIGITALES QUE GENERAN RESULTADOS DESDE EL PRIMER DÍA.
+                    </p>
+                </div>
+
+
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon feature-icon-blue">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="feature-title"> SEGURO Y CONFIABLE</h3>
+                    </div>
+                    <p class="feature-description"> TECNOLOGÍAS ROBUSTAS Y SEGURAS QUE PROTEGEN TU INFORMACIÓN Y LA
+                        DE TUS CLIENTES.</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon feature-icon-blue">
-                        <i class="fas fa-shield-alt"></i>
+                    <div class="feature-header">
+                        <div class="feature-icon feature-icon-blue">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="feature-title">ESCALABLE</h3>
                     </div>
-                    <h3 class="feature-title">Seguro y Confiable</h3>
-                    <p class="feature-description">Tecnologías robustas y seguras que protegen tu información y la de
-                        tus clientes.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon feature-icon-blue">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3 class="feature-title">Escalable</h3>
-                    <p class="feature-description">Crece con tu negocio. Nuestros paquetes se adaptan a tus necesidades
-                        en cada etapa.</p>
+                    <p class="feature-description"> CRECE CON TUNEGOCIO. NUESTROS PAQUETES SE ADAPTAN A TUS
+                        NECESIDADES EN CADA ETAPA.</p>
                 </div>
             </div>
         </div>
@@ -125,12 +135,14 @@
                     <div class="pricing-header">
                         <div class="header-top">
                             <h3 class="plan-title">PAQUETE EXPLORADOR</h3>
-                        </div>
-                        <div class="plan-price">
+                            <div class="plan-price">
                             <span class="price-amount">$0</span>
                             <span class="price-period">/mes</span>
                         </div>
-                        <p class="plan-description">Perfecto para explorar nuestros servicios</p>
+                        </div>
+                        
+                        <p class="plan-description">DA EL PRIMER PASO CON UNA WEB SIMPLE Y PROFESIONAL QUE TE HACE
+                            VISIBLE.</p>
                     </div>
                     <div class="pricing-body">
                         <ul class="features-list">
@@ -158,21 +170,23 @@
 
                     </div>
                     <div class="pricing-footer">
-                        <button type="button" class="btn btn-outline">SELECT EXPLORADOR</button>
+                        <button type="button" class="btnConfirmSubscription btn-outline">SELECT EXPLORADOR</button>
                     </div>
                 </div>
 
-                <div class="pricing-card" data-package-id="digital" data-package-name="Paquete Digital"
+                <div class="pricing-card" data-package-id="impulso" data-package-name="Impulso"
                     data-package-price="299.99">
                     <div class="pricing-header">
                         <div class="header-top">
-                            <h3 class="plan-title">PAQUETE<span class="line-break">DIGITAL</span></h3>
-                        </div>
-                        <div class="plan-price">
-                            <span class="price-amount">$299.99</span>
+                            <h3 class="plan-title">PAQUETE<span class="line-break">IMPULSO</span></h3>
+                            <div class="plan-price">
+                            <span class="price-amount">$299</span>
                             <span class="price-period">/mes</span>
                         </div>
-                        <p class="plan-description">Para pequeñas empresas en crecimiento</p>
+                        </div>
+                        
+                        <p class="plan-description">ACELERA TU PRESENCIA DIGITAL CON HERRAMIENTAS QUE CONECTAN MEJOR CON
+                            TUS CLIENTES. </p>
                     </div>
                     <div class="pricing-body">
                         <ul class="features-list">
@@ -204,21 +218,22 @@
                         </ul>
                     </div>
                     <div class="pricing-footer">
-                        <button type="button" class="btn btn-primary">SELECT DIGITAL</button>
+                        <button type="button" class="btnConfirmSubscription btn-primary">SELECT IMPULSO</button>
                     </div>
                 </div>
 
-                <div class="pricing-card" data-package-id="completo" data-package-name="Paquete Completo"
+                <div class="pricing-card" data-package-id="dominio" data-package-name="Paquete dominio"
                     data-package-price="359.99">
                     <div class="pricing-header">
                         <div class="header-top">
-                            <h3 class="plan-title">PAQUETE COMPLETO</h3>
-                        </div>
-                        <div class="plan-price">
-                            <span class="price-amount">$359.99</span>
+                            <h3 class="plan-title">PAQUETE <span class="line-break">DOMINIO</span></h3>
+                            <div class="plan-price">
+                            <span class="price-amount">$359</span>
                             <span class="price-period">/mes</span>
                         </div>
-                        <p class="plan-description">Para empresas establecidas</p>
+                        </div>
+                        <p class="plan-description">PROFESIONALIZA TU MARCA Y AUTOMATIZA PROCESOS CON SOLUCIONES
+                            PERSONALIZADAS.</p>
                     </div>
                     <div class="pricing-body">
                         <ul class="features-list">
@@ -251,22 +266,24 @@
 
                     </div>
                     <div class="pricing-footer">
-                        <button type="button" class="btn btn-outline">SELECT COMPLETO</button>
+                        <button type="button" class="btnConfirmSubscription btn-outline">SELECT DOMINIO</button>
                     </div>
                 </div>
 
-                <div class="pricing-card pricing-card-popular" data-package-id="aplastante"
-                    data-package-name="Paquete Aplastante" data-package-price="399.99">
+                <div class="pricing-card pricing-card-popular" data-package-id="titan" data-package-name="Titan"
+                    data-package-price="399.99">
                     <div class="pricing-header">
                         <div class="header-top">
                             <div class="plan-badge plan-badge-blue">Más Popular</div>
-                            <h3 class="plan-title">PAQUETE APLASTANTE</h3>
-                        </div>
-                        <div class="plan-price">
-                            <span class="price-amount">$399.99</span>
+                            <h3 class="plan-title">PAQUETE TITAN</h3>
+                            <div class="plan-price">
+                            <span class="price-amount">$399</span>
                             <span class="price-period">/mes</span>
                         </div>
-                        <p class="plan-description">Para grandes empresas</p>
+                        </div>
+                         
+                        <p class="plan-description">CONQUISTA TU MERCADO DIGITAL CON UN ECOSISTEMA COMPLETO DE
+                            SOLUCIONES INTEGRADAS. </p>
                     </div>
                     <div class="pricing-body">
                         <ul class="features-list">
@@ -299,7 +316,7 @@
 
                     </div>
                     <div class="pricing-footer">
-                        <button type="button" class="btn btn-outline">SELECT APLASTANTE</button>
+                        <button type="button" class="btnConfirmSubscription btn-outline">SELECT TITAN</button>
                     </div>
                 </div>
             </div>
@@ -366,9 +383,9 @@
                 </label>
             </form>
 
-            <p>¿Deseas continuar con la compra?</p>
+            <p>¿Deseas continuar con la suscipción?</p>
             <div class="modal-actions">
-                <button id="btnConfirmPurchase" class="btn-primary">Confirmar Compra</button>
+                <button id="btnConfirmPurchase" class="btn-primary">Confirmar Suscripción</button>
                 <button id="btnCancelPurchase" class="btn-secondary">Cancelar</button>
             </div>
         </div>
@@ -383,9 +400,9 @@
                         <tr>
                             <th>Características</th>
                             <th>Explorador</th>
-                            <th>Digital</th>
-                            <th>Completo</th>
-                            <th>Aplastante</th>
+                            <th>Impulso</th>
+                            <th>Dominio</th>
+                            <th>Titan</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -506,7 +523,7 @@
                     <div class="footer-brand">
                         <div class="logo">
                             <div class="logo-area">
-                                <img src="assets/images/teteocan-logo-footer.png" alt="Logo" class="logo-icon-footer" />
+                                <img src="assets/images/IconoTlatec_azul.png" alt="Logo" class="logo-icon-footer" />
                             </div>
                         </div>
                         <p class="footer-description">
@@ -518,9 +535,9 @@
                             <h4 class="footer-title">Paquetes</h4>
                             <ul class="footer-list">
                                 <li><a href="#package" class="footer-link">Explorador</a></li>
-                                <li><a href="#package" class="footer-link">Digital</a></li>
-                                <li><a href="#package" class="footer-link">Completo</a></li>
-                                <li><a href="#package" class="footer-link">Aplastante</a></li>
+                                <li><a href="#package" class="footer-link">Impulso</a></li>
+                                <li><a href="#package" class="footer-link">Dominio</a></li>
+                                <li><a href="#package" class="footer-link">Titan</a></li>
                             </ul>
                         </div>
                         <div class="footer-column">
@@ -561,7 +578,7 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="scriptV0.7.js"></script>
 
     <button class="whatsapp-btn" id="whatsappBtn">
         <i class="fab fa-whatsapp"></i>

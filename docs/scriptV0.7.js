@@ -88,10 +88,10 @@ document.addEventListener('DOMContentLoaded', function () {
 window.addEventListener('scroll', function () {
     const header = document.querySelector('.header');
     if (window.scrollY > 100) {
-        header.style.background = 'rgba(255, 255, 255, 0.98)';
+        header.style.background = 'linear-gradient(180deg, #ffffff 20%, #c3d8ee 100%)';
         header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
     } else {
-        header.style.background = 'rgba(255, 255, 255, 0.95)';
+        header.style.background = 'linear-gradient(180deg, #ffffff 20%, #c3d8ee 100%)';
         header.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
     }
 });
@@ -315,6 +315,7 @@ const toggleExtrasBtn = document.getElementById('toggleExtrasBtn');
 const extraServicesForm = document.getElementById('extraServicesForm');
 const servicesList = document.getElementById('servicesList');
 
+
 let basePrice = 0;
 let finalPrice = 0; // Extra prices
 
@@ -391,10 +392,10 @@ toggleExtrasBtn.addEventListener('click', function () {
 function updateExtraPricesInForm() {
     if (!selectedPackage) return;
 
-    const isAplastante = selectedPackage.name.toLowerCase().includes('aplastante');
+    const isTitan = selectedPackage.name.toLowerCase().includes('titan');
     const labels = extraServicesForm.querySelectorAll('label');
 
-    const freeExtrasInAplastante = ['negocios', 'tpv', 'logotipo'];
+    const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
 
     labels.forEach(label => {
         const priceSpan = label.querySelector('.extra-price');
@@ -403,7 +404,7 @@ function updateExtraPricesInForm() {
         const checkbox = label.querySelector('input[type="checkbox"]');
         const originalPrice = parseFloat(checkbox.dataset.price).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
 
-        if (isAplastante && freeExtrasInAplastante.includes(checkbox.value)) {
+        if (isTitan && freeExtrasInTitan.includes(checkbox.value)) {
             priceSpan.textContent = 'Gratis';
             priceSpan.style.color = ' #33BDDD';
             priceSpan.style.fontWeight = '600';
@@ -433,17 +434,17 @@ function updateExtraPricesInForm() {
 function updatePriceWithExtras() {
     let extrasTotal = 0;
     const checkedBoxes = extraServicesForm.querySelectorAll('input[type="checkbox"]:checked');
-    const isAplastante = selectedPackage?.name.toLowerCase().includes('aplastante');
+    const isTitan = selectedPackage?.name.toLowerCase().includes('titan');
 
-    const freeExtrasInAplastante = ['negocios', 'tpv', 'logotipo'];
+    const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
     const prevExtras = servicesList.querySelectorAll('.extra-item');
     prevExtras.forEach(e => e.remove());
 
     checkedBoxes.forEach(cb => {
         const price = parseFloat(cb.dataset.price) || 0;
-        const isFreeInAplastante = isAplastante && freeExtrasInAplastante.includes(cb.value);
+        const isFreeInTitan = isTitan && freeExtrasInTitan.includes(cb.value);
 
-        if (!isFreeInAplastante) {
+        if (!isFreeInTitan) {
             extrasTotal += price;
         }
 
@@ -470,9 +471,11 @@ function setPackageBasePrice(price) {
 }
 
 btnConfirmPurchase?.addEventListener('click', async () => {
+    const paquetesConSuscripcion = ['impulso', 'dominio', 'titan'];
+
     if (!selectedPackage) return;
 
-    // Pide el correo del cliente antes de continuar
+    // 1. Pedir correo
     const { value: clienteEmail } = await Swal.fire({
         title: 'Ingresa tu correo electrónico',
         input: 'email',
@@ -488,13 +491,14 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 
     if (!clienteEmail) return;
 
-    // 1. Obtén los servicios base
+    updatePriceWithExtras();
+
+    // 2. Obtener servicios seleccionados
     const servicios = [];
     document.querySelectorAll('#servicesList li').forEach(li => {
         servicios.push(li.innerText.trim());
     });
 
-    // 2. Obtén los servicios extra seleccionados y suma su precio
     let extrasSeleccionados = [];
     let extrasTotal = 0;
     document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(checkbox => {
@@ -503,14 +507,10 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         extrasTotal += Number(checkbox.dataset.price || 0);
     });
 
-    // 3. Suma el precio base + extras
     const montoBase = Number(selectedPackage.price || 0);
     const montoFinal = montoBase + extrasTotal;
-
-    // 4. Une todos los servicios para el resumen
     const resumenServicios = [...servicios, ...extrasSeleccionados].join(', ');
 
-    // 5. Datos para el backend
     const orderData = {
         nombrePaquete: selectedPackage.name,
         resumenServicios,
@@ -520,35 +520,74 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos."
     };
 
+    console.log('orderData antes de enviar:', orderData);
+
+    // 3. Mostrar loader
+    Swal.fire({
+        title: 'Procesando...',
+        html: 'Espera un momento mientras se inicia la suscripción.',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
     try {
-        await fetch('https://tlatec-backend.onrender.com/api/orden', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(orderData)
-        });
+        const esConSuscripcion = paquetesConSuscripcion.includes(selectedPackage.id.toLowerCase());
 
-        await fetch('https://tlatec-backend.onrender.com/api/confirmar', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(orderData)
-        });
+        if (esConSuscripcion) {
+            // Paquete con suscripción (requiere planId)
+            const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/suscripcion', {//si se cambio
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    planId: selectedPackage.id, 
+                    clienteEmail,
+                    orderData
+                })
+            });
 
+            const result = await res.json();
 
-        Swal.fire({
-            title: '¡Compra realizada!',
-            text: `Has comprado ${selectedPackage.name} por $${montoFinal.toFixed(2)} MXN. Revisa tu correo.`,
-            icon: 'success',
-            confirmButtonText: 'Aceptar',
-            customClass: { confirmButton: 'custom-alert-button' },
-            buttonsStyling: false
-        });
+            if (!res.ok || !result.init_point) {
+                throw new Error(result.message || 'Error al crear suscripción');
+            }
 
-        closeConfirmModal();
-        selectedPackage = null;
-        document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
+            Swal.close();
+            window.location.href = result.init_point;
+
+        } else {
+            // Paquete gratuito — solo registra y confirma si sen cambio hostinguer
+            await Promise.all([
+                fetch('https://tlatec-backend.onrender.com/api/orden', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                }),
+                fetch('https://tlatec-backend.onrender.com/api/confirmar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                })
+            ]);
+
+            Swal.close();
+            Swal.fire({
+                title: '¡Registro completo!',
+                text: `Te has registrado al paquete ${selectedPackage.name}. Revisa tu correo.`,
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+                customClass: { confirmButton: 'custom-alert-button' },
+                buttonsStyling: false
+            });
+
+            closeConfirmModal();
+            selectedPackage = null;
+            document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
+        }
+
     } catch (error) {
-        Swal.fire('Error', 'No se pudo completar la compra. Intenta de nuevo.', 'error');
-        console.error(error);
+        const resBody = await error.response?.json().catch(() => null);
+        console.error('Error detallado:', resBody);
+        Swal.fire('Error', (resBody?.message || error.message) + '', 'error');
     }
 });
 
@@ -565,8 +604,10 @@ document.querySelectorAll('.pricing-footer button').forEach(button => {
             selectedPackage = {
                 id: pricingCard.getAttribute('data-package-id'),
                 name: pricingCard.getAttribute('data-package-name'),
-                price: parseFloat(pricingCard.getAttribute('data-package-price'))
+                price: parseFloat(pricingCard.getAttribute('data-package-price')),
+                planId: pricingCard.getAttribute('data-package-id')  // <-- aquí
             };
+
             openConfirmModal();
         }
     });
@@ -603,3 +644,6 @@ document.addEventListener("DOMContentLoaded", function () {
         logoMobileNav.addEventListener("touchstart", handleLogoClick);
     }
 });
+
+
+ 
