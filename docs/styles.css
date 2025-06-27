@@ -280,23 +280,6 @@ body {
     font-size: 1rem;
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, #2563eb, #4f46e5);
-    color: white;
-}
-
-.btn-secondary {
-    border: 2px solid #2563eb;
-    color: #2563eb;
-    background: transparent;
-}
-
-.btn-outline {
-    border: 2px solid #d1d5db;
-    color: #374151;
-    background: transparent;
-}
-
 
 /* Features Grid */
 .features-grid {
@@ -546,7 +529,7 @@ body {
     color: white;
 }
 
-/* Digital */
+/* Impulso */
 .pricing-card:nth-child(2) .header-top {
     background: linear-gradient(135deg, #7f00ff, #e100ff);
     padding: 1rem;
@@ -561,7 +544,7 @@ body {
 }
 
 
-/* Completo */
+/* Dominio */
 .pricing-card:nth-child(3) .header-top {
     background: linear-gradient(135deg, #0099ff, #33ccff);
     padding: 1rem;
@@ -571,7 +554,7 @@ body {
 }
 
 
-/* Aplastante */
+/* Titan */
 .pricing-card:nth-child(4) .header-top {
     background: linear-gradient(135deg, #014386, #005f99);
     padding: 1rem;
@@ -591,30 +574,34 @@ body {
 .pricing-card:nth-child(3) .btn-outline {
     background: linear-gradient(135deg, #0099ff, #33ccff);
     color: white;
-    border: none;
-}
-
-.pricing-card:nth-child(2) .btn-primary {
-    background: linear-gradient(135deg, #7f00ff, #e100ff);
-    color: white;
-    border: none;
-}
-
-.pricing-card:nth-child(4) .btn-outline {
-    background: linear-gradient(135deg, #001f3f, #005f99);
-    color: white;
-    border: none;
-}
-
-/* btns */
-.pricing-card .btn-outline,
-.pricing-card .btn-primary {
-    padding: 12px 24px;
+   padding: 12px 24px;
     border-radius: 25px;
     font-weight: 600;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
 }
+
+.pricing-card:nth-child(2) .btn-primary {
+    background: linear-gradient(135deg, #7f00ff, #e100ff);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+    
+}
+
+.pricing-card:nth-child(4) .btn-outline {
+    background: linear-gradient(135deg, #001f3f, #005f99);
+    color: white;
+    border-radius: 25px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+    
+}
+
 
 /* Style modal */
 .modal {
@@ -803,7 +790,7 @@ body {
     flex-wrap: wrap;
 }
 
-.btn-primary,
+.btn-primary,.btnConfirmSubscription,
 .btn-secondary {
     font-size: 1.25rem;
     padding: 0.75rem 2.5rem;
@@ -1209,7 +1196,7 @@ body {
     }
 
     .btn-primary,
-    .btn-secondary {
+    .btn-secondary,.btn-outline {
         width: 100%;
         min-width: auto;
     }
@@ -1307,7 +1294,11 @@ body {
         background-color: #f0f4ff;
         border-radius: 8px;
     }
-   
+    .btn-primary,
+    .btn-secondary,.btn-outline {
+        width: 100%;
+        min-width: auto;
+    }
 
 }
 
@@ -1428,6 +1419,11 @@ body {
     .pricing-header {
         padding: 0;
     }
+    .btn-primary,
+    .btn-secondary,.btn-outline {
+        width: 100%;
+        min-width: auto;
+    }
 }
 
 
@@ -1478,6 +1474,11 @@ body {
         max-width: 100px;
         max-height: 50px;
     }
+    .btn-primary,
+    .btn-secondary,.btn-outline {
+        width: 100%;
+        min-width: auto;
+    }
    
 }
 
@@ -1513,6 +1514,11 @@ body {
 
     .pricing-header {
         padding: 0;
+    }
+    .btn-primary,
+    .btn-secondary,.btn-outline {
+        width: 100%;
+        min-width: auto;
     }
    
 }
@@ -1610,6 +1616,11 @@ body {
     .pricing-header {
         padding: 0;
     }
+    .btn-primary,
+    .btn-secondary,.btn-outline {
+        width: 100%;
+        min-width: auto;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1651,6 +1662,11 @@ body {
 
     .pricing-header {
         padding: 0;
+    }
+    .btn-primary,
+    .btn-secondary,.btn-outline {
+        width: 100%;
+        min-width: auto;
     }
 
 }

@@ -1,6 +1,4 @@
 .vscode/
 .DS_Store
 node_modules/
-backend/tempDatosCrearSuscripcion.json
-backend/tempDatosWebhook.json
 backend/.env
