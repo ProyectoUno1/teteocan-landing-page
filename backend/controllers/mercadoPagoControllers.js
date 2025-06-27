@@ -52,10 +52,10 @@ const crearSuscripcionDinamica = async (req, res) => {
 
         // Guardar en SQLite
         db.run(`
-      INSERT OR REPLACE INTO ordenes (
-        preapproval_id, cliente_email, nombre_paquete, resumen_servicios, monto, fecha, mensaje_continuar
-      ) VALUES (?, ?, ?, ?, ?, ?, ?)
-    `, [
+          INSERT OR REPLACE INTO ordenes (
+            preapproval_id, cliente_email, nombre_paquete, resumen_servicios, monto, fecha, mensaje_continuar
+          ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        `, [
             preapprovalId,
             clienteEmail,
             orderData.nombrePaquete,
@@ -95,11 +95,20 @@ const webhookSuscripcion = async (req, res) => {
 
             const paymentInfo = await response.json();
             console.log('Info pago recibida:', paymentInfo);
-            const preapprovalId = paymentInfo.preapproval_id;
+
+            // Buscar preapprovalId en varias ubicaciones posibles:
+            const preapprovalId = paymentInfo.preapproval_id
+                || paymentInfo.subscription_id
+                || paymentInfo.point_of_interaction?.transaction_data?.subscription_id;
+
+            if (!preapprovalId) {
+                console.log('No se encontró preapprovalId en la info del pago.');
+                return res.status(200).send('Webhook recibido sin preapprovalId');
+            }
 
             db.get(`SELECT * FROM ordenes WHERE preapproval_id = ?`, [preapprovalId], async (err, row) => {
                 if (err) {
-                    console.error(' Error consultando orden en SQLite:', err);
+                    console.error('Error consultando orden en SQLite:', err);
                     return res.status(500).send('Error al buscar orden');
                 }
 
@@ -127,8 +136,7 @@ const webhookSuscripcion = async (req, res) => {
                 }
             });
 
-
-            return; // Esto previene cualquier intento de respuesta posterior
+            return; // Para evitar enviar respuesta dos veces
         }
 
 
@@ -142,7 +150,21 @@ const webhookSuscripcion = async (req, res) => {
                 }
 
                 if (row) {
-                    // ...envío de correos
+                    const reqMock = {
+                        body: {
+                            nombrePaquete: row.nombre_paquete,
+                            resumenServicios: row.resumen_servicios,
+                            monto: row.monto,
+                            fecha: row.fecha,
+                            clienteEmail: row.cliente_email,
+                            mensajeContinuar: row.mensaje_continuar
+                        }
+                    };
+                    const resMock = { status: () => ({ json: () => { } }) };
+
+                    await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+                    await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+
                     db.run('DELETE FROM ordenes WHERE preapproval_id = ?', [preapprovalId]);
                     return res.status(200).send('Webhook preapproval autorizado y correos enviados');
                 } else {
