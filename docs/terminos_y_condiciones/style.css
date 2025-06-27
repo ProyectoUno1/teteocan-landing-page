@@ -1,3 +1,4 @@
+
 * {
     margin: 0;
     padding: 0;
@@ -1140,7 +1141,7 @@ body {
 .footer {
     background: #3773B8;
     color: white;
-    padding: 3rem 0 1rem;
+    padding: 2rem 0 1rem; /* Adjusted padding */
 }
 
 .footer-content {
@@ -1152,7 +1153,7 @@ body {
 .footer-main {
     display: grid;
     grid-template-columns: 1fr 2fr;
-    gap: 3rem;
+    gap: 2rem; /* Adjusted gap */
 }
 
 .footer-brand .logo-text {
@@ -1168,7 +1169,7 @@ body {
 .footer-links {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
+    gap: 1.5rem; /* Adjusted gap */
 }
 
 .footer-title {
@@ -1194,7 +1195,7 @@ body {
 
 .footer-bottom {
     border-top: 1px solid #374151;
-    padding-top: 2rem;
+    padding-top: 1.5rem; /* Adjusted padding-top */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1217,7 +1218,13 @@ body {
     font-size: 0.875rem;
 }
 
-
+.footer-copyright ul {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 
 
 /* Responsive mobiles */
@@ -1320,7 +1327,7 @@ body {
 
     .pricing-card:hover .btn {
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        box-shadow: 8px 20px rgba(37, 99, 235, 0.3);
     }
 
     .pricing-card .btn-outline:hover,
@@ -1501,27 +1508,6 @@ body {
 
     .nav-mobile.active {
         left: 0;
-    }
-
-    .nav-mobile {
-        width: 50%;
-        left: -50%;
-    }
-
-    .mobile-nav-logo {
-        max-width: 100px;
-        max-height: 50px;
-    }
-
-    .mobile-nav-links .nav-link {
-        font-size: 1rem;
-        padding: 0.5rem 1rem;
-        max-width: 150px;
-    }
-
-    .nav-mobile-content {
-        padding: 1.2rem 0.8rem;
-        gap: 0.8rem;
     }
 
     body.mobile-menu-open .mobile-menu-btn {
@@ -1904,3 +1890,89 @@ html {
         padding: 0.75rem;
     }
 }
+
+
+/* --- START OF NEW/MODIFIED STYLES FOR TERMS PAGE --- */
+
+/* Adjust main content padding to prevent header overlap */
+.terms-page-main {
+    padding-top: 8rem; /* Account for fixed header height */
+    padding-bottom: 4rem;
+}
+
+@media (max-width: 768px) {
+    .terms-page-main {
+        padding-top: 6rem;
+    }
+}
+
+/* Style the terms and conditions section */
+.terms-section {
+    padding: 2rem 0;
+    background-color: #eaf6ff; /* A soft background to make the card stand out */
+}
+
+.terms-content {
+    background: #ffffff;
+    padding: 3rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+    max-height: 80vh; /* Make the content scrollable within a fixed height */
+    overflow-y: auto;
+    line-height: 1.7;
+    border: 1px solid #c3d8ee;
+}
+
+.terms-content h2.terms-subtitle {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #3773B8;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 3px solid #03C2BB;
+    padding-bottom: 0.5rem;
+    display: inline-block;
+    letter-spacing: 0.5px;
+}
+
+.terms-content p {
+    color: #4b5563;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.terms-content ul {
+    padding-left: 2rem;
+    list-style-type: disc;
+    color: #4b5563;
+    margin-bottom: 1.5rem;
+}
+
+.terms-content li {
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+}
+
+.terms-link {
+    color: #03C2BB;
+    font-weight: 600;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.terms-link:hover {
+    color: #3773B8;
+}
+
+@media (max-width: 768px) {
+    .terms-content {
+        padding: 1.5rem;
+        max-height: 70vh;
+        border-radius: 1rem;
+    }
+    .terms-content h2.terms-subtitle {
+        font-size: 1.5rem;
+    }
+}
+
+/* --- END OF NEW/MODIFIED STYLES FOR TERMS PAGE --- */
