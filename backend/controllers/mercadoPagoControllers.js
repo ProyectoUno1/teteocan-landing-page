@@ -59,6 +59,14 @@ const crearSuscripcionDinamica = async (req, res) => {
   }
 };
 
+async function procesarEnvioCorreosConOrden(orderData) {
+  const reqMock = { body: orderData };
+  const resMock = { status: () => ({ json: () => {} }) };
+
+  await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+  await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+}
+
 const webhookSuscripcion = async (req, res) => {
   try {
     const mpNotification = req.body;
@@ -69,7 +77,6 @@ const webhookSuscripcion = async (req, res) => {
 
     if (topic === 'payment' || mpNotification.type === 'payment') {
       const paymentId = mpNotification.data?.id;
-
       if (!paymentId) {
         console.log('ID de pago no recibido');
         return res.status(400).send('Falta ID de pago');
@@ -80,7 +87,6 @@ const webhookSuscripcion = async (req, res) => {
           Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
         },
       });
-
       const paymentInfo = await response.json();
 
       const preapprovalId = mpNotification.preapproval_id || mpNotification.data?.preapproval_id;
@@ -88,28 +94,19 @@ const webhookSuscripcion = async (req, res) => {
       const orden = ordenesPendientes[preapprovalId];
 
       if (orden) {
-        const reqMock = { body: orden.orderData };
-        const resMock = { status: () => ({ json: () => {} }) };
-        await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
-        await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
-
+        console.log('orden.orderData en webhook:', orden.orderData);
+        await procesarEnvioCorreosConOrden(orden.orderData);
         delete ordenesPendientes[preapprovalId];
       } else {
         const nombrePaquete = paymentInfo.description || 'Suscripción';
         const monto = paymentInfo.transaction_amount || 0;
         const clienteEmail = paymentInfo.payer?.email || 'cliente@example.com';
         const fecha = new Date().toLocaleDateString('es-MX');
-
-        const resumenServicios = 'Suscripción activa con Mercado Pago';
+        const resumenServicios = ''; 
         const mensajeContinuar = 'La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.';
 
-        const reqMock = {
-          body: { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, mensajeContinuar }
-        };
-        const resMock = { status: () => ({ json: () => {} }) };
-
-        await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
-        await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+        const orderDataFallback = { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, mensajeContinuar };
+        await procesarEnvioCorreosConOrden(orderDataFallback);
       }
 
       return res.status(200).send('Webhook procesado correctamente');
@@ -120,12 +117,7 @@ const webhookSuscripcion = async (req, res) => {
       const orden = ordenesPendientes[preapproval_id];
 
       if (orden) {
-        const reqMock = { body: orden.orderData };
-        const resMock = { status: () => ({ json: () => {} }) };
-
-        await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
-        await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
-
+        await procesarEnvioCorreosConOrden(orden.orderData);
         delete ordenesPendientes[preapproval_id];
         return res.status(200).send('Webhook preapproval autorizado y correos enviados');
       }
@@ -139,5 +131,6 @@ const webhookSuscripcion = async (req, res) => {
     return res.status(500).send('Error interno del servidor');
   }
 };
+
 
 module.exports = { crearSuscripcionDinamica, webhookSuscripcion };
