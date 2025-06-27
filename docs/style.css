@@ -273,6 +273,7 @@ body {
     max-width: 48rem;
     margin-left: auto;
     margin-right: auto;
+    font-weight: bold;
 }
 
 .hero-buttons {
@@ -310,7 +311,7 @@ body {
 
 
 .feature-card {
-    background: white;
+    background: linear-gradient(to bottom, #ffffff 60%, #d2e7ff 100%);
     padding: 2rem;
     border-radius: 0.75rem;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -354,12 +355,15 @@ body {
     font-weight: 600;
     margin-bottom: 0.5rem;
     color: #3773B8;
+     font-weight: bold;
 }
 
 .feature-description {
     color: #3773B8;
     line-height: 1.6;
     text-align: center;
+    font-weight: bold;
+    
 }
 
 /* Section Styles */
@@ -371,15 +375,16 @@ body {
 .section-title {
     font-size: clamp(2rem, 4vw, 2.5rem);
     font-weight: bold;
-    color: #1f2937;
+    color: #3773B8;
     margin-bottom: 1rem;
     text-align: center;
 }
 
 .section-description {
-    font-size: 1.25rem;
-    color: #6b7280;
-    max-width: 32rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #3773B8;
+    max-width: 45rem;
     margin: 0 auto;
 }
 
@@ -460,13 +465,14 @@ body {
 
 
 .header-top {
-    padding-top: 1rem;
+    padding-top: rem;
     text-align: center;
     color: white;
     border-top-left-radius: 2rem;
     border-top-right-radius: 2rem;
     border-bottom-right-radius: 2rem;
     border-bottom-left-radius: 2rem;
+    
 }
 
 .plan-price {
@@ -499,6 +505,7 @@ body {
     color: #3773B8;
     font-size: 1rem;
     margin: 1rem;
+    font-weight: bold;
 
 }
 
@@ -529,7 +536,19 @@ body {
     border-radius: 8px;
 }
 
-.feature-check {
+.feature-check-explorador {
+    color: #36CFC9;
+    font-size: 1rem;
+}
+.feature-check-impulso {
+    color: #03C2BB;
+    font-size: 1rem;
+}
+.feature-check-dominio {
+    color:  #5F8FC5;
+    font-size: 1rem;
+}
+.feature-check-titan {
     color: #106dbe;
     font-size: 1rem;
 }
@@ -558,6 +577,8 @@ body {
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
     color: white;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
 }
 
 .pricing-card:nth-child(1) {
@@ -726,7 +747,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(31, 41, 55, 0.75);
+    background-color: rgba(69, 92, 125, 0.75);
     justify-content: center;
     align-items: center;
     z-index: 1000;
@@ -769,7 +790,7 @@ body {
     margin: 0;
     font-weight: 700;
     text-align: center;
-    color: #03475D;
+    color: #3773B8;
 }
 
 #confirmModal h3 {
@@ -783,7 +804,7 @@ body {
 
 #confirmModal p {
     font-size: 1.2rem;
-    color: #03475D;
+    color: #5F8FC5;
     text-align: center;
     margin: 0;
     line-height: 1;
@@ -805,8 +826,8 @@ body {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     font-weight: 700;
-    color: #03475D;
-    border-bottom: 2px solid #2563eb;
+    color:  #3773B8;
+    border-bottom: 2px solid #A2A2A2;
     padding-bottom: 0.5rem;
 }
 
@@ -851,7 +872,7 @@ body {
 .btn-secondary {
     font-size: 1.25rem;
     padding: 0.75rem 2.5rem;
-    border-radius: 8px;
+    border-radius: 30px;
     border: none;
     cursor: pointer;
     min-width: 160px;
@@ -860,7 +881,7 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #0099ff, #33ccff);
+    background: linear-gradient(135deg, #3773B8, #5F8FC5);
     color: white;
     border: none;
 }
@@ -886,7 +907,7 @@ body {
 }
 
 .custom-alert-button {
-    background: linear-gradient(135deg, #0099ff, #33ccff);
+    background: linear-gradient(135deg, #3773B8, #5F8FC5);
     color: white;
     border: none;
     padding: 0.6rem 1.5rem;
@@ -911,7 +932,7 @@ body {
     margin: 0;
     font-weight: 600;
     text-align: center;
-    color: #03475D;
+    color: #3773B8;
 }
 
 #extraServicesForm label {
@@ -1005,18 +1026,18 @@ body {
 
 
 #toggleExtrasBtn {
-    background: linear-gradient(135deg, #0099ff, #33ccff);
+    background: linear-gradient(135deg, #3773B8, #5F8FC5);
     color: white;
     border: none;
     padding: 0.6rem 1.4rem;
     font-size: 1.2rem;
-    border-radius: 8px;
+    border-radius: 30px;
     margin: 1rem auto 1rem auto;
     display: block;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.3s ease;
     font-weight: 500;
-    box-shadow: 0 4px 12px rgba(0, 153, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(146, 209, 251, 0.3);
 }
 
 #toggleExtrasBtn:hover {
@@ -1032,23 +1053,25 @@ body {
 
 .contact-content {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    grid-template-columns: 1fr;
+    gap: 6rem;
     align-items: center;
 }
 
 .contact-title {
-    font-size: 2.5rem;
-    font-weight: bold;
+    font-size: 2rem;
+    
     color: #3773B8;
-    margin-bottom: 1rem;
+    margin-bottom: .5rem;
 }
 
 .contact-description {
-    font-size: 1.125rem;
+    font-size: 1.3rem;
     color: #3773B8;
     margin-bottom: 2rem;
     line-height: 1.6;
+    max-width: 38rem;
+    
 }
 
 .contact-features {
@@ -1166,14 +1189,21 @@ body {
 }
 
 .footer-links {
-    display: grid;
+    line-height: 1.6;
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
+    flex-wrap: wrap; 
+    word-wrap: break-word; 
+    white-space: normal;
+    display: flex;
 }
+
+
 
 .footer-title {
     font-size: 1.125rem;
     font-weight: 600;
+    
     margin-bottom: 1rem;
     color: white;
 }
@@ -1189,7 +1219,9 @@ body {
     color: white;
     text-decoration: none;
     transition: color 0.3s ease;
+    
 }
+
 
 
 .footer-bottom {
@@ -1216,7 +1248,6 @@ body {
     color: white;
     font-size: 0.875rem;
 }
-
 
 
 
@@ -1301,10 +1332,28 @@ body {
         transform: scale(1.1);
     }
 
-    .pricing-card:hover {
+    .pricing-card:nth-child(1):hover {
         transform: scale(1.08) translateY(-10px);
         box-shadow: 0 25px 50px rgba(37, 99, 235, 0.3), 0 10px 25px rgba(0, 0, 0, 0.15);
-        border-color: #2563eb;
+        border-color: #36CFC9;
+        z-index: 10;
+    }
+     .pricing-card:nth-child(2):hover {
+        transform: scale(1.08) translateY(-10px);
+        box-shadow: 0 25px 50px rgba(37, 99, 235, 0.3), 0 10px 25px rgba(0, 0, 0, 0.15);
+        border-color:  #03C2BB;
+        z-index: 10;
+    }
+     .pricing-card:nth-child(3):hover {
+        transform: scale(1.08) translateY(-10px);
+        box-shadow: 0 25px 50px rgba(37, 99, 235, 0.3), 0 10px 25px rgba(0, 0, 0, 0.15);
+        border-color: #5F8FC5;
+        z-index: 10;
+    }
+     .pricing-card:nth-child(4):hover {
+        transform: scale(1.08) translateY(-10px);
+        box-shadow: 0 25px 50px rgba(37, 99, 235, 0.3), 0 10px 25px rgba(0, 0, 0, 0.15);
+        border-color: #3773B8;
         z-index: 10;
     }
 
@@ -1371,7 +1420,6 @@ body {
     .btn-secondary:hover,
     .btn-outline:hover,
     .feature-card:hover,
-    .pricing-card:hover,
     .whatsapp-btn:hover,
     .contact-email:hover,
     .footer-link:hover {
@@ -1668,6 +1716,8 @@ body {
     .footer-main {
         grid-template-columns: 1fr;
         gap: 2rem;
+
+
     }
 
     .footer-links {

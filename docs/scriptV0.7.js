@@ -334,7 +334,7 @@ function openConfirmModal() {
 
     extraServicesForm.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     extraServicesForm.style.display = 'none';
-    toggleExtrasBtn.textContent = '➕ Añadir servicios extra';
+    toggleExtrasBtn.textContent = '➕ AÑADIR SERVICIOS EXTRA';
 
     const selectedCard = document.querySelector(`.pricing-card[data-package-name="${selectedPackage.name}"]`);
     const existingList = selectedCard?.querySelector('.features-list');
@@ -406,7 +406,7 @@ function updateExtraPricesInForm() {
 
         if (isTitan && freeExtrasInTitan.includes(checkbox.value)) {
             priceSpan.textContent = 'Gratis';
-            priceSpan.style.color = ' #33BDDD';
+            priceSpan.style.color = ' #3773B8';
             priceSpan.style.fontWeight = '600';
         } else {
             switch (checkbox.value) {
@@ -477,15 +477,19 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 
     // 1. Pedir correo
     const { value: clienteEmail } = await Swal.fire({
-        title: 'Ingresa tu correo electrónico',
+        title: 'INGRESA TU CORREO ELECTRONICO',
         input: 'email',
-        inputLabel: 'Correo',
+        inputLabel: 'CORREO',
         inputPlaceholder: 'tucorreo@ejemplo.com',
         showCancelButton: true,
-        confirmButtonText: 'Enviar',
-        cancelButtonText: 'Cancelar',
+        confirmButtonText: 'ENVIAR',
+        cancelButtonText: 'CANCELAR',
+         customClass: {
+        confirmButton: 'custom-alert-button',
+        cancelButton: 'btn-secondary' 
+    },
         inputValidator: (value) => {
-            if (!value) return 'Debes ingresar un correo válido';
+            if (!value) return 'DEBES INGRESAR UN CORREO VALIDO';
         }
     });
 
@@ -524,8 +528,8 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 
     // 3. Mostrar loader
     Swal.fire({
-        title: 'Procesando...',
-        html: 'Espera un momento mientras se inicia la suscripción.',
+        title: 'PROCESANDO...',
+        html: 'SPERA UN MOMENTO MIENTRAS SE PROCESA LA SUSCRIPCION.',
         allowOutsideClick: false,
         didOpen: () => Swal.showLoading()
     });
@@ -548,7 +552,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
             const result = await res.json();
 
             if (!res.ok || !result.init_point) {
-                throw new Error(result.message || 'Error al crear suscripción');
+                throw new Error(result.message || 'ERROR AL CREAR SUSCRIPCIÓN');
             }
 
             Swal.close();
@@ -571,10 +575,10 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 
             Swal.close();
             Swal.fire({
-                title: '¡Registro completo!',
-                text: `Te has registrado al paquete ${selectedPackage.name}. Revisa tu correo.`,
+                title: '¡REGISTRO COMPLETO!',
+                text: `TE HAS REGISTRADO AL PAQUETE ${selectedPackage.name}. REVISA TU CORREO.`,
                 icon: 'success',
-                confirmButtonText: 'Aceptar',
+                confirmButtonText: 'ACEPTAR',
                 customClass: { confirmButton: 'custom-alert-button' },
                 buttonsStyling: false
             });
