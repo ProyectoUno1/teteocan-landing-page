@@ -1,3 +1,9 @@
+/* Variables CSS para consistencia */
+:root {
+  --color-primary: #c3d8ee;
+  --transition-time: 0.8s;
+  --transition-easing: cubic-bezier(0.16, 1, 0.3, 1);
+}
 * {
     margin: 0;
     padding: 0;
@@ -24,14 +30,52 @@ button {
 }
 
 /* Header Styles */
+/* Header base con transición suave */
 .header {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  background: white;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  transition: 
+    background var(--transition-time) var(--transition-easing),
+    box-shadow var(--transition-time) var(--transition-easing),
+    padding var(--transition-time) var(--transition-easing);
+  will-change: background, box-shadow;
+}
+
+/* Estado con scroll - degradado sutil */
+.header.scrolled {
+  background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(195,216,238,0.98) 100%);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  padding: 12px 0;
+}
+
+/* Contenido del header */
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  transition: padding var(--transition-time) var(--transition-easing);
+}
+
+/* Logo - completamente estático */
+.logo-icon, 
+.mobile-logo-icon,
+.mobile-nav-logo {
+  transition: none !important;
+  width: 120px; /* Ajusta según necesites */
+  height: auto;
+}
+/* Menú móvil */
+.header.scrolled .mobile-menu-btn i {
+    color: #4a5568 !important; /* Color del icono de menú */
+}
+
+.header.scrolled .nav-mobile {
     background: linear-gradient(180deg, #ffffff 20%, #c3d8ee 100%);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-    
 }
 
 .header-content {
@@ -81,7 +125,19 @@ button {
     align-items: center;
 }
 
-
+.boton-nav-paquete {
+    padding: 10px 25px;
+    border-radius: 30px;
+    /* borde redondo tipo píldora */
+    background: #03C2BB;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-weight: bold;
+    border: none;
+    display: inline-block;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
 
 .boton-nav {
     padding: 10px 20px;
