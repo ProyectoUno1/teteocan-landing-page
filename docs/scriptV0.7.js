@@ -574,7 +574,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 
         if (esConSuscripcion) {
             // Paquete con suscripción (requiere planId)
-            const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/suscripcion', {//si se cambio
+            const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/suscripcion', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -594,7 +594,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
             window.location.href = result.init_point;
 
         } else {
-            // Paquete gratuito — solo registra y confirma si sen cambio hostinguer
+            // Paquete gratuito 
             await Promise.all([
                 fetch('https://tlatec-backend.onrender.com/api/orden', {
                     method: 'POST',

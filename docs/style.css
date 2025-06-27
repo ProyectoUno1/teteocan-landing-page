@@ -30,7 +30,6 @@ button {
 }
 
 /* Header Styles */
-/* Header base con transición suave */
 .header {
   position: fixed;
   width: 100%;
@@ -52,7 +51,6 @@ button {
   padding: 12px 0;
 }
 
-/* Contenido del header */
 .header-content {
   display: flex;
   align-items: center;
@@ -61,17 +59,16 @@ button {
   transition: padding var(--transition-time) var(--transition-easing);
 }
 
-/* Logo - completamente estático */
 .logo-icon, 
 .mobile-logo-icon,
 .mobile-nav-logo {
   transition: none !important;
-  width: 120px; /* Ajusta según necesites */
+  width: 120px; 
   height: auto;
 }
 /* Menú móvil */
 .header.scrolled .mobile-menu-btn i {
-    color: #4a5568 !important; /* Color del icono de menú */
+    color: #4a5568 !important; 
 }
 
 .header.scrolled .nav-mobile {
@@ -128,7 +125,6 @@ button {
 .boton-nav-paquete {
     padding: 10px 25px;
     border-radius: 30px;
-    /* borde redondo tipo píldora */
     background: #03C2BB;
     color: rgb(255, 255, 255);
     text-decoration: none;
@@ -142,7 +138,6 @@ button {
 .boton-nav {
     padding: 10px 20px;
     border-radius: 30px;
-    /* borde redondo tipo píldora */
     background: #03C2BB;
     color: rgb(255, 255, 255);
     text-decoration: none;
@@ -480,12 +475,11 @@ button {
 }
 
 .more-items{
-  max-height: 20.5em; /* Aprox 6-7 ítems */
+  max-height: 20.5em; 
   overflow-y: auto;
   scroll-behavior: smooth;
 }
 
-/* Opcional: para que se vea bonito el scrollbar solo si hay overflow */
 .more-items::-webkit-scrollbar {
   width: 6px;
 }
@@ -1227,7 +1221,7 @@ button {
   box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
   position: relative;
   transition: all 0.2s ease;
-  -webkit-tap-highlight-color: transparent; /* Elimina el resaltado al tocar en móvil */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .whatsapp-btn i {
@@ -1259,10 +1253,10 @@ button {
   font-size: 14px;
 }
 
-/* Interacciones */
+
 .whatsapp-btn:active {
-  transform: scale(0.95); /* Efecto de presionado en móvil */
-  background: #1fa855; /* Color ligeramente más oscuro al presionar */
+  transform: scale(0.95); 
+  background: #1fa855; 
 }
 
 /* Ocultar audífonos en móvil */
@@ -2020,28 +2014,26 @@ html {
 
 .comparison-table {
     width: 100%;
-    /* border-collapse: collapse; */ /* We need to change this */
-    border-collapse: separate; /* This is the key change */
-    border-spacing: 12px; /* This creates the space between the "cards" */
+    border-collapse: separate; 
+    border-spacing: 12px; 
     font-size: 1rem;
-    min-width: 900px; /* Increased min-width for better layout on smaller screens */
-    /* Remove box-shadow from the table and add it to the cells instead */
+    min-width: 900px;
+    
 }
 
-/* Style for all cells, including the header */
 .comparison-table th,
 .comparison-table td {
     padding: 1.5rem 1rem;
     text-align: center;
-    background: white; /* Each cell has its own background */
-    border-radius: 12px; /* Rounded corners on each cell */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow on each cell */
-    border: 2px solid transparent; /* A transparent border for a clean look */
+    background: white; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); 
+    border: 2px solid transparent; 
     transition: all 0.3s ease;
 }
 
 .comparison-table th {
-    background: #c3d8ee; /* A solid color for the header cells */
+    background: #c3d8ee; 
     font-weight: 700;
     color: #3773B8;
     text-transform: uppercase;
@@ -2053,30 +2045,30 @@ html {
     font-weight: 500;
 }
 
-/* Style the first column (Características) */
+
 .comparison-table th:first-child,
 .comparison-table td:first-child {
-    background: #f6fcff; /* Lighter background for the first column */
+    background: #f6fcff; 
     font-weight: 600;
     color: #374151;
-    text-align: left; /* Align text to the left */
+    text-align: left; 
 }
 
-/* Specific styles for icons and text in the cells */
+
 .comparison-table td .table-check,
 .comparison-table td .table-cross {
-    font-size: 1.8rem; /* Make icons larger */
-    display: block; /* Center the icons easily */
+    font-size: 1.8rem; 
+    display: block; 
     width: 100%;
     text-align: center;
 }
 
 .comparison-table .table-check {
-    color: #03C2BB; /* Teal color for checkmark */
+    color: #03C2BB; 
 }
 
 .comparison-table .table-cross {
-    color: #cbd5e1; /* Light gray for the cross */
+    color: #cbd5e1; 
 }
 
 
@@ -2090,7 +2082,7 @@ html {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .comparison-table {
-        min-width: 700px; /* Adjust min-width for mobile view */
+        min-width: 700px; 
         border-spacing: 8px;
     }
 

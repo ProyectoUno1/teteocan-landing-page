@@ -1896,7 +1896,7 @@ html {
 
 /* Adjust main content padding to prevent header overlap */
 .terms-page-main {
-    padding-top: 8rem; /* Account for fixed header height */
+    padding-top: 8rem; 
     padding-bottom: 4rem;
 }
 
@@ -1909,7 +1909,7 @@ html {
 /* Style the terms and conditions section */
 .terms-section {
     padding: 2rem 0;
-    background-color: #eaf6ff; /* A soft background to make the card stand out */
+    background-color: #eaf6ff; 
 }
 
 .terms-content {
@@ -1917,7 +1917,7 @@ html {
     padding: 3rem;
     border-radius: 1.5rem;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
-    max-height: 80vh; /* Make the content scrollable within a fixed height */
+    max-height: 80vh; 
     overflow-y: auto;
     line-height: 1.7;
     border: 1px solid #c3d8ee;

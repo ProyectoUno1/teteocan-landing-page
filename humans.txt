@@ -21,8 +21,11 @@ GitHub: AlanRanchs
 
 Developer: Margarita Moraga
 
+Developer:Daniel Santos
+
 
 /* THANKS */
 
 Este archivo esta impulsado por la ideologia de #NosomosRobots
 created by Jozet (Seth) Ramirez y AlanRanchs only this file humans.txt
+El diseño no nos gustó pero se implementó
