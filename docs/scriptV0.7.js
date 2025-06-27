@@ -535,11 +535,11 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 
         if (esConSuscripcion) {
             // Paquete con suscripción (requiere planId)
-            const res = await fetch('https://tlatec-backend.onrender.com/api/suscripcion', {
+            const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/suscripcion', {//si se cambio
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    planId: selectedPackage.id, // ahora usamos el ID como planId
+                    planId: selectedPackage.id, 
                     clienteEmail,
                     orderData
                 })
