@@ -94,6 +94,7 @@ const webhookSuscripcion = async (req, res) => {
             });
 
             const paymentInfo = await response.json();
+            console.log('Info pago recibida:', paymentInfo);
             const preapprovalId = paymentInfo.preapproval_id;
 
             db.get(`SELECT * FROM ordenes WHERE preapproval_id = ?`, [preapprovalId], async (err, row) => {
