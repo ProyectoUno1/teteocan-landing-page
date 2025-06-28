@@ -564,7 +564,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
     // 3. Mostrar loader
     Swal.fire({
         title: 'PROCESANDO...',
-        html: 'SPERA UN MOMENTO MIENTRAS SE PROCESA LA SUSCRIPCION.',
+        html: 'ESPERA UN MOMENTO MIENTRAS SE PROCESA LA SUSCRIPCION.',
         allowOutsideClick: false,
         didOpen: () => Swal.showLoading()
     });
@@ -611,7 +611,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
             Swal.close();
             Swal.fire({
                 title: '¡REGISTRO COMPLETO!',
-                text: `TE HAS REGISTRADO AL PAQUETE ${selectedPackage.name}. REVISA TU CORREO.`,
+                text: `TE HAS REGISTRADO AL ${selectedPackage.name}. REVISA TU CORREO.`,
                 icon: 'success',
                 confirmButtonText: 'ACEPTAR',
                 customClass: { confirmButton: 'custom-alert-button' },
