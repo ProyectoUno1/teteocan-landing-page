@@ -25,14 +25,13 @@ async function generatePdf(data, templatePath) {
         // Lee el template HTML
         const html = fs.readFileSync(templatePath, 'utf8');
 
-        // Lee el logo en base64 (se hace aquí para asegurar que siempre esté actualizado)
-        const logoPath = path.join(__dirname, '../static/images/LogoTlatec.png');
-        const logoBase64 = '' + fs.readFileSync(logoPath, { encoding: 'base64' });
+        // URL pública del logo (hosted en tu dominio)
+        const logoUrl = 'https://srv1356-files.hstgr.io/49c1454ffa1de115/files/public_html/tlatec/assets/images/LogoTlatec.png';
 
-        // Agrega logoBase64 a los datos que se pasan al template
+        // Agrega logoUrl a los datos que se pasan al template
         const templateData = {
             ...data,
-            logoBase64
+            logoUrl
         };
 
         const options = {
@@ -56,7 +55,7 @@ async function generatePdf(data, templatePath) {
         const document = {
             html: html,
             data: templateData,
-            path: '', // Si se deja vacío, pdf-creator-node devuelve el buffer directamente
+            path: '', // Devuelve el buffer directamente
             type: 'buffer',
         };
 
