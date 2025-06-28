@@ -569,17 +569,17 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         didOpen: () => Swal.showLoading()
     });
 
-    // Calcular si tiene extras con costo (sin contar los gratis en Titan)
     const isTitan = selectedPackage?.name.toLowerCase().includes('titan');
     const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
 
-    const checkboxes = document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked');
+    const checkedExtras = document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked');
+
     let tieneExtrasConCosto = false;
 
-    checkboxes.forEach(cb => {
+    checkedExtras.forEach(cb => {
         const precio = parseFloat(cb.dataset.price) || 0;
-        const esGratis = isTitan && freeExtrasInTitan.includes(cb.value);
-        if (!esGratis && precio > 0) {
+        const esGratisEnTitan = isTitan && freeExtrasInTitan.includes(cb.value);
+        if (!esGratisEnTitan && precio > 0) {
             tieneExtrasConCosto = true;
         }
     });
