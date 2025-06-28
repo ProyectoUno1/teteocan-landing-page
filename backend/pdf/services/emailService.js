@@ -26,7 +26,8 @@ async function generatePdf(data, templatePath) {
         const html = fs.readFileSync(templatePath, 'utf8');
 
         // URL pública del logo (hosted en tu dominio)
-        const logoUrl = 'https://srv1356-files.hstgr.io/49c1454ffa1de115/files/public_html/tlatec/assets/images/LogoTlatec.png';
+       const logoUrl = 'https://raw.githubusercontent.com/ProyectoUno1/teteocan-landing-page/main/docs/assets/images/LogoTlatec.png';
+
 
         // Agrega logoUrl a los datos que se pasan al template
         const templateData = {
