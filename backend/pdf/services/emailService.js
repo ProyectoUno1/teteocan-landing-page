@@ -1,4 +1,3 @@
-// backend/pdf/services/emailService.js
 const nodemailer = require('nodemailer');
 const pdf = require('pdf-creator-node');
 const path = require('path');
@@ -23,7 +22,18 @@ const transporter = nodemailer.createTransport({
  */
 async function generatePdf(data, templatePath) {
     try {
+        // Lee el template HTML
         const html = fs.readFileSync(templatePath, 'utf8');
+
+        // Lee el logo en base64 (se hace aquí para asegurar que siempre esté actualizado)
+        const logoPath = path.join(__dirname, '../../docs/assets/images/LogoTlatec.png');
+        const logoBase64 = '' + fs.readFileSync(logoPath, { encoding: 'base64' });
+
+        // Agrega logoBase64 a los datos que se pasan al template
+        const templateData = {
+            ...data,
+            logoBase64
+        };
 
         const options = {
             format: 'Letter',
@@ -45,7 +55,7 @@ async function generatePdf(data, templatePath) {
 
         const document = {
             html: html,
-            data: data,
+            data: templateData,
             path: '', // Si se deja vacío, pdf-creator-node devuelve el buffer directamente
             type: 'buffer',
         };
