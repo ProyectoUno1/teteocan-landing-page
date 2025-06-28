@@ -24,6 +24,15 @@ const transporter = nodemailer.createTransport({
 async function generatePdf(data, templatePath) {
     try {
         const html = fs.readFileSync(templatePath, 'utf8');
+        // Leer el logo como base64
+        const logoPath = path.resolve(__dirname, '../../../docs/assets/images/LogoTlatec.png');
+        data.logo = `data:image/png;base64,${fs.readFileSync(logoPath, 'base64')}`;
+
+        // Inyectar el logo al objeto data
+        const dataWithLogo = {
+            ...data,
+            logoBase64,
+        };
 
         const options = {
             format: 'Letter',
@@ -45,7 +54,7 @@ async function generatePdf(data, templatePath) {
 
         const document = {
             html: html,
-            data: data,
+            data: dataWithLogo,
             path: '', // Si se deja vacío, pdf-creator-node devuelve el buffer directamente
             type: 'buffer',
         };
