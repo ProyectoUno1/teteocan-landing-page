@@ -26,7 +26,7 @@ async function generatePdf(data, templatePath) {
         const html = fs.readFileSync(templatePath, 'utf8');
 
         // Lee el logo en base64 (se hace aquí para asegurar que siempre esté actualizado)
-        const logoPath = path.join(__dirname, '../../docs/assets/images/LogoTlatec.png');
+        const logoPath = path.join(__dirname, '../static/images/LogoTlatec.png');
         const logoBase64 = '' + fs.readFileSync(logoPath, { encoding: 'base64' });
 
         // Agrega logoBase64 a los datos que se pasan al template
