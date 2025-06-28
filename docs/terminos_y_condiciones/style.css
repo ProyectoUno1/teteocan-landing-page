@@ -1216,6 +1216,8 @@ body {
 .footer-copyright {
     color: white;
     font-size: 0.875rem;
+    text-align: right;
+    margin-left: auto;
 }
 
 .footer-copyright ul {
@@ -1224,6 +1226,51 @@ body {
     list-style: none;
     padding: 0;
     margin: 0;
+}
+/* Créditos y logo */
+
+.logo-teteocan {
+  height: 40px;
+  width: auto;
+  position: relative;
+  cursor: pointer;
+}
+
+
+.logo-teteocan::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 130%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #03C2BB;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  font-size: 0.8rem;
+  z-index: 10;
+}
+
+.logo-teteocan::before {
+  content: "";
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: #03C2BB transparent transparent transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.logo-teteocan:hover::after,
+.logo-teteocan:hover::before {
+  opacity: 1;
 }
 
 
