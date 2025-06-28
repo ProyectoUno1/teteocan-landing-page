@@ -569,11 +569,27 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         didOpen: () => Swal.showLoading()
     });
 
+    // Calcular si tiene extras con costo (sin contar los gratis en Titan)
+    const isTitan = selectedPackage?.name.toLowerCase().includes('titan');
+    const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
+
+    const checkboxes = document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked');
+    let tieneExtrasConCosto = false;
+
+    checkboxes.forEach(cb => {
+        const precio = parseFloat(cb.dataset.price) || 0;
+        const esGratis = isTitan && freeExtrasInTitan.includes(cb.value);
+        if (!esGratis && precio > 0) {
+            tieneExtrasConCosto = true;
+        }
+    });
+
+
     try {
         const esConSuscripcion = paquetesConSuscripcion.includes(selectedPackage.id.toLowerCase());
-        const tieneExtras = extrasTotal > 0;
 
-        if (esConSuscripcion || tieneExtras) {
+
+        if (esConSuscripcion || tieneExtrasConCosto) {
             // Paquete con suscripción O gratuito con extras (requiere pago)
             const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/suscripcion', {
                 method: 'POST',
