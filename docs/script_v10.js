@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Restaurar opacidad inmediatamente (para móvil)
             this.style.opacity = '1';
 
-            const phoneNumber = '527651033282';
+            const phoneNumber = '5511987439';
             const message = encodeURIComponent('¡Hola! Estoy interesado en sus servicios. ¿Podrían brindarme más información?');
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
             const whatsappUrl = isMobile
