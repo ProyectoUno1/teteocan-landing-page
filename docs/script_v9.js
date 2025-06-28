@@ -60,75 +60,75 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // WhatsApp button functionality
-document.addEventListener('DOMContentLoaded', function() {
-  const whatsappBtn = document.getElementById('whatsappBtn');
-  
-  if (whatsappBtn) {
-    // Función para manejar el clic/touch
-    function handleClick(e) {
-      e.preventDefault();
-      
-      // Restaurar opacidad inmediatamente (para móvil)
-      this.style.opacity = '1';
-      
-      const phoneNumber = '527651033282';
-      const message = encodeURIComponent('¡Hola! Estoy interesado en sus servicios. ¿Podrían brindarme más información?');
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      const whatsappUrl = isMobile 
-        ? `https://wa.me/${phoneNumber}?text=${message}`
-        : `https://web.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
-      
-      // Abrir enlace
-      window.open(whatsappUrl, '_blank');
+document.addEventListener('DOMContentLoaded', function () {
+    const whatsappBtn = document.getElementById('whatsappBtn');
+
+    if (whatsappBtn) {
+        // Función para manejar el clic/touch
+        function handleClick(e) {
+            e.preventDefault();
+
+            // Restaurar opacidad inmediatamente (para móvil)
+            this.style.opacity = '1';
+
+            const phoneNumber = '527651033282';
+            const message = encodeURIComponent('¡Hola! Estoy interesado en sus servicios. ¿Podrían brindarme más información?');
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const whatsappUrl = isMobile
+                ? `https://wa.me/${phoneNumber}?text=${message}`
+                : `https://web.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
+
+            // Abrir enlace
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Eventos para desktop y móvil
+        whatsappBtn.addEventListener('click', handleClick);
+
+        // Solución específica para el problema de transparencia en móvil
+        whatsappBtn.addEventListener('touchstart', function () {
+            this.style.opacity = '0.9';
+        });
+
+        whatsappBtn.addEventListener('touchend', function () {
+            this.style.opacity = '1';
+        });
     }
-    
-    // Eventos para desktop y móvil
-    whatsappBtn.addEventListener('click', handleClick);
-    
-    // Solución específica para el problema de transparencia en móvil
-    whatsappBtn.addEventListener('touchstart', function() {
-      this.style.opacity = '0.9';
-    });
-    
-    whatsappBtn.addEventListener('touchend', function() {
-      this.style.opacity = '1';
-    });
-  }
 });
 
 let lastScroll = 0;
 let ticking = false;
 
 const updateHeader = () => {
-  const header = document.querySelector('.header');
-  const currentScroll = window.scrollY;
-  
-  if (currentScroll > 80) {
-    header.classList.add('scrolled');
-  } else {
-    header.classList.remove('scrolled');
-  }
-  
-  lastScroll = currentScroll;
-  ticking = false;
+    const header = document.querySelector('.header');
+    const currentScroll = window.scrollY;
+
+    if (currentScroll > 80) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
+
+    lastScroll = currentScroll;
+    ticking = false;
 };
 
 window.addEventListener('scroll', () => {
-  if (!ticking) {
-    window.requestAnimationFrame(updateHeader);
-    ticking = true;
-  }
+    if (!ticking) {
+        window.requestAnimationFrame(updateHeader);
+        ticking = true;
+    }
 });
 
 // Suavizar el efecto al cargar la página
 window.addEventListener('load', () => {
-  setTimeout(() => {
-    document.querySelector('.header').style.transition = `
+    setTimeout(() => {
+        document.querySelector('.header').style.transition = `
       background var(--transition-time) var(--transition-easing),
       box-shadow var(--transition-time) var(--transition-easing),
       padding var(--transition-time) var(--transition-easing)
     `;
-  }, 100);
+    }, 100);
 });
 
 const observerOptions = {
@@ -519,10 +519,10 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         showCancelButton: true,
         confirmButtonText: 'ENVIAR',
         cancelButtonText: 'CANCELAR',
-         customClass: {
-        confirmButton: 'custom-alert-button',
-        cancelButton: 'btn-secondary' 
-    },
+        customClass: {
+            confirmButton: 'custom-alert-button',
+            cancelButton: 'btn-secondary'
+        },
         inputValidator: (value) => {
             if (!value) return 'DEBES INGRESAR UN CORREO VALIDO';
         }
@@ -571,14 +571,15 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 
     try {
         const esConSuscripcion = paquetesConSuscripcion.includes(selectedPackage.id.toLowerCase());
+        const tieneExtras = extrasTotal > 0;
 
-        if (esConSuscripcion) {
-            // Paquete con suscripción (requiere planId)
+        if (esConSuscripcion || tieneExtras) {
+            // Paquete con suscripción O gratuito con extras (requiere pago)
             const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/suscripcion', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    planId: selectedPackage.id, 
+                    planId: selectedPackage.id,
                     clienteEmail,
                     orderData
                 })
@@ -594,7 +595,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
             window.location.href = result.init_point;
 
         } else {
-            // Paquete gratuito 
+            // Paquete gratuito sin extras
             await Promise.all([
                 fetch('https://tlatec-backend.onrender.com/api/orden', {
                     method: 'POST',
@@ -622,6 +623,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
             selectedPackage = null;
             document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
         }
+
 
     } catch (error) {
         const resBody = await error.response?.json().catch(() => null);
@@ -682,6 +684,6 @@ document.addEventListener("DOMContentLoaded", function () {
         logoMobileNav.addEventListener("click", handleLogoClick);
         logoMobileNav.addEventListener("touchstart", handleLogoClick);
     }
-}); 
+});
 
 
