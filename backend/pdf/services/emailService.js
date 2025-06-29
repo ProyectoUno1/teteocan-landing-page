@@ -22,14 +22,13 @@ const transporter = nodemailer.createTransport({
  */
 async function generatePdf(data, templatePath) {
     try {
-        // Lee el template HTML
+        // Leer el template HTML
         const html = fs.readFileSync(templatePath, 'utf8');
 
-        // URL pública del logo (hosted en tu dominio)
+        // URL pública del logo (hosted en github)
        const logoUrl = 'https://raw.githubusercontent.com/ProyectoUno1/teteocan-landing-page/main/docs/assets/images/LogoTlatec.png';
 
 
-        // Agrega logoUrl a los datos que se pasan al template
         const templateData = {
             ...data,
             logoUrl
