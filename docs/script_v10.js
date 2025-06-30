@@ -181,8 +181,9 @@ document.querySelectorAll('.pricing-card').forEach(card => {
 
 // Form validation (if forms are added later)
 function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
+    // Expresión regular para validación de email
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
 }
 
 // Utility function to format currency
@@ -512,7 +513,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 
     // 1. Pedir correo
     const { value: clienteEmail } = await Swal.fire({
-        title: 'INGRESA TU CORREO ELECTRONICO',
+        title: 'INGRESA TU CORREO ELECTRÓNICO',
         input: 'email',
         inputLabel: 'CORREO',
         inputPlaceholder: 'tucorreo@ejemplo.com',
@@ -524,7 +525,12 @@ btnConfirmPurchase?.addEventListener('click', async () => {
             cancelButton: 'btn-secondary'
         },
         inputValidator: (value) => {
-            if (!value) return 'DEBES INGRESAR UN CORREO VALIDO';
+            if (!value) {
+                return 'DEBES INGRESAR UN CORREO VÁLIDO';
+            }
+            if (!validateEmail(value)) {
+                return 'POR FAVOR INGRESA UN CORREO ELECTRÓNICO VÁLIDO';
+            }
         }
     });
 

@@ -9,7 +9,7 @@ const path = require('path');
  */
 async function sendOrderConfirmationToCompany(req, res) {
     try {
-        const { nombrePaquete, resumenServicios, monto, fecha } = req.body;
+        const { nombrePaquete, resumenServicios, monto, fecha, clienteEmail } = req.body;
 
         if (
             !nombrePaquete ||
@@ -21,7 +21,7 @@ async function sendOrderConfirmationToCompany(req, res) {
         }
 
 
-        const data = { nombrePaquete, resumenServicios, monto, fecha };
+        const data = { nombrePaquete, resumenServicios, monto, fecha, clienteEmail };
         const templatePath = path.resolve(__dirname, '../templates/empresa.html');
         const pdfBuffer = await emailService.generatePdf(data, templatePath);
 
