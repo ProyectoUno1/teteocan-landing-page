@@ -362,6 +362,7 @@ fetch('https://tlatec-backend.onrender.com/api/precios')
     .then(res => res.json())
     .then(data => {
         preciosOficiales = data;
+        console.log('Precios oficiales cargados:', preciosOficiales);
         actualizarPrecios(tipoSuscripcion);
     })
     .catch(err => console.error('Error al cargar precios:', err));
