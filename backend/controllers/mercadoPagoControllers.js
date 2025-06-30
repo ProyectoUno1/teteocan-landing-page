@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const db = require('../db');
-const preciosPaquetes = require('../preciosPaquetes.json');
+const preciosPaquetes = require('../precios.json');
 
 /**
  * controlador para crear una suscripción dinámica en Mercado Pago.
