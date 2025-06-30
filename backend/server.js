@@ -1,59 +1,62 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const dotenv = require('dotenv'); // Importa dotenv
+const dotenv = require('dotenv'); // Para cargar variables de entorno desde .env
 const path = require('path');
+// importar rutas definidas para pagos y webhook
 const pagosRoutes = require('./routes/pagos');
 const webhookRoutes = require('./routes/webhook');
 
-
-
-// Carga las variables de entorno desde el archivo .env
+// carga las variables de entorno del archivo .env ubicado en la raíz del backend
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const PORT = process.env.PORT || 3000;
 
-//cors
+//permitir CORS (solicitudes desde otros dominios)
 app.use(cors());
+
+//parsear JSON en las solicitudes entrantes
 app.use(express.json());
 
-app.use('/api/pagos', pagosRoutes);         
-app.use('/api/webhook', webhookRoutes);     
+// Rutas principales: 
+// '/api/pagos' -> para crear suscripciones y pagos
+app.use('/api/pagos', pagosRoutes);  
 
+// '/api/webhook' -> para recibir notificaciones webhook de Mercado Pago
+app.use('/api/webhook', webhookRoutes);
 
-// Importa el controlador de email
+// controlador de email para pruebas manuales
 const emailController = require('./pdf/controllers/emailController');
 
-// --- Rutas de Prueba ---
-// Ruta para simular la generación de una orden de pago (envío a la empresa)
+
+// endpoint para simular generación de orden y enviar correo a empresa
 app.post('/api/orden', async (req, res) => {
     try {
-        const { nombrePaquete, resumenServicios, monto, fecha } = req.body;
-        await emailController.sendOrderConfirmationToCompany(req, res); // Llama a la función del controlador
+        await emailController.sendOrderConfirmationToCompany(req, res);
     } catch (error) {
         console.error('Error al generar orden de pago:', error);
         res.status(500).json({ message: 'Error al generar orden de pago', error: error.message });
     }
 });
 
-// Ruta para simular la confirmación de pago (envío al cliente)
+// endpoint para simular confirmación de pago y enviar correo a cliente
 app.post('/api/confirmar', async (req, res) => {
     try {
-        const { nombrePaquete, resumenServicios, monto, fecha, clienteEmail } = req.body;
-        req.body.mensajeContinuar = "La empresa se pondrá en contacto con usted para continuar con los siguientes pasos."; // Mensaje fijo para el cliente
-        await emailController.sendPaymentConfirmationToClient(req, res); // Llama a la función del controlador
+        // se agrega mensaje para el cliente
+        req.body.mensajeContinuar = "La empresa se pondrá en contacto con usted para continuar con los siguientes pasos.";
+        await emailController.sendPaymentConfirmationToClient(req, res);
     } catch (error) {
         console.error('Error al confirmar pago:', error);
         res.status(500).json({ message: 'Error al confirmar pago', error: error.message });
     }
 });
 
-
-
+// ruta base para verificar que el backend está corriendo
 app.get('/', (req, res) => {
     res.send('API de Teteocan Landing Page');
 });
 
+// iniciar servidor en el puerto configurado
 app.listen(PORT, () => {
     console.log(`Servidor backend corriendo en el puerto ${PORT}`);
 });
