@@ -357,15 +357,18 @@ const toggleSubscriptionType = document.getElementById('toggleSubscriptionType')
 // cargar precios desde precios.json del backend
 let preciosOficiales = {};
 
-
 fetch('https://tlatec-backend.onrender.com/api/precios')
-    .then(res => res.json())
-    .then(data => {
-        preciosOficiales = data;
-        console.log('Precios oficiales cargados:', preciosOficiales);
-        actualizarPrecios(tipoSuscripcion);
-    })
-    .catch(err => console.error('Error al cargar precios:', err));
+  .then(res => {
+    if (!res.ok) throw new Error('Error al obtener precios');
+    return res.json();
+  })
+  .then(data => {
+    preciosOficiales = data;
+    actualizarPrecios(tipoSuscripcion);
+  })
+  .catch(err => {
+    console.error('Error al cargar precios:', err);
+  });
 
 
 function actualizarPrecios(tipo) {
