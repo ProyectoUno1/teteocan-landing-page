@@ -7,7 +7,7 @@ Bienvenido al repositorio de la **Landing Page interna de Teteocan Technologies*
 ## 🔗 Demo en Vivo
 
 📎 Puedes ver el sitio en acción aquí:  
-👉 [Ver Demo](https://proyectouno1.github.io/teteocan-landing-page/) 
+👉 [Ver Demo](https://tlatec.teteocan.com/) 
 
 ---
 
@@ -53,8 +53,8 @@ Bienvenido al repositorio de la **Landing Page interna de Teteocan Technologies*
 - **SQLite** – Persistencia local de suscripciones, correos y fechas.
 
 ### ☁️ Deploy:
-- **GitHub Pages** – Frontend en línea.
-- **Render / Railway** – Backend en línea con variables `.env` protegidas.
+- **Hostinger** – Frontend en línea.
+- **Render – Backend en línea con variables `.env` protegidas.
 
 ---
 
