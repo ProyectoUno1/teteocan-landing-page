@@ -6,6 +6,7 @@ const path = require('path');
 // importar rutas definidas para pagos y webhook
 const pagosRoutes = require('./routes/pagos');
 const webhookRoutes = require('./routes/webhook');
+const preciosRouter = require('./routes/precios');
 
 // carga las variables de entorno del archivo .env ubicado en la raíz del backend
 dotenv.config({ path: path.resolve(__dirname, '.env') });
@@ -24,6 +25,8 @@ app.use('/api/pagos', pagosRoutes);
 
 // '/api/webhook' -> para recibir notificaciones webhook de Mercado Pago
 app.use('/api/webhook', webhookRoutes);
+
+app.use('/api/precios', preciosRouter);
 
 // controlador de email para pruebas manuales
 const emailController = require('./pdf/controllers/emailController');

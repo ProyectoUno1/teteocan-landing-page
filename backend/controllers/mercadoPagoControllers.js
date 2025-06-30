@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const db = require('../db');
+const preciosPaquetes = require('../preciosPaquetes.json');
 
 /**
  * controlador para crear una suscripción dinámica en Mercado Pago.
@@ -15,6 +16,25 @@ const crearSuscripcionDinamica = async (req, res) => {
         if (!clienteEmail || !orderData || !orderData.monto) {
             console.log('Faltan datos obligatorios');
             return res.status(400).json({ message: 'Datos incompletos' });
+        }
+
+        // Leer precios desde archivo JSON
+        const preciosRaw = fs.readFileSync(preciosFile, 'utf-8');
+        const precios = JSON.parse(preciosRaw);
+
+        // Validar tipo de suscripción
+        const tipo = ['mensual', 'anual'].includes(tipoSuscripcion) ? tipoSuscripcion : 'mensual';
+
+        // Validar que el plan exista
+        const precioOficial = precios[tipo][planId.toLowerCase()];
+        if (precioOficial === undefined) {
+            return res.status(400).json({ message: `No existe el plan "${planId}" en los precios oficiales (${tipo})` });
+        }
+
+        // Verificar si hay extras con costo (sumar monto si es necesario)
+        let montoFinal = precioOficial;
+        if (orderData.monto && Number(orderData.monto) > precioOficial) {
+            montoFinal = Number(orderData.monto);
         }
 
         // determinar si estamos en modo sandbox o producción
