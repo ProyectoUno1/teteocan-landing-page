@@ -358,17 +358,17 @@ const toggleSubscriptionType = document.getElementById('toggleSubscriptionType')
 let preciosOficiales = {};
 
 fetch('https://tlatec-backend.onrender.com/api/precios')
-  .then(res => {
-    if (!res.ok) throw new Error('Error al obtener precios');
-    return res.json();
-  })
-  .then(data => {
-    preciosOficiales = data;
-    actualizarPrecios(tipoSuscripcion);
-  })
-  .catch(err => {
-    console.error('Error al cargar precios:', err);
-  });
+    .then(res => {
+        if (!res.ok) throw new Error('Error al obtener precios');
+        return res.json();
+    })
+    .then(data => {
+        preciosOficiales = data;
+        actualizarPrecios(tipoSuscripcion);
+    })
+    .catch(err => {
+        console.error('Error al cargar precios:', err);
+    });
 
 
 function actualizarPrecios(tipo) {
@@ -423,7 +423,34 @@ function actualizarPrecios(tipo) {
 toggleSubscriptionType?.addEventListener('change', (e) => {
     tipoSuscripcion = e.target.checked ? 'anual' : 'mensual';
     actualizarPrecios(tipoSuscripcion);
+
+    const exploradorCard = document.querySelector('.pricing-card[data-package-id="explorador"]');
+    if (exploradorCard) {
+        if (tipoSuscripcion === 'anual') {
+            exploradorCard.style.display = 'none'; // ocultar
+        } else {
+            exploradorCard.style.display = ''; // mostrar 
+        }
+    }
+    ajustarGridColumnas();
 });
+
+function ajustarGridColumnas() {
+    const grid = document.querySelector('.pricing-grid');
+    if (!grid) return;
+
+    const visibles = [...grid.querySelectorAll('.pricing-card')].filter(card => card.style.display !== 'none');
+    const count = visibles.length;
+
+    if (count < 4) {
+        grid.style.gridTemplateColumns = `repeat(${count}, 1fr)`;
+        grid.style.justifyContent = 'center';
+    } else {
+        grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+        grid.style.justifyContent = 'normal';
+    }
+}
+
 
 // Función para abrir modal de confirmación
 function openConfirmModal() {
@@ -434,7 +461,16 @@ function openConfirmModal() {
 
     confirmPackageName.innerText = selectedPackage.name;
 
-    setPackageBasePrice(selectedPackage.price);
+    const tipo = tipoSuscripcion || 'mensual';
+    const spId = selectedPackage.id?.toLowerCase();
+    let precioActual = preciosOficiales[spId]?.[tipo] ?? selectedPackage.price;
+
+    if (isNaN(precioActual)) {
+        console.warn(`Precio inválido desde JSON para paquete ${spId}:`, precioActual);
+        precioActual = 0;
+    }
+
+    setPackageBasePrice(precioActual);
 
     updateExtraPricesInForm();
 
