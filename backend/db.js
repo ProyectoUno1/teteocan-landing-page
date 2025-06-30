@@ -12,16 +12,25 @@ db.serialize(() => {
   // cea la tabla 'ordenes' si no existe con sus columnas y tipos 
   db.run(`
     CREATE TABLE IF NOT EXISTS ordenes (
-      preapproval_id TEXT PRIMARY KEY,         // ID único de la suscripción/preaprobación
-      cliente_email TEXT,                      // Email del cliente que hizo la orden
-      nombre_paquete TEXT,                     // Nombre del paquete contratado
-      resumen_servicios TEXT,                  // Resumen de servicios incluidos
-      monto REAL,                              // Monto total de la suscripción
-      fecha TEXT,                              // Fecha de creación de la orden
-      mensaje_continuar TEXT                   // Mensaje personalizado para continuar
+      preapproval_id TEXT PRIMARY KEY,        
+      cliente_email TEXT,                      
+      nombre_paquete TEXT,                     
+      resumen_servicios TEXT,                 
+      monto REAL,                              
+      fecha TEXT,                              
+      mensaje_continuar TEXT                   
     )
   `);
 });
+// ID único de la suscripción/preaprobación
+// Email del cliente que hizo la orden
+// Nombre del paquete contratado
+// Resumen de servicios incluidos
+// Monto total de la suscripción
+// Fecha de creación de la orden
+// Mensaje personalizado para continuar
+
+
 
 // exporta la instancia para usarla en otros módulos (controladores, rutas, etc.)
 module.exports = db;
