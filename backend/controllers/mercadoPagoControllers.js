@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
-const pool = require('../../db');
+const pool = require('../db');
 
 const preciosFile = path.join(__dirname, '../precios.json');
 
