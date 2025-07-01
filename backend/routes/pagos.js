@@ -3,7 +3,8 @@ const router = express.Router();
 
 // importa solo la función para crear suscripciones
 const { crearSuscripcionDinamica } = require('../controllers/mercadoPagoControllers');
-const { registrarOrdenGratuita } = require('../controllers/ordenGratuitaController');
+const { ordenGratuita } = require('../controllers/ordenGratuitaController');
+
 
 
 /**
@@ -12,6 +13,7 @@ const { registrarOrdenGratuita } = require('../controllers/ordenGratuitaControll
  * responde con init_point para redirigir a Mercado Pago.
  */
 router.post('/suscripcion', crearSuscripcionDinamica);
-router.post('/orden-gratis', registrarOrdenGratuita);
+router.post('/orden-gratis', ordenGratuita);
+
 
 module.exports = router;
