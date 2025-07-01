@@ -26,16 +26,16 @@ const crearSuscripcionDinamica = async (req, res) => {
         const preciosRaw = fs.readFileSync(preciosFile, 'utf-8');
         const precios = JSON.parse(preciosRaw);
 
-        // Validar tipo de suscripción
+        // validar tipo de suscripción
         const tipo = ['mensual', 'anual'].includes(tipoSuscripcion) ? tipoSuscripcion : 'mensual';
 
-        // Validar que el plan exista
+        // validar que el plan exista
         const precioOficial = precios[tipo]?.[planId.toLowerCase()];
         if (precioOficial === undefined) {
             return res.status(400).json({ message: `No existe el plan "${planId}" en los precios oficiales (${tipo})` });
         }
 
-        // Verificar si hay extras con costo (sumar monto si es necesario)
+        // verificar si hay extras con costo (sumar monto si es necesario)
         let montoFinal = precioOficial;
         if (orderData.monto && Number(orderData.monto) > precioOficial) {
             montoFinal = Number(orderData.monto);

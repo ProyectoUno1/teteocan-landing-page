@@ -399,7 +399,7 @@ function actualizarPrecios(tipo) {
         priceAmount.textContent = `$${price.toLocaleString('es-MX')}`;
         pricePeriod.textContent = tipo === 'anual' ? '/año' : '/mes';
 
-        // Actualizar dataset para que se tome el precio correcto al comprar
+        // actualizar dataset para que se tome el precio correcto al comprar
         card.dataset.packagePrice = price;
     });
 
@@ -419,7 +419,7 @@ function actualizarPrecios(tipo) {
 }
 
 
-// Cambiar tipo de suscripción (mensual/anual)
+// cambiar tipo de suscripción (mensual/anual)
 toggleSubscriptionType?.addEventListener('change', (e) => {
     tipoSuscripcion = e.target.checked ? 'anual' : 'mensual';
     actualizarPrecios(tipoSuscripcion);
@@ -435,24 +435,26 @@ toggleSubscriptionType?.addEventListener('change', (e) => {
     ajustarGridColumnas();
 });
 
+
 function ajustarGridColumnas() {
     const grid = document.querySelector('.pricing-grid');
     if (!grid) return;
 
-    const visibles = [...grid.querySelectorAll('.pricing-card')].filter(card => card.style.display !== 'none');
+    const visibles = [...grid.querySelectorAll('.pricing-card:not(.oculto)')];
     const count = visibles.length;
 
-    if (count < 4) {
+    // pantallas grandes
+    if (window.innerWidth > 1024) {
         grid.style.gridTemplateColumns = `repeat(${count}, 1fr)`;
-        grid.style.justifyContent = 'center';
+    } else if (window.innerWidth > 768) {
+        grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
     } else {
-        grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
-        grid.style.justifyContent = 'normal';
+        grid.style.gridTemplateColumns = '1fr';
     }
 }
 
 
-// Función para abrir modal de confirmación
+// función para abrir modal de confirmación
 function openConfirmModal() {
     if (!selectedPackage) {
         alert('Por favor, selecciona un paquete primero para proceder con la compra.');
@@ -464,7 +466,7 @@ function openConfirmModal() {
     const tipo = tipoSuscripcion || 'mensual';
     const spId = selectedPackage.id?.toLowerCase();
 
-    // Validar precio oficial desde JSON
+    // validar precio oficial desde JSON
     const precioJSON = preciosOficiales?.[tipo]?.[spId];
 
     if (typeof precioJSON !== 'number' || isNaN(precioJSON)) {
@@ -473,17 +475,17 @@ function openConfirmModal() {
         return;
     }
 
-    // Actualizar el precio base del paquete
+    // actualizar el precio base del paquete
     selectedPackage.price = precioJSON;
     setPackageBasePrice(precioJSON);
     updateExtraPricesInForm();
 
-    // Reiniciar extras
+    // reiniciar extras
     extraServicesForm.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     extraServicesForm.style.display = 'none';
     toggleExtrasBtn.textContent = '➕ AÑADIR SERVICIOS EXTRA';
 
-    // Clonar lista de servicios
+    // clonar lista de servicios
     const selectedCard = document.querySelector(`.pricing-card[data-package-name="${selectedPackage.name}"]`);
     const existingList = selectedCard?.querySelector('.features-list');
 
@@ -498,7 +500,7 @@ function openConfirmModal() {
         console.warn('No se encontró la lista de servicios o el contenedor.');
     }
 
-    // Mostrar el modal
+    // mostrar el modal
     confirmModal.style.display = 'flex';
     confirmModal.classList.remove('fade-out');
     confirmModal.classList.add('fade-in');
@@ -616,13 +618,13 @@ function setPackageBasePrice(price) {
 
 extraServicesForm.addEventListener('change', updatePriceWithExtras);
 
-// Listener para cambiar tipo de suscripción con el switch
+// listener para cambiar tipo de suscripción con el switch
 toggleSubscriptionType.addEventListener('change', (e) => {
     tipoSuscripcion = e.target.checked ? 'anual' : 'mensual';
     actualizarPrecios(tipoSuscripcion);
 });
 
-// Confirmar compra
+// confirmar compra
 btnConfirmPurchase?.addEventListener('click', async () => {
     const paquetesConSuscripcion = ['impulso', 'dominio', 'titan'];
 
@@ -631,7 +633,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
     // 1. Pedir correo
     const { value: clienteEmail } = await Swal.fire({
         title: 'INGRESA TU CORREO ELECTRÓNICO',
-        input: 'email',
+        input: 'text',
         inputLabel: 'CORREO',
         inputPlaceholder: 'tucorreo@ejemplo.com',
         showCancelButton: true,
