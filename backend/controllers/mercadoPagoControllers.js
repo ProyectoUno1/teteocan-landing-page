@@ -1,19 +1,23 @@
 const fetch = require('node-fetch');
+const fs = require('fs');
+const path = require('path');
 const db = require('../db');
-const preciosPaquetes = require('../precios.json');
+
+const preciosFile = path.join(__dirname, '../precios.json');
 
 /**
  * controlador para crear una suscripción dinámica en Mercado Pago.
- * recibe en req.body el email del cliente y los datos de la orden (orderData).
+ * recibe en req.body el email del cliente, los datos de la orden (orderData),
+ * el tipo de suscripción (mensual/anual) y el planId.
  * crea la suscripción mediante la API de Mercado Pago y guarda la orden en SQLite.
  * finalmente, responde con el link (init_point) para que el cliente complete el pago.
  */
 const crearSuscripcionDinamica = async (req, res) => {
     try {
-        const { clienteEmail, orderData } = req.body;
+        const { clienteEmail, orderData, tipoSuscripcion, planId } = req.body;
 
         // validar que se hayan recibido los datos obligatorios
-        if (!clienteEmail || !orderData || !orderData.monto) {
+        if (!clienteEmail || !orderData || !orderData.monto || !planId) {
             console.log('Faltan datos obligatorios');
             return res.status(400).json({ message: 'Datos incompletos' });
         }
@@ -26,7 +30,7 @@ const crearSuscripcionDinamica = async (req, res) => {
         const tipo = ['mensual', 'anual'].includes(tipoSuscripcion) ? tipoSuscripcion : 'mensual';
 
         // Validar que el plan exista
-        const precioOficial = precios[tipo][planId.toLowerCase()];
+        const precioOficial = precios[tipo]?.[planId.toLowerCase()];
         if (precioOficial === undefined) {
             return res.status(400).json({ message: `No existe el plan "${planId}" en los precios oficiales (${tipo})` });
         }
@@ -49,10 +53,10 @@ const crearSuscripcionDinamica = async (req, res) => {
             auto_recurring: {
                 frequency: 1,                // repetición mensual
                 frequency_type: "months",
-                transaction_amount: Number(orderData.monto), // monto de la suscripción
+                transaction_amount: montoFinal, // monto de la suscripción correcto
                 currency_id: "MXN",
                 start_date: new Date().toISOString(),
-                // fecha final: 1 año a partir de hoy (la suscripcion se cobra mensualmente durante un año, despues de ese año se cancela)
+                // fecha final: 1 año a partir de hoy (la suscripción se cobra mensualmente durante un año, luego se cancela)
                 end_date: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString(),
             },
             back_url: "https://tlatec.teteocan.com",  // URL para volver después del pago
@@ -90,7 +94,7 @@ const crearSuscripcionDinamica = async (req, res) => {
             clienteEmail,
             orderData.nombrePaquete,
             orderData.resumenServicios,
-            orderData.monto,
+            montoFinal,
             orderData.fecha,
             orderData.mensajeContinuar || 'La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.'
         ], (err) => {
@@ -106,6 +110,7 @@ const crearSuscripcionDinamica = async (req, res) => {
 
     } catch (error) {
         // manejo de errores inesperados
+        console.error('Error en crearSuscripcionDinamica:', error);
         res.status(500).json({ message: 'Error al crear suscripción', error: error.message });
     }
 };
