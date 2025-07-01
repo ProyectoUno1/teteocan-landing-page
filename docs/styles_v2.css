@@ -24,7 +24,7 @@ button {
 
 
 .container {
-    max-width: 1200px;
+    max-width: 1380px;
     margin: 0 auto;
     padding: 0 1rem;
 }
@@ -445,63 +445,19 @@ button {
 }
 
 
-/* Estilos para el switch */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 24px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 24px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background-color: #3773B8;
-}
-
-input:checked + .slider:before {
-  transform: translateX(26px);
-}
-
-
 
 /* Pricing Section */
 
 .pricing-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-    justify-content: center;
-    align-items: start;
-    transition: all 0.4s ease;
-    margin: 0 auto;
-    width: 100%;
-    max-width: 1400px;
+  grid-auto-rows: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(300px, max-content));
+  justify-content: center;
+  gap: 2rem;
+  margin: 0 auto;
+  max-width: 1400px;
+  width: 100%;
+  padding: 0 1rem;
 }
 
 .pricing-card.oculto {
@@ -515,7 +471,6 @@ input:checked + .slider:before {
     justify-content: space-between;
     min-height: fit-content;
     border: 2px solid transparent;
-    border-radius: 1rem;
     background: white;
     border-radius: 2rem;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -753,7 +708,7 @@ input:checked + .slider:before {
 .slider {
   position: absolute;
   cursor: pointer;
-  background-color: #ccc;
+  background-color: #5F8FC5;
   border-radius: 34px;
   top: 0;
   left: 0;
@@ -785,14 +740,12 @@ input:checked + .slider::before {
 }
 
 
-
-
 /* titles package*/
 
 /* Explorador */
 .pricing-card:nth-child(1) .header-top {
     background: #36CFC9;
-    padding: rem;
+    padding: 1rem;
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
     color: white;
