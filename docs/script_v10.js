@@ -463,27 +463,32 @@ function openConfirmModal() {
 
     const tipo = tipoSuscripcion || 'mensual';
     const spId = selectedPackage.id?.toLowerCase();
-    let precioActual = preciosOficiales[spId]?.[tipo] ?? selectedPackage.price;
 
-    if (isNaN(precioActual)) {
-        console.warn(`Precio inválido desde JSON para paquete ${spId}:`, precioActual);
-        precioActual = 0;
+    // Validar precio oficial desde JSON
+    const precioJSON = preciosOficiales?.[spId]?.[tipo];
+
+    if (typeof precioJSON !== 'number' || isNaN(precioJSON)) {
+        console.error(`Precio inválido para el paquete "${spId}" y tipo "${tipo}"`);
+        Swal.fire('Error', 'No se encontró el precio oficial del paquete seleccionado.', 'error');
+        return;
     }
 
-    setPackageBasePrice(precioActual);
-
+    // Actualizar el precio base del paquete
+    selectedPackage.price = precioJSON;
+    setPackageBasePrice(precioJSON);
     updateExtraPricesInForm();
 
+    // Reiniciar extras
     extraServicesForm.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     extraServicesForm.style.display = 'none';
     toggleExtrasBtn.textContent = '➕ AÑADIR SERVICIOS EXTRA';
 
+    // Clonar lista de servicios
     const selectedCard = document.querySelector(`.pricing-card[data-package-name="${selectedPackage.name}"]`);
     const existingList = selectedCard?.querySelector('.features-list');
 
     if (existingList && servicesList) {
         servicesList.innerHTML = '';
-
         existingList.querySelectorAll('li').forEach(item => {
             const clonedItem = item.cloneNode(true);
             clonedItem.removeAttribute('id');
@@ -493,12 +498,14 @@ function openConfirmModal() {
         console.warn('No se encontró la lista de servicios o el contenedor.');
     }
 
+    // Mostrar el modal
     confirmModal.style.display = 'flex';
     confirmModal.classList.remove('fade-out');
     confirmModal.classList.add('fade-in');
     document.body.classList.add('modal-open');
     document.body.classList.add('body-no-scroll');
 }
+
 
 function closeConfirmModal() {
     confirmModal.classList.remove('fade-in');
@@ -672,7 +679,9 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         monto: montoFinal,
         fecha: new Date().toLocaleDateString('es-MX'),
         clienteEmail,
-        mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos."
+        mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.",
+        planId: selectedPackage.id,           
+        tipoSuscripcion: tipo
     };
 
     console.log('orderData antes de enviar:', orderData);
@@ -773,9 +782,8 @@ document.querySelectorAll('.pricing-footer button').forEach(button => {
         if (pricingCard) {
             pricingCard.classList.add('selected');
             selectedPackage = {
-                id: pricingCard.getAttribute('data-package-id').toLowerCase(),
+                id: pricingCard.getAttribute('data-package-id')?.toLowerCase(),
                 name: pricingCard.getAttribute('data-package-name'),
-                planId: pricingCard.getAttribute('data-package-id')
             };
 
             const base = tipoSuscripcion === 'anual'
