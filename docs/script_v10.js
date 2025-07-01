@@ -679,7 +679,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         monto: montoFinal,
         fecha: new Date().toLocaleDateString('es-MX'),
         clienteEmail,
-        mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos."
+        mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.",
         planId: selectedPackage.id,           
         tipoSuscripcion: tipo
     };
@@ -782,9 +782,8 @@ document.querySelectorAll('.pricing-footer button').forEach(button => {
         if (pricingCard) {
             pricingCard.classList.add('selected');
             selectedPackage = {
-                id: pricingCard.getAttribute('data-package-id').toLowerCase(),
+                id: pricingCard.getAttribute('data-package-id')?.toLowerCase(),
                 name: pricingCard.getAttribute('data-package-name'),
-                planId: pricingCard.getAttribute('data-package-id')
             };
 
             const base = tipoSuscripcion === 'anual'
