@@ -54,7 +54,7 @@ const webhookSuscripcion = async (req, res) => {
                     await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
                     await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
 
-                    await pool.query('DELETE FROM ventas WHERE preapproval_id = $1', [preapprovalId]);
+                   await pool.query('UPDATE ventas SET estado = $1 WHERE preapproval_id = $2', ['procesada', preapprovalId]);
 
                     return res.status(200).send('Webhook procesado y correos enviados');
                 } else {
@@ -90,7 +90,7 @@ const webhookSuscripcion = async (req, res) => {
                     await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
                     await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
 
-                    await pool.query('DELETE FROM ventas WHERE preapproval_id = $1', [preapprovalId]);
+                    await pool.query('UPDATE ventas SET estado = $1 WHERE preapproval_id = $2', ['procesada', preapprovalId]);
 
                     return res.status(200).send('Webhook preapproval autorizado y correos enviados');
                 } else {
