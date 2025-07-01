@@ -465,7 +465,7 @@ function openConfirmModal() {
     const spId = selectedPackage.id?.toLowerCase();
 
     // Validar precio oficial desde JSON
-    const precioJSON = preciosOficiales?.[spId]?.[tipo];
+    const precioJSON = preciosOficiales?.[tipo]?.[spId];
 
     if (typeof precioJSON !== 'number' || isNaN(precioJSON)) {
         console.error(`Precio inválido para el paquete "${spId}" y tipo "${tipo}"`);
