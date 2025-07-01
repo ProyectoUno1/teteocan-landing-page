@@ -1,6 +1,13 @@
 {
-  "explorador": { "mensual": 0, "anual": 0 },
-  "impulso": { "mensual": 299, "anual": 7000 },
-  "dominio": { "mensual": 359, "anual": 8000 },
-  "titan": { "mensual": 399, "anual": 9000 }
+  "mensual": {
+    "explorador": 0,
+    "impulso": 299,
+    "dominio": 359,
+    "titan": 399
+  },
+  "anual": {
+    "impulso": 2999,
+    "dominio": 3599,
+    "titan": 3999
+  }
 }
