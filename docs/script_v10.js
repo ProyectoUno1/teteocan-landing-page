@@ -427,31 +427,18 @@ toggleSubscriptionType?.addEventListener('change', (e) => {
     const exploradorCard = document.querySelector('.pricing-card[data-package-id="explorador"]');
     if (exploradorCard) {
         if (tipoSuscripcion === 'anual') {
-            exploradorCard.style.display = 'none'; // ocultar
+            exploradorCard.classList.add('oculto');
         } else {
-            exploradorCard.style.display = ''; // mostrar 
+            exploradorCard.classList.remove('oculto');
         }
     }
-    ajustarGridColumnas();
+
+    
 });
 
 
-function ajustarGridColumnas() {
-    const grid = document.querySelector('.pricing-grid');
-    if (!grid) return;
 
-    const visibles = [...grid.querySelectorAll('.pricing-card:not(.oculto)')];
-    const count = visibles.length;
 
-    // pantallas grandes
-    if (window.innerWidth > 1024) {
-        grid.style.gridTemplateColumns = `repeat(${count}, 1fr)`;
-    } else if (window.innerWidth > 768) {
-        grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
-    } else {
-        grid.style.gridTemplateColumns = '1fr';
-    }
-}
 
 
 // función para abrir modal de confirmación
@@ -537,14 +524,15 @@ toggleExtrasBtn.addEventListener('click', function () {
     toggleExtrasBtn.textContent = isVisible ? '➕ Añadir servicios extra' : '➖ Ocultar servicios extra';
 });
 
-// Diferentes precios en formulario de extras
+// diferentes precios en formulario de extras
 function updateExtraPricesInForm() {
     if (!selectedPackage) return;
 
     const isTitan = selectedPackage.name.toLowerCase().includes('titan');
-    const labels = extraServicesForm.querySelectorAll('label');
+    const isAnual = tipoSuscripcion === 'anual'; // aquí validamos el tipo de suscripción
 
-    const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
+    const labels = extraServicesForm.querySelectorAll('label');
+    const freeExtrasInTitanAnual = ['negocios', 'tpv', 'logotipo'];
 
     labels.forEach(label => {
         const priceSpan = label.querySelector('.extra-price');
@@ -553,15 +541,15 @@ function updateExtraPricesInForm() {
         const checkbox = label.querySelector('input[type="checkbox"]');
         const originalPrice = parseFloat(checkbox.dataset.price).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
 
-        if (isTitan && freeExtrasInTitan.includes(checkbox.value)) {
+        // servicios gratis solo si es Titan y suscripción anual
+        if (isTitan && isAnual && freeExtrasInTitanAnual.includes(checkbox.value)) {
             priceSpan.textContent = 'Gratis';
-            priceSpan.style.color = ' #3773B8';
+            priceSpan.style.color = '#3773B8';
             priceSpan.style.fontWeight = '600';
         } else {
+            // mostrar precio normal
             switch (checkbox.value) {
                 case 'scraping':
-                    priceSpan.textContent = `${originalPrice} / 500 registros`;
-                    break;
                 case 'basededatos':
                     priceSpan.textContent = `${originalPrice} / 500 registros`;
                     break;
@@ -579,35 +567,46 @@ function updateExtraPricesInForm() {
     });
 }
 
-// Actualiza el precio total con extras
+// actualiza el precio total con extras
 function updatePriceWithExtras() {
     let extrasTotal = 0;
     const checkedBoxes = extraServicesForm.querySelectorAll('input[type="checkbox"]:checked');
-    const isTitan = selectedPackage?.name.toLowerCase().includes('titan');
 
-    const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
+    const isTitan = selectedPackage?.name.toLowerCase().includes('titan');
+    const isAnual = tipoSuscripcion === 'anual'; // Validar tipo suscripción
+
+    const freeExtrasInTitanAnual = ['negocios', 'tpv', 'logotipo'];
+
+    // limpiar extras previos del resumen
     const prevExtras = servicesList.querySelectorAll('.extra-item');
     prevExtras.forEach(e => e.remove());
 
+    // recorrer los extras seleccionados
     checkedBoxes.forEach(cb => {
         const price = parseFloat(cb.dataset.price) || 0;
-        const isFreeInTitan = isTitan && freeExtrasInTitan.includes(cb.value);
 
-        if (!isFreeInTitan) {
+        // aolo gratis si es Titan y anual
+        const isFreeInTitanAnual = isTitan && isAnual && freeExtrasInTitanAnual.includes(cb.value);
+
+        if (!isFreeInTitanAnual) {
             extrasTotal += price;
         }
 
+        // agregar al resumen visual
         const li = document.createElement('li');
         li.classList.add('extra-item');
         const icon = cb.parentElement.querySelector('i')?.outerHTML || '';
         const text = cb.parentElement.innerText.trim();
-        li.innerHTML = `${icon} ${text}`;
+
+        li.innerHTML = `${icon} ${text}${isFreeInTitanAnual ? ' (Gratis)' : ''}`;
         servicesList.appendChild(li);
     });
 
+    // calcular y mostrar precio final
     finalPrice = basePrice + extrasTotal;
     confirmPackagePrice.textContent = `$${finalPrice.toLocaleString('es-MX')} MXN`;
 }
+
 
 // Actualiza precio base y precio final
 function setPackageBasePrice(price) {
