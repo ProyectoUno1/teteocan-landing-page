@@ -681,7 +681,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         clienteEmail,
         mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.",
         planId: selectedPackage.id,           
-        tipoSuscripcion: tipo
+        tipoSuscripcion
     };
 
     console.log('orderData antes de enviar:', orderData);
