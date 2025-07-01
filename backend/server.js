@@ -6,7 +6,7 @@ const path = require('path');
 // importar rutas definidas para pagos y webhook
 const pagosRoutes = require('./routes/pagos');
 const webhookRoutes = require('./routes/webhook');
-const preciosRouter = require('./routes/precios');
+const preciosRouter = require('./routes/precios'); //nueva ruta para obtener los precios
 
 // carga las variables de entorno del archivo .env ubicado en la raíz del backend
 dotenv.config({ path: path.resolve(__dirname, '.env') });
