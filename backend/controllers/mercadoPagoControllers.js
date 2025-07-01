@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
-const db = require('../db');
+const pool = require('../../db');
 
 const preciosFile = path.join(__dirname, '../precios.json');
 
@@ -84,29 +84,35 @@ const crearSuscripcionDinamica = async (req, res) => {
         const data = await response.json();
         const preapprovalId = data.id; // ID único de la suscripción en Mercado Pago
 
-        // guardar los datos de la orden en SQLite para luego poder validarla en el webhook
-        db.run(`
-          INSERT OR REPLACE INTO ordenes (
-            preapproval_id, cliente_email, nombre_paquete, resumen_servicios, monto, fecha, mensaje_continuar
-          ) VALUES (?, ?, ?, ?, ?, ?, ?)
-        `, [
-            preapprovalId,
-            clienteEmail,
-            orderData.nombrePaquete,
-            orderData.resumenServicios,
-            montoFinal,
-            orderData.fecha,
-            orderData.mensajeContinuar || 'La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.'
-        ], (err) => {
-            if (err) {
-                console.error('Error al guardar la orden en SQLite:', err);
-            } else {
-                console.log(`Orden con preapproval_id ${preapprovalId} guardada en SQLite`);
-            }
-        });
+        // Guardar la orden en Neon/Postgres
+        try {
+            await pool.query(`
+        INSERT INTO ventas (
+          preapproval_id, cliente_email, nombre_paquete, resumen_servicios, monto, fecha, mensaje_continuar
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+        ON CONFLICT (preapproval_id) DO UPDATE SET
+          cliente_email = EXCLUDED.cliente_email,
+          nombre_paquete = EXCLUDED.nombre_paquete,
+          resumen_servicios = EXCLUDED.resumen_servicios,
+          monto = EXCLUDED.monto,
+          fecha = EXCLUDED.fecha,
+          mensaje_continuar = EXCLUDED.mensaje_continuar
+      `, [
+                preapprovalId,
+                clienteEmail,
+                orderData.nombrePaquete,
+                orderData.resumenServicios,
+                montoFinal,
+                orderData.fecha,
+                orderData.mensajeContinuar || 'La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.'
+            ]);
+            console.log(`Orden con preapproval_id ${preapprovalId} guardada en Neon`);
+        } catch (err) {
+            console.error('Error al guardar la orden en Neon:', err);
+        }
 
-        // responder al cliente con la URL para que complete la suscripción/pago
         res.json({ init_point: data.init_point });
+
 
     } catch (error) {
         // manejo de errores inesperados

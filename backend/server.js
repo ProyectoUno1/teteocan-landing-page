@@ -3,6 +3,8 @@ const cors = require('cors');
 const app = express();
 const dotenv = require('dotenv'); // Para cargar variables de entorno desde .env
 const path = require('path');
+const pool = require('./db');
+
 // importar rutas definidas para pagos y webhook
 const pagosRoutes = require('./routes/pagos');
 const webhookRoutes = require('./routes/webhook');
@@ -52,6 +54,15 @@ app.post('/api/confirmar', async (req, res) => {
         console.error('Error al confirmar pago:', error);
         res.status(500).json({ message: 'Error al confirmar pago', error: error.message });
     }
+});
+
+
+pool.query('SELECT NOW()', (err, result) => {
+  if (err) {
+    console.error(' Error al conectar a Neon/Postgres:', err);
+  } else {
+    console.log('Conexión a Neon/Postgres exitosa. Hora actual:', result.rows[0].now);
+  }
 });
 
 // ruta base para verificar que el backend está corriendo
