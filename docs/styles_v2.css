@@ -1540,6 +1540,75 @@ input:checked + .slider::before {
   text-decoration: none;
 }
 
+ /* --- ESTILOS PARA PAQUETE AGOTADO (MODIFICADOS) --- */
+.pricing-card.sold-out {
+    position: relative;
+    filter: grayscale(90%);
+    opacity: 0.7;
+    /* Se elimina 'pointer-events: none' de aquí para permitir el hover */
+    cursor: help; /* Cambia el cursor para indicar que hay información */
+}
+
+/* Deshabilitamos los clics en el contenido interno, pero no en la tarjeta principal */
+.pricing-card.sold-out .pricing-body,
+.pricing-card.sold-out .pricing-footer {
+    pointer-events: none;
+}
+
+.pricing-card.sold-out .btn-outline {
+    background: #6c757d;
+    border-color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Se debe asegurar que la capa del sello capture el evento hover */
+.sold-out-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: all; /* Importante para que detecte el hover */
+}
+
+.sold-out-stamp {
+    max-width: 80%;
+    height: auto;
+    transform: rotate(-15deg);
+}
+
+.pricing-card.sold-out .sold-out-overlay {
+    opacity: 1;
+}
+
+/* --- NUEVOS ESTILOS PARA EL TOOLTIP --- */
+.sold-out-tooltip {
+    position: absolute;
+    bottom: 20%; /* Posición del tooltip */
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    text-align: center;
+    padding: 10px 15px;
+    border-radius: 8px;
+    z-index: 10;
+    opacity: 0; /* Oculto por defecto */
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    font-size: 0.9rem;
+    pointer-events: none; /* El tooltip en sí no debe ser interactivo */
+}
+
+/* Muestra el tooltip al pasar el cursor sobre la capa del sello */
+.sold-out-overlay:hover .sold-out-tooltip {
+    opacity: 1;
+    visibility: visible;
+} 
 
 
 
