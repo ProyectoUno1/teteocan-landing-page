@@ -87,30 +87,38 @@ const crearSuscripcionDinamica = async (req, res) => {
         // Guardar la orden en Neon/Postgres
         try {
             await pool.query(`
-        INSERT INTO ventas (
-          preapproval_id, cliente_email, nombre_paquete, resumen_servicios, monto, fecha, mensaje_continuar
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
-        ON CONFLICT (preapproval_id) DO UPDATE SET
-          cliente_email = EXCLUDED.cliente_email,
-          nombre_paquete = EXCLUDED.nombre_paquete,
-          resumen_servicios = EXCLUDED.resumen_servicios,
-          monto = EXCLUDED.monto,
-          fecha = EXCLUDED.fecha,
-          mensaje_continuar = EXCLUDED.mensaje_continuar
-      `, [
+    INSERT INTO ventas (
+      preapproval_id,
+      cliente_email,
+      nombre_paquete,
+      resumen_servicios,
+      monto,
+      fecha,
+      mensaje_continuar,
+      tipo_suscripcion
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    ON CONFLICT (preapproval_id) DO UPDATE SET
+      cliente_email = EXCLUDED.cliente_email,
+      nombre_paquete = EXCLUDED.nombre_paquete,
+      resumen_servicios = EXCLUDED.resumen_servicios,
+      monto = EXCLUDED.monto,
+      fecha = EXCLUDED.fecha,
+      mensaje_continuar = EXCLUDED.mensaje_continuar,
+      tipo_suscripcion = EXCLUDED.tipo_suscripcion
+  `, [
                 preapprovalId,
                 clienteEmail,
                 orderData.nombrePaquete,
                 orderData.resumenServicios,
                 montoFinal,
                 orderData.fecha,
-                orderData.mensajeContinuar || 'La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.'
+                orderData.mensajeContinuar || 'La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.',
+                tipo
             ]);
             console.log(`Orden con preapproval_id ${preapprovalId} guardada en Neon`);
         } catch (err) {
             console.error('Error al guardar la orden en Neon:', err);
         }
-
         res.json({ init_point: data.init_point });
 
 

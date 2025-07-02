@@ -1,6 +1,3 @@
-const pool = require('../db');
-const emailController = require('../pdf/controllers/emailController');
-
 const ordenGratuita = async (req, res) => {
   try {
     const { orderData } = req.body;
@@ -11,23 +8,23 @@ const ordenGratuita = async (req, res) => {
       resumenServicios,
       monto,
       fecha,
-      mensajeContinuar
+      mensajeContinuar,
+      tipoSuscripcion // <-- Lo agregamos aquí
     } = orderData;
 
-// Validar límite de 10 órdenes gratuitas
-if (preapproval_id && preapproval_id.startsWith('free-')) {
-  const countResult = await pool.query(
-    `SELECT COUNT(*) FROM ventas WHERE preapproval_id LIKE 'free-%'`
-  );
-  const ventaCount = parseInt(countResult.rows[0].count);
+    // Validar límite de 10 órdenes gratuitas
+    if (preapproval_id && preapproval_id.startsWith('free-')) {
+      const countResult = await pool.query(
+        `SELECT COUNT(*) FROM ventas WHERE preapproval_id LIKE 'free-%'`
+      );
+      const ventaCount = parseInt(countResult.rows[0].count);
 
-  if (ventaCount >= 10) {
-    return res.status(403).json({
-      message: 'Límite alcanzado: solo se permiten 10 órdenes gratuitas.'
-    });
-  }
-}
-
+      if (ventaCount >= 10) {
+        return res.status(403).json({
+          message: 'Límite alcanzado: solo se permiten 10 órdenes gratuitas.'
+        });
+      }
+    }
 
     // Guardar la orden en la base de datos
     await pool.query(`
@@ -39,8 +36,9 @@ if (preapproval_id && preapproval_id.startsWith('free-')) {
         monto,
         fecha,
         mensaje_continuar,
-        estado
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,'pendiente')
+        estado,
+        tipo_suscripcion
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,'pendiente',$8)
     `, [
       preapproval_id,
       clienteEmail,
@@ -48,7 +46,8 @@ if (preapproval_id && preapproval_id.startsWith('free-')) {
       resumenServicios,
       monto,
       fecha,
-      mensajeContinuar
+      mensajeContinuar,
+      tipoSuscripcion // <-- Lo insertamos aquí
     ]);
 
     // Enviar correos
@@ -64,5 +63,3 @@ if (preapproval_id && preapproval_id.startsWith('free-')) {
     res.status(500).json({ message: 'Error al registrar orden gratuita' });
   }
 };
-
-module.exports = { ordenGratuita };
