@@ -37,6 +37,9 @@ app.use('/api/adminPanel', verifyToken, adminRoutes);
 
 app.use('/api/auth', authRoutes); // Nueva ruta para autenticación
 
+app.use('/api/public', require('./routes/public'));
+
+
 
 // controlador de email para pruebas manuales
 const emailController = require('./pdf/controllers/emailController');
