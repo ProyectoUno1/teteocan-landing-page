@@ -85,3 +85,7 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Servidor backend corriendo en el puerto ${PORT}`);
 });
+
+const exportGoogleRoutes = require('./routes/exportGoogle');
+app.use('/api', exportGoogleRoutes);
+
