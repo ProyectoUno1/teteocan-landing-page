@@ -38,45 +38,46 @@ const webhookSuscripcion = async (req, res) => {
             }
 
             // Solo actualizar si aún no está procesada
-            if (row.estado !== 'procesada') {
-                await pool.query('UPDATE ventas SET estado = $1 WHERE preapproval_id = $2', ['procesada', preapprovalId]);
-                console.log(`Estado actualizado a 'procesada' para orden ${preapprovalId}`);
-
-                // Enviar correos
-                const reqMock = {
-                    body: {
-                        nombrePaquete: row.nombre_paquete,
-                        resumenServicios: row.resumen_servicios,
-                        monto: row.monto,
-                        tipoSuscripcion: row.tipo_suscripcion,
-                        fecha: row.fecha,
-                        clienteEmail: row.cliente_email,
-                        mensajeContinuar: row.mensaje_continuar
-                    }
-                };
-                const resMock = { status: () => ({ json: () => { } }) };
-
-                await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
-                await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
-                console.log(`Correos enviados para orden ${preapprovalId}`);
-            } else {
-                console.log(`Orden ${preapprovalId} ya estaba procesada.`);
+            if (!row) {
+                console.log('Orden no encontrada para preapprovalId:', preapprovalId);
+                return res.status(200).send('Orden no encontrada, webhook ignorado');
             }
 
-            return res.status(200).send('Webhook procesado correctamente');
+            // Enviar correos
+            const reqMock = {
+                body: {
+                    nombrePaquete: row.nombre_paquete,
+                    resumenServicios: row.resumen_servicios,
+                    monto: row.monto,
+                    tipoSuscripcion: row.tipo_suscripcion,
+                    fecha: row.fecha,
+                    clienteEmail: row.cliente_email,
+                    mensajeContinuar: row.mensaje_continuar
+                }
+            };
+            const resMock = { status: () => ({ json: () => { } }) };
+
+            await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+            await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+            console.log(`Correos enviados para orden ${preapprovalId}`);
+        } else {
+            console.log(`Orden ${preapprovalId} ya estaba procesada.`);
         }
+
+        return res.status(200).send('Webhook procesado correctamente');
+    }
 
         // Paso: autorización de preaprobación (opcional)
         if (topic === 'preapproval' && action === 'authorized') {
-            console.log('Preapproval autorizado, sin acción requerida.');
-            return res.status(200).send('Preapproval autorizado');
-        }
-
-        return res.status(200).send('Evento no relevante');
-    } catch (error) {
-        console.error('Error en webhook:', error);
-        return res.status(500).send('Error interno del servidor');
+        console.log('Preapproval autorizado, sin acción requerida.');
+        return res.status(200).send('Preapproval autorizado');
     }
+
+    return res.status(200).send('Evento no relevante');
+} catch (error) {
+    console.error('Error en webhook:', error);
+    return res.status(500).send('Error interno del servidor');
+}
 };
 
 module.exports = { webhookSuscripcion };
