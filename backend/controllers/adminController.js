@@ -1,6 +1,5 @@
-// backend/controllers/adminController.js
 const pool = require('../db');
-const emailController = require('../pdf/controllers/emailController'); // Importar controlador emails
+const emailController = require('../pdf/controllers/emailController'); // Controlador emails
 
 const obtenerVentas = async (req, res) => {
   try {
@@ -53,4 +52,18 @@ const registrarVentaManual = async (req, res) => {
   }
 };
 
-module.exports = { obtenerVentas, registrarVentaManual };
+const borrarTodasLasVentas = async (req, res) => {
+  try {
+    await pool.query('DELETE FROM ventas');  // borrar todos los registros
+    res.status(200).json({ message: 'Ventas borradas correctamente.' });
+  } catch (error) {
+    console.error('Error borrando ventas:', error);
+    res.status(500).json({ error: 'Error interno al borrar ventas.' });
+  }
+};
+
+module.exports = {
+  obtenerVentas,
+  registrarVentaManual,
+  borrarTodasLasVentas
+};

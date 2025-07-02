@@ -1,41 +1,140 @@
-// public/js/adminPanel.js
-
 const saleForm = document.getElementById('saleForm');
 const packageSelect = document.getElementById('packageSelect');
 const servicesSummary = document.getElementById('servicesSummary');
 const totalSale = document.getElementById('totalSale');
 const salesTable = document.getElementById('salesTable');
 const saleDate = document.getElementById('saleDate');
+const filterPackageSelect = document.getElementById('filterPackage');
+const filterMonthSelect = document.getElementById('filterMonth');
 
+// Definición de paquetes y servicios
+const paquetes = {
+  explorador: {
+    nombre: "Paquete Explorador",
+    servicios: [
+      "1 dashboard automático",
+      "1 imagen genérica editable",
+      "demo de pagina web tipo landing",
+      "app para registro simple",
+      "canal de whatsapp",
+    ],
+    precio: 0
+  },
+  impulso: {
+    nombre: "Paquete Impulso",
+    servicios: [
+      "paquete explorador +",
+      "2 dashboards",
+      "sitio web profesional express",
+      "guía de uso",
+    ],
+    precio: 299,
+  },
+  dominio: {
+    nombre: "Paquete Dominio",
+    servicios: [
+      "paquete impulso +",
+      "1 dashboard",
+      "4 imágenes mensuales para redes sociales",
+      "Panel drive",
+      "Análisis mensual ejecutivo",
+      "calendario de redes sociales",
+      "bienvenida para tus clientes",
+    ],
+    precio: 359,
+  },
+  titan: {
+    nombre: "Paquete Titan",
+    servicios: [
+      "paquete dominio +",
+      "2 dashboards avanzados",
+      "Certificado digital validado",
+      "Catálogo editable para WhatsApp y redes",
+      "Asesoría directa por WhatsApp",
+      "Configuración y ajuste de Google Business",
+      "Asistente de objetivos quincenales basado en datos reales",
+      "Scraping de 100 registros de potenciales clientes",
+      "Encuesta de satisfacción para tus clientes",
+      "Prompt profesional para GPT asistente de negocios",
+      "Reporte mensual de ventas (basado en los datos analizados)",
+      "QR vinculado a menú o tiendas",
+    ],
+    precio: 499,
+  },
+};
+
+// Establece la fecha por defecto
 saleDate.valueAsDate = new Date();
 
+// Generar opciones del filtro por paquete dinámicamente
+function cargarOpcionesFiltroPaquetes() {
+  Object.entries(paquetes).forEach(([key, paquete]) => {
+    const option = document.createElement('option');
+    option.value = key;
+    option.textContent = paquete.nombre;
+    filterPackageSelect.appendChild(option);
+  });
+}
+
+// Obtener la key del paquete según su nombre
+function getKeyByPackageName(nombrePaquete) {
+  for (const key in paquetes) {
+    if (paquetes[key].nombre.toLowerCase() === nombrePaquete.toLowerCase()) {
+      return key;
+    }
+  }
+  return null;
+}
+
+// Actualiza el resumen visual y el total
 function updateSummaryAndTotal() {
   const selectedOption = packageSelect.options[packageSelect.selectedIndex];
-  const packageName = selectedOption.text;
-  const packagePrice = Number(selectedOption.dataset.price) || 0;
+  const packageId = selectedOption.value;
+  const paquete = paquetes[packageId];
 
-  servicesSummary.innerHTML = `<li>${packageName}</li>`;
-  totalSale.textContent = `$${packagePrice.toLocaleString()}`;
+  if (!paquete) {
+    servicesSummary.innerHTML = '';
+    totalSale.textContent = '$0';
+    return { packageName: '', total: 0 };
+  }
 
-  return { packageName, total: packagePrice };
+  servicesSummary.innerHTML = paquete.servicios.map(s => `<li>${s}</li>`).join('');
+  totalSale.textContent = `$${paquete.precio.toLocaleString()}`;
+
+  return { packageName: paquete.nombre, total: paquete.precio, servicios: paquete.servicios };
 }
 
-packageSelect.addEventListener('change', updateSummaryAndTotal);
-
+// Renderizar tabla de ventas con filtros
 function renderSales(data) {
-  salesTable.innerHTML = data
-    .map((sale) => `
+  const filterPackage = filterPackageSelect.value;
+  const filterMonth = filterMonthSelect.value;
+
+  const filtered = data.filter(sale => {
+    const paqueteKey = getKeyByPackageName(sale.nombre_paquete);
+    const matchesPackage = !filterPackage || paqueteKey === filterPackage;
+
+    const saleDate = new Date(sale.fecha);
+    const saleMonth = `${saleDate.getFullYear()}-${String(saleDate.getMonth() + 1).padStart(2, '0')}`;
+    const matchesMonth = !filterMonth || filterMonth === saleMonth;
+
+    return matchesPackage && matchesMonth;
+  });
+
+  salesTable.innerHTML = filtered.length > 0
+    ? filtered.map(sale => `
       <tr class="border-top text-sm">
-          <td class="p-2">${sale.id}</td>
-          <td class="p-2">${sale.cliente_email}</td>
-          <td class="p-2">${sale.nombre_paquete}</td>
-          <td class="p-2">${sale.resumen_servicios}</td>
-          <td class="p-2">${new Date(sale.fecha).toLocaleDateString()}</td>
-          <td class="p-2 text-green-600 font-semibold">$${parseFloat(sale.monto).toLocaleString()}</td>
+        <td class="p-2">${sale.id}</td>
+        <td class="p-2">${sale.cliente_email}</td>
+        <td class="p-2">${sale.nombre_paquete}</td>
+        <td class="p-2">${sale.resumen_servicios}</td>
+        <td class="p-2">${new Date(sale.fecha).toLocaleDateString()}</td>
+        <td class="p-2 text-green-600 font-semibold">$${parseFloat(sale.monto).toLocaleString()}</td>
       </tr>
-    `).join('');
+    `).join('')
+    : `<tr><td colspan="6" class="p-2 text-center text-gray-500">No hay resultados para los filtros seleccionados.</td></tr>`;
 }
 
+// Obtener todas las ventas
 async function fetchSales() {
   try {
     const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/ventas');
@@ -46,32 +145,43 @@ async function fetchSales() {
   }
 }
 
+// Registrar una nueva venta
+// Registrar una nueva venta
 saleForm.addEventListener('submit', async e => {
   e.preventDefault();
 
   const email = document.getElementById('customerEmail').value.trim();
   const selectedOption = packageSelect.options[packageSelect.selectedIndex];
-  const packageName = selectedOption.text;
-  const packagePrice = Number(selectedOption.dataset.price || 0);
+  const packageId = selectedOption.value;
+  const paquete = paquetes[packageId];
   const date = saleDate.value;
 
-  if (!email || !packageName || packageSelect.value === '' || !date) {
-    alert('Completa todos los campos.');
+  if (!email || !paquete || packageId === '' || !date) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'CAMPOS INCOMPLETOS',
+      text: 'Por favor, completa todos los campos.',
+    });
     return;
   }
 
-  const resumenServicios = packageName;
-
   const ventaData = {
     cliente_email: email,
-    nombre_paquete: packageName,
-    resumen_servicios: resumenServicios,
-    monto: packagePrice,
+    nombre_paquete: paquete.nombre,
+    resumen_servicios: paquete.servicios.join(', '),
+    monto: paquete.precio,
     fecha: date,
     mensaje_continuar: 'La empresa se pondrá en contacto contigo.'
   };
 
   try {
+    Swal.fire({
+      title: 'REGISTRANDO VENTA...',
+      text: 'Por favor espera mientras se envían los datos.',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading()
+    });
+
     const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/venta-manual', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -80,7 +190,13 @@ saleForm.addEventListener('submit', async e => {
 
     if (!res.ok) throw new Error('Error al registrar la venta');
 
-    alert('Venta registrada correctamente y correos enviados.');
+    Swal.close();
+    Swal.fire({
+      icon: 'success',
+      title: 'VENTA REGISTRADA',
+      text: 'Se registró correctamente y se enviaron los correos.',
+    });
+
     saleForm.reset();
     servicesSummary.innerHTML = '';
     totalSale.textContent = '$0';
@@ -89,9 +205,84 @@ saleForm.addEventListener('submit', async e => {
     fetchSales();
   } catch (err) {
     console.error(err);
-    alert('Hubo un error al registrar la venta.');
+    Swal.close();
+    Swal.fire({
+      icon: 'error',
+      title: 'ERROR',
+      text: 'Hubo un error al registrar la venta.',
+    });
   }
 });
 
+
+// Eventos iniciales
+packageSelect.addEventListener('change', updateSummaryAndTotal);
+filterPackageSelect.addEventListener('change', fetchSales);
+filterMonthSelect.addEventListener('change', fetchSales);
+
 updateSummaryAndTotal();
+cargarOpcionesFiltroPaquetes();
 fetchSales();
+
+
+document.getElementById('exportButton').addEventListener('click', async () => {
+  try {
+    Swal.fire({
+      title: 'Exportando...',
+      text: 'Por favor espera unos segundos.',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading()
+    });
+
+    const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/exportar-a-sheets', {
+      method: 'POST'
+    });
+
+    if (!res.ok) throw new Error('Error al exportar');
+
+    Swal.fire('¡Éxito!', 'Ventas exportadas a Google Sheets.', 'success');
+  } catch (err) {
+    console.error(err);
+    Swal.fire('Error', 'No se pudo exportar la información.', 'error');
+  }
+});
+
+const clearDBButton = document.getElementById('clearDBButton');
+
+clearDBButton.addEventListener('click', async () => {
+  const confirmed = await Swal.fire({
+    title: '¿ESTÁS SEGURO?',
+    text: "¡Esto eliminará todas las ventas y no se podrá deshacer!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'SÍ, VACIAR',
+    cancelButtonText: 'CANCELAR'
+  });
+
+  if (confirmed.isConfirmed) {
+    try {
+      const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/vaciar-ventas', {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) throw new Error('Error al vaciar la base de datos');
+
+      Swal.fire(
+        '¡Eliminado!',
+        'Todas las ventas han sido eliminadas.',
+        'success'
+      );
+
+      fetchSales(); // Refrescar tabla
+    } catch (error) {
+      console.error(error);
+      Swal.fire(
+        'Error',
+        'No se pudo vaciar la base de datos. Intenta más tarde.',
+        'error'
+      );
+    }
+  }
+});

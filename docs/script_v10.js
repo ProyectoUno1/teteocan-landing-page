@@ -364,6 +364,7 @@ fetch('https://tlatec-backend.onrender.com/api/precios')
     })
     .then(data => {
         preciosOficiales = data;
+        console.log(' preciosOficiales:', preciosOficiales);
         actualizarPrecios(tipoSuscripcion);
     })
     .catch(err => {
@@ -372,57 +373,49 @@ fetch('https://tlatec-backend.onrender.com/api/precios')
 
 
 function actualizarPrecios(tipo) {
-
     if (Object.keys(preciosOficiales).length === 0) {
         console.warn('Precios oficiales no cargados aún');
         return;
     }
-
     document.querySelectorAll('.pricing-card').forEach(card => {
         const packageId = card.dataset.packageId?.toLowerCase();
-        let price;
-
-        if (tipo === 'anual') {
-            price = preciosOficiales[packageId]?.anual ?? parseFloat(card.dataset.packagePrice);
-        } else {
-            price = preciosOficiales[packageId]?.mensual ?? parseFloat(card.dataset.packagePrice);
-        }
+        let price = preciosOficiales[tipo]?.[packageId] ?? parseFloat(card.dataset.packagePrice.replace(/[^\d.]/g, ''));
 
         if (isNaN(price)) {
-            console.error(`Precio inválido para paquete ${packageId}:`, price);
+            console.error(`Precio inválido para paquete "${packageId}" (${tipo}):`, price);
             price = 0;
         }
 
         const priceAmount = card.querySelector('.price-amount');
         const pricePeriod = card.querySelector('.price-period');
 
-        priceAmount.textContent = `$${price.toLocaleString('es-MX')}`;
-        pricePeriod.textContent = tipo === 'anual' ? '/año' : '/mes';
+        //  Mostrar precio formateado visualmente
+        if (priceAmount) priceAmount.textContent = `$${price.toLocaleString('es-MX')}`;
+        if (pricePeriod) pricePeriod.textContent = tipo === 'anual' ? '/año' : '/mes';
 
-        // actualizar dataset para que se tome el precio correcto al comprar
-        card.dataset.packagePrice = price;
+        // Guardar en dataset limpio (sin formateo visual)
+        card.dataset.packagePrice = price.toString();
     });
 
     if (selectedPackage) {
         const spId = selectedPackage.id?.toLowerCase();
-        let nuevoPrecio = tipo === 'anual'
-            ? preciosOficiales[spId]?.anual ?? selectedPackage.price
-            : preciosOficiales[spId]?.mensual ?? selectedPackage.price;
+        let nuevoPrecio = preciosOficiales[tipo]?.[spId] ?? selectedPackage.price;
 
         if (isNaN(nuevoPrecio)) {
-            console.warn(`Precio base inválido para paquete seleccionado: ${nuevoPrecio}`);
+            console.warn(`Precio base inválido para paquete seleccionado (${spId}): ${nuevoPrecio}`);
             nuevoPrecio = 0;
         }
+
         setPackageBasePrice(nuevoPrecio);
         updatePriceWithExtras();
     }
 }
 
-
 // cambiar tipo de suscripción (mensual/anual)
 toggleSubscriptionType?.addEventListener('change', (e) => {
     tipoSuscripcion = e.target.checked ? 'anual' : 'mensual';
     actualizarPrecios(tipoSuscripcion);
+
 
     const exploradorCard = document.querySelector('.pricing-card[data-package-id="explorador"]');
     if (exploradorCard) {
@@ -435,9 +428,6 @@ toggleSubscriptionType?.addEventListener('change', (e) => {
 
 
 });
-
-
-
 
 
 
@@ -454,16 +444,16 @@ function openConfirmModal() {
     const spId = selectedPackage.id?.toLowerCase();
 
     // validar precio oficial desde JSON
-    const precioJSON = preciosOficiales?.[tipo]?.[spId];
+     const precioJSON = preciosOficiales?.[tipo]?.[spId];
 
-    if (typeof precioJSON !== 'number' || isNaN(precioJSON)) {
+   if (typeof precioJSON !== 'number' || isNaN(precioJSON)) {
         console.error(`Precio inválido para el paquete "${spId}" y tipo "${tipo}"`);
         Swal.fire('Error', 'No se encontró el precio oficial del paquete seleccionado.', 'error');
         return;
     }
 
     // actualizar el precio base del paquete
-    selectedPackage.price = precioJSON;
+      selectedPackage.price = precioJSON;
     setPackageBasePrice(precioJSON);
     updateExtraPricesInForm();
 
@@ -792,9 +782,7 @@ document.querySelectorAll('.pricing-footer button').forEach(button => {
                 name: pricingCard.getAttribute('data-package-name'),
             };
 
-            const base = tipoSuscripcion === 'anual'
-                ? preciosOficiales[selectedPackage.id]?.anual
-                : preciosOficiales[selectedPackage.id]?.mensual;
+            const base = preciosOficiales[tipoSuscripcion]?.[selectedPackage.id];
 
             setPackageBasePrice(base || 0);
 

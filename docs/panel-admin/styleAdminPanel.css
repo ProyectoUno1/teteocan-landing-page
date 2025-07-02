@@ -39,6 +39,7 @@ body {
   text-transform: uppercase;
 }
 
+/* Logo */
 .logo-container {
   display: flex;
   justify-content: center;
@@ -59,6 +60,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  padding: 0 1rem;
 }
 
 /* Encabezado */
@@ -72,7 +74,6 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  
 }
 .header p {
   font-size: 1rem;
@@ -85,21 +86,20 @@ body {
   border-radius: 16px;
   padding: 2rem;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
-  
 }
 
-.card-form{
+.card-form {
   background-color: var(--color-white);
   border-radius: 16px;
   padding: 2rem;
- max-width: 800px; /* antes 600px */
+  max-width: 800px;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
   width: 100%;
-  
 }
 
-.center-grid{
-display: flex;
+/* Centro flex */
+.center-grid {
+  display: flex;
   justify-content: center;
   align-items: flex-start;
 }
@@ -111,8 +111,8 @@ display: flex;
   gap: 1rem;
 }
 
-#sale-registration-title{
-    padding-bottom: 1rem;
+#sale-registration-title {
+  padding-bottom: 1rem;
 }
 .form-label {
   font-size: 0.9rem;
@@ -158,10 +158,9 @@ display: flex;
 /* Resumen de compra */
 .purchase-summary {
   margin-top: 1rem;
-  
 }
-#servicesSummary{
-padding-bottom: 1rem;
+#servicesSummary {
+  padding-bottom: 1rem;
 }
 .purchase-summary p {
   font-weight: 600;
@@ -185,6 +184,7 @@ padding-bottom: 1rem;
 }
 .table {
   width: 100%;
+  min-width: 600px;
   border-collapse: collapse;
 }
 .table th,
@@ -193,6 +193,7 @@ padding-bottom: 1rem;
   border-bottom: 1px solid var(--color-border);
   font-size: 0.95rem;
   text-align: left;
+  white-space: nowrap;
 }
 .table th {
   background-color: var(--color-light);
@@ -203,9 +204,158 @@ padding-bottom: 1rem;
   color: var(--color-text);
 }
 
+/* Barra de filtros */
+.filter-bar {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  background-color: #f4f6f8;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.filter-group label {
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.filter-select {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-tertiary));
+  color: var(--color-white);
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  letter-spacing: 0.5px;
+  outline: none;
+  appearance: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.filter-select:hover,
+.filter-select:focus {
+  filter: brightness(1.1);
+}
+
+input[type="month"].filter-select::-webkit-inner-spin-button,
+input[type="month"].filter-select::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(1);
+}
+
+/* Botón exportar */
+.button-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 0.5rem;
+  
+}
+
+
+#exportButton {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-tertiary));
+  color: var(--color-white);
+  padding: 0.75rem 1.2rem;
+  border: none;
+  border-radius: 30px;
+  font-size: 0.90rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#exportButton:hover {
+  filter: brightness(1.1);
+}
+
+#clearDBButton {
+  background: #e53e3e;
+  color: var(--color-white);
+  padding: 0.75rem 1.2rem;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#clearDBButton:hover {
+  background: #c53030;
+}
+
 /* Responsivo */
+
+/* Pantallas medianas */
 @media (max-width: 768px) {
-  .card {
-    padding: 1.5rem;
+  .container {
+    padding: 1rem;
+  }
+
+  .card,
+  .card-form {
+    padding: 1rem;
+    max-width: 100%;
+  }
+}
+
+/* Pantallas pequeñas */
+@media (max-width: 600px) {
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filter-group {
+    width: 100%;
+  }
+  .filter-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+  #exportButton {
+    margin-left: 0;
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+  }
+}
+
+/* Muy pequeñas */
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+  .btn {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+  .table th,
+  .table td {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
   }
 }
