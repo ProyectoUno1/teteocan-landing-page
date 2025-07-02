@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Administrador de ventas - Tlatec</title>
+    <link rel="stylesheet" href="styleAdminPanel.css" />
+</head>
+
+<body class="background">
+    <div class="container">
+        <header class="header" role="banner">
+            <div class="logo-container">
+                <img src="\docs\assets\images\LogoTlatec.png" alt="Logo de la empresa" class="logo-image" />
+            </div>
+            <h1>Administrador de ventas</h1>
+        </header>
+
+        <!-- Main content -->
+        <main>
+            <!-- Sección de registro de venta -->
+            <section aria-labelledby="sale-registration-title" class="center-grid">
+                <div class="card-form">
+                    <h2 id="sale-registration-title">Registrar venta</h2>
+                    <form id="saleForm" class="form" novalidate>
+                        <label for="customerEmail" class="form-label">Correo del cliente</label>
+                        <input type="email" id="customerEmail" placeholder="Correo del cliente" class="form-control"
+                            required autocomplete="email" />
+
+                        <label for="packageSelect" class="form-label">Paquete</label>
+                        <select id="packageSelect" class="form-control" required>
+                            <option value="">Selecciona un paquete</option>
+                            <option value="explorer" data-price="0">Explorador</option>
+                        </select>
+
+                        <label for="saleDate" class="form-label">Fecha</label>
+                        <input type="date" id="saleDate" class="form-control" required value="" />
+
+                        <div class="purchase-summary" aria-live="polite" aria-atomic="true">
+                            <p><strong>Resumen de servicios:</strong></p>
+                            <ul id="servicesSummary"></ul>
+                            <p>Total: <span id="totalSale" class="total-text">$0</span></p>
+                        </div>
+
+                        <button type="submit" class="btn green">Registrar venta</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Sección de tabla de ventas -->
+            <section aria-labelledby="sales-records-title" class="card" style="margin-top: 2rem;">
+                <div class="card table-card">
+                    <h2 id="sales-records-title">Ventas registradas</h2>
+                    <div class="table-wrapper">
+                        <table class="table" role="table" aria-describedby="salesDescription">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Correo</th>
+                                    <th scope="col">Paquete</th>
+                                    <th scope="col">Servicios</th>
+                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Pie de página -->
+        <footer role="contentinfo">
+        </footer>
+
+
+        <script src="adminPanelScript.js"></script>
+
+</html>

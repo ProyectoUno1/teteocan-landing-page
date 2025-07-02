@@ -433,7 +433,7 @@ toggleSubscriptionType?.addEventListener('change', (e) => {
         }
     }
 
-    
+
 });
 
 
@@ -681,7 +681,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         fecha: new Date().toLocaleDateString('es-MX'),
         clienteEmail,
         mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.",
-        planId: selectedPackage.id,           
+        planId: selectedPackage.id,
         tipoSuscripcion
     };
 
@@ -737,19 +737,23 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 
         } else {
             // Paquete gratuito sin extras
-            await Promise.all([
-                fetch('https://tlatec-backend.onrender.com/api/orden', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderData)
-                }),
-                fetch('https://tlatec-backend.onrender.com/api/confirmar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderData)
-                })
-            ]);
 
+            // Generar preapproval_id falso (ej. free-1721779912345)
+            const preapprovalIdFalso = 'free-' + Date.now();
+            orderData.preapproval_id = preapprovalIdFalso;
+
+            const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/orden-gratis', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderData })
+            });
+
+            if (!res.ok) {
+                const result = await res.json();
+                throw new Error(result.message || 'Error al registrar orden gratuita');
+            }
+
+            // Mostrar mensaje de éxito
             Swal.close();
             Swal.fire({
                 title: '¡REGISTRO COMPLETO!',
@@ -763,6 +767,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
             closeConfirmModal();
             selectedPackage = null;
             document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
+
         }
 
     } catch (error) {

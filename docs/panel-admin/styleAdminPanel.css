@@ -1,0 +1,211 @@
+/* Variables */
+:root {
+  --color-primary: #3773B8;
+  --color-secondary: #03C2BB;
+  --color-tertiary: #5F8FC5;
+  --color-light: #eaf6ff;
+  --color-white: #ffffff;
+  --color-text: #1f2937;
+  --color-text-light: #6b7280;
+  --color-success: #10B981;
+  --color-border: #d1d5db;
+  --color-bg-light: #f6fcff;
+  --transition: all 0.3s ease-in-out;
+}
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+input,
+button,
+textarea,
+select {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Fondo general */
+body {
+  background: linear-gradient(180deg, var(--color-light) 0%, var(--color-bg-light) 60%, #b6f0ef 100%);
+  color: var(--color-text);
+  padding: 2rem;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.logo-image {
+  max-width: 120px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Contenedor principal */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Encabezado */
+.header {
+  text-align: center;
+}
+.header h1 {
+  font-size: 3rem;
+  letter-spacing: -0.025em;
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+}
+.header p {
+  font-size: 1rem;
+  color: var(--color-text-light);
+}
+
+/* Tarjeta formulario y tabla */
+.card {
+  background-color: var(--color-white);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
+  
+}
+
+.card-form{
+  background-color: var(--color-white);
+  border-radius: 16px;
+  padding: 2rem;
+ max-width: 800px; /* antes 600px */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  
+}
+
+.center-grid{
+display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Formulario */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#sale-registration-title{
+    padding-bottom: 1rem;
+}
+.form-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.form-control {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid var(--color-light);
+  border-radius: 10px;
+  background-color: var(--color-white);
+  transition: var(--transition);
+}
+
+.form-control:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(55, 115, 184, 0.15);
+}
+
+/* Botón */
+.btn {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-tertiary));
+  color: var(--color-white);
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Resumen de compra */
+.purchase-summary {
+  margin-top: 1rem;
+  
+}
+#servicesSummary{
+padding-bottom: 1rem;
+}
+.purchase-summary p {
+  font-weight: 600;
+  color: var(--color-text);
+}
+.purchase-summary ul {
+  margin-top: 0.5rem;
+  padding-left: 1.25rem;
+  list-style-type: disc;
+  color: var(--color-text-light);
+}
+.total-text {
+  font-weight: bold;
+  color: var(--color-success);
+}
+
+/* Tabla */
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table th,
+.table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.95rem;
+  text-align: left;
+}
+.table th {
+  background-color: var(--color-light);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+.table td {
+  color: var(--color-text);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .card {
+    padding: 1.5rem;
+  }
+}
