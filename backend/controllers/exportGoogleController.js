@@ -4,7 +4,7 @@ const pool = require('../db');
 
 // Carga las credenciales
 const auth = new google.auth.GoogleAuth({
-  keyFile: path.join(__dirname, '../serviceCredentials.json'),
+  keyFile: '/etc/secrets/serviceCredentials.json',
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
 
