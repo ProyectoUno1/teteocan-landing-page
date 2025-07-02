@@ -38,7 +38,7 @@ function renderSales(data) {
 
 async function fetchSales() {
   try {
-    const res = await fetch('https://tlatec-backend.onrender.com/api/admin/ventas');
+    const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/ventas');
     const data = await res.json();
     renderSales(data);
   } catch (error) {
