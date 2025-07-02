@@ -822,5 +822,3 @@ document.addEventListener("DOMContentLoaded", function () {
         logoMobileNav.addEventListener("touchstart", handleLogoClick);
     }
 });
-
-
