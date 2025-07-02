@@ -4,6 +4,7 @@ const servicesSummary = document.getElementById('servicesSummary');
 const totalSale = document.getElementById('totalSale');
 const salesTable = document.getElementById('salesTable');
 const saleDate = document.getElementById('saleDate');
+const saleSubscription = document.getElementById('saleSubscription');
 const filterPackageSelect = document.getElementById('filterPackage');
 const filterMonthSelect = document.getElementById('filterMonth');
 

@@ -28,7 +28,7 @@ const ordenGratuita = async (req, res) => {
       }
     }
 
-    // Guardar la orden en la base de datos, agregando tipo_suscripcion
+    
     await pool.query(`
       INSERT INTO ventas (
         preapproval_id,
