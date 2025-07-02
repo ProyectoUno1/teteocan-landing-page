@@ -738,6 +738,8 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         const esConSuscripcion = paquetesConSuscripcion.includes(selectedPackage.id.toLowerCase());
 
         if (esConSuscripcion || tieneExtrasConCosto) {
+
+            orderData.monto = finalPrice;
             // Paquete con suscripción O gratuito con extras (requiere pago)
             const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/suscripcion', {
                 method: 'POST',
