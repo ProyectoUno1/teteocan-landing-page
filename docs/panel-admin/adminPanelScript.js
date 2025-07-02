@@ -242,29 +242,40 @@ fetchSales();
 
 document.getElementById('exportButton').addEventListener('click', async () => {
   try {
-    Swal.fire({
-      title: 'Exportando...',
-      text: 'Por favor espera unos segundos.',
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading()
-    });
-
     const token = localStorage.getItem('adminToken');
-    const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/exportar-a-sheets', {
-      method: 'POST',
+    if (!token) {
+      alert('No estás autenticado');
+      return;
+    }
+
+    const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/exportar-a-excel', {
+      method: 'GET',
       headers: {
-        'Authorization': 'Bearer ' + token,
-      },
+        'Authorization': 'Bearer ' + token
+      }
     });
 
-    if (!res.ok) throw new Error('Error al exportar');
+    if (!res.ok) {
+      alert('Error al exportar ventas');
+      return;
+    }
 
-    Swal.fire('¡Éxito!', 'Ventas exportadas a Google Sheets.', 'success');
-  } catch (err) {
-    console.error(err);
-    Swal.fire('Error', 'No se pudo exportar la información.', 'error');
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ventas.xlsx';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error al exportar ventas:', error);
+    alert('Error al exportar ventas');
   }
 });
+
+
 
 const clearDBButton = document.getElementById('clearDBButton');
 
@@ -282,8 +293,13 @@ clearDBButton.addEventListener('click', async () => {
 
   if (confirmed.isConfirmed) {
     try {
-      const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/vaciar-ventas', {
+      const token = localStorage.getItem('adminToken');
+      const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/ventas', {
         method: 'DELETE',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        }
       });
 
       if (!res.ok) throw new Error('Error al vaciar la base de datos');

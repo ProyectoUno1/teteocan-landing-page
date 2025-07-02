@@ -1,30 +1,31 @@
-const fetch = require('node-fetch'); 
-const pool = require('../db'); 
+const pool = require('../db');
+const XLSX = require('xlsx');
 
-const exportarVentasAGoogleSheets = async (req, res) => {
+const exportarVentasAExcel = async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM ventas ORDER BY fecha DESC');
     const ventas = result.rows;
 
-    const response = await fetch('https://script.google.com/macros/s/AKfycbyLiVYLD9UIkUmrPsS0W_359Z_sZ7zpJy-GAqepN1Z3-5fpkqQ0XtL5U_KT_yqM3NTE/exec', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(ventas)
-    });
+    // Crear worksheet desde JSON
+    const worksheet = XLSX.utils.json_to_sheet(ventas);
 
-    if (!response.ok) throw new Error('Error al enviar datos a Google Sheets');
+    // Crear workbook y agregar la hoja
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Ventas');
 
-    const data = await response.text(); // <- Importante
-    console.log('Respuesta Google Sheets:', data);
+    // Generar buffer Excel
+    const excelBuffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
 
-    res.status(200).json({ 
-      message: 'Ventas exportadas correctamente a Google Sheets.',
-      googleResponse: data
-    });
+    // Enviar archivo para descarga
+    res.setHeader('Content-Disposition', 'attachment; filename="ventas.xlsx"');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+    res.send(excelBuffer);
+
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error al exportar ventas.' });
+    console.error('Error exportando ventas a Excel:', error);
+    res.status(500).json({ message: 'Error al exportar ventas a Excel' });
   }
 };
 
-module.exports = { exportarVentasAGoogleSheets };
+module.exports = { exportarVentasAExcel };
