@@ -37,6 +37,11 @@
                             <option value="explorador">Paquete Explorador</option>
 
                         </select>
+                        <label>Tipo de Suscripción:</label>
+                        <select id="saleSubscription" required>
+                            <option value="">Seleccione...</option>
+                            <option value="mensual">Mensual</option>
+                        </select>
 
                         <label for="saleDate" class="form-label">Fecha</label>
                         <input type="date" id="saleDate" class="form-control" required value="" />
@@ -85,6 +90,7 @@
                                     <th scope="col">Paquete</th>
                                     <th scope="col">Servicios</th>
                                     <th scope="col">Fecha</th>
+                                    <th scope="col">Tipo de suscripción</th>
                                     <th scope="col">Total</th>
                                 </tr>
                             </thead>

@@ -128,6 +128,7 @@ function renderSales(data) {
         <td class="p-2">${sale.nombre_paquete}</td>
         <td class="p-2">${sale.resumen_servicios}</td>
         <td class="p-2">${new Date(sale.fecha).toLocaleDateString()}</td>
+        <td class="p-2">${sale.tipo_suscripcion || '-'}</td>
         <td class="p-2 text-green-600 font-semibold">$${parseFloat(sale.monto).toLocaleString()}</td>
       </tr>
     `).join('')
@@ -166,8 +167,9 @@ saleForm.addEventListener('submit', async e => {
   const packageId = selectedOption.value;
   const paquete = paquetes[packageId];
   const date = saleDate.value;
+  const tipoSuscripcion = document.getElementById('saleSubscription').value;
 
-  if (!email || !paquete || packageId === '' || !date) {
+   if (!email || !paquete || packageId === '' || !date || !tipoSuscripcion) {
     Swal.fire({
       icon: 'warning',
       title: 'CAMPOS INCOMPLETOS',
@@ -182,7 +184,8 @@ saleForm.addEventListener('submit', async e => {
     resumen_servicios: paquete.servicios.join(', '),
     monto: paquete.precio,
     fecha: date,
-    mensaje_continuar: 'La empresa se pondrá en contacto contigo.'
+    mensaje_continuar: 'La empresa se pondrá en contacto contigo.',
+    tipo_suscripcion: tipoSuscripcion
   };
 
   try {
