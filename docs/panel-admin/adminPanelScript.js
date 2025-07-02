@@ -187,7 +187,6 @@ saleForm.addEventListener('submit', async e => {
     fecha: date,
     mensaje_continuar: 'La empresa se pondrá en contacto contigo.',
     tipo_suscripcion: tipoSuscripcion,
-    preapproval_id: paquete.precio === 0 ? 'free-' + Date.now() : null,
   };
 
   try {
