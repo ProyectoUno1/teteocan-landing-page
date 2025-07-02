@@ -453,6 +453,7 @@ function actualizarPrecios(tipo) {
 
         setPackageBasePrice(nuevoPrecio);
         updatePriceWithExtras();
+        console.log('Precio final calculado (desde updatePriceWithExtras):', finalPrice)
     }
 }
 
@@ -608,29 +609,29 @@ function updateExtraPricesInForm() {
     });
 }
 
-// actualiza el precio total con extras
 function updatePriceWithExtras() {
-    if (!selectedPackage) return;
+    if (!selectedPackage || !preciosOficiales?.[tipoSuscripcion]?.extras) return;
 
     const isTitan = selectedPackage.id === 'titan';
     const isAnual = tipoSuscripcion === 'anual';
-    const extras = preciosOficiales?.[tipoSuscripcion]?.extras;
+    const extras = preciosOficiales[tipoSuscripcion].extras;
 
     let total = basePrice;
 
     document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(cb => {
         const extraKey = cb.value;
-        const precioExtra = extras?.[extraKey] || 0;
+        const precioExtra = extras[extraKey];
 
         const esGratis = isTitan && isAnual && ['negocios', 'tpv', 'logotipo'].includes(extraKey);
-        if (!esGratis) {
+        if (!esGratis && precioExtra) {
             total += precioExtra;
         }
     });
 
     finalPrice = total;
-    confirmPackagePrice.textContent = `$${finalPrice.toLocaleString('es-MX')}`;
+    confirmPackagePrice.textContent = `$${finalPrice.toLocaleString('es-MX')} MXN`;
 }
+
 
 // Actualiza precio base y precio final
 function setPackageBasePrice(price) {
@@ -687,20 +688,24 @@ btnConfirmPurchase?.addEventListener('click', async () => {
     });
 
     let extrasSeleccionados = [];
-    let extrasTotal = 0;
-    document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(checkbox => {
-        const label = checkbox.parentElement.textContent.trim();
+    let extrasKeys = [];
+
+    document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(cb => {
+        const extraKey = cb.value;
+        const label = cb.parentElement.textContent.trim();
+
+        extrasKeys.push(extraKey);
         extrasSeleccionados.push(label);
-        extrasTotal += Number(checkbox.dataset.price || 0);
     });
 
     const montoBase = Number(selectedPackage.price || 0);
-    const finalPrice = montoBase + extrasTotal;
+
     const resumenServicios = [...servicios, ...extrasSeleccionados].join(', ');
 
     const orderData = {
         nombrePaquete: selectedPackage.name,
         resumenServicios,
+        extrasSeleccionados: extrasKeys,
         monto: finalPrice,
         fecha: new Date().toLocaleDateString('es-MX'),
         clienteEmail,
@@ -820,9 +825,12 @@ document.querySelectorAll('.pricing-footer button').forEach(button => {
                 name: pricingCard.getAttribute('data-package-name'),
             };
 
-            const base = preciosOficiales[tipoSuscripcion]?.[selectedPackage.id];
+            
+            const precioReal = preciosOficiales[tipoSuscripcion]?.[selectedPackage.id];
+            console.log('Precio real desde JSON:', precioReal);
 
-            setPackageBasePrice(base || 0);
+            setPackageBasePrice(precioReal);
+            updatePriceWithExtras();
 
             openConfirmModal();
         }
