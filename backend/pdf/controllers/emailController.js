@@ -9,7 +9,7 @@ const path = require('path');
  */
 async function sendOrderConfirmationToCompany(req, res) {
     try {
-        const { nombrePaquete, resumenServicios, monto, fecha, clienteEmail } = req.body;
+        const { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, tipoSuscripcion } = req.body;
 
         if (
             !nombrePaquete ||
@@ -20,15 +20,14 @@ async function sendOrderConfirmationToCompany(req, res) {
             return res.status(400).json({ message: 'Faltan datos para generar la orden de pago.' });
         }
 
-
-        const data = { nombrePaquete, resumenServicios, monto, fecha, clienteEmail };
+        const data = { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, tipoSuscripcion };
         const templatePath = path.resolve(__dirname, '../templates/empresa.html');
         const pdfBuffer = await emailService.generatePdf(data, templatePath);
 
         const emailTo = process.env.EMPRESA_EMAIL;
         const subject = `Nueva Orden de Pago - ${nombrePaquete}`;
-        const text = `Se ha generado una nueva orden de pago para el paquete: ${nombrePaquete}.\nAdjuntamos los detalles en formato PDF.`;
-        const html = `<p>Se ha generado una nueva orden de pago para el paquete: <strong>${nombrePaquete}</strong>.</p><p>Adjuntamos los detalles en formato PDF.</p>`;
+        const text = `Se ha generado una nueva orden de pago para el paquete: ${nombrePaquete}.\nTipo de suscripción: ${tipoSuscripcion || 'No especificado'}.\nAdjuntamos los detalles en formato PDF.`;
+        const html = `<p>Se ha generado una nueva orden de pago para el paquete: <strong>${nombrePaquete}</strong>.</p><p>Tipo de suscripción: <strong>${tipoSuscripcion || 'No especificado'}</strong>.</p><p>Adjuntamos los detalles en formato PDF.</p>`;
         const pdfFilename = `Orden_Pago_${nombrePaquete.replace(/ /g, '_')}_${fecha}.pdf`;
 
         await emailService.sendEmailWithPdf(emailTo, subject, text, html, pdfBuffer, pdfFilename);
@@ -47,7 +46,7 @@ async function sendOrderConfirmationToCompany(req, res) {
  */
 async function sendPaymentConfirmationToClient(req, res) {
     try {
-        const { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, mensajeContinuar } = req.body;
+        const { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, mensajeContinuar, tipoSuscripcion } = req.body;
 
         if (
             !nombrePaquete ||
@@ -60,17 +59,17 @@ async function sendPaymentConfirmationToClient(req, res) {
             return res.status(400).json({ message: 'Faltan datos para confirmar el pago al cliente.' });
         }
 
-
-        const data = { nombrePaquete, resumenServicios, monto, fecha, mensajeContinuar };
+        const data = { nombrePaquete, resumenServicios, monto, fecha, mensajeContinuar, tipoSuscripcion };
         const templatePath = path.resolve(__dirname, '../templates/cliente.html');
         const pdfBuffer = await emailService.generatePdf(data, templatePath);
 
         const emailTo = clienteEmail;
         const subject = `Confirmación de Compra - ${nombrePaquete}`;
-        const text = `¡Gracias por tu compra! Tu paquete "${nombrePaquete}" ha sido confirmado.\nAdjuntamos los detalles en formato PDF.\n\n${mensajeContinuar}`;
+        const text = `¡Gracias por tu compra! Tu paquete "${nombrePaquete}" ha sido confirmado.\nTipo de suscripción: ${tipoSuscripcion || 'No especificado'}.\nAdjuntamos los detalles en formato PDF.\n\n${mensajeContinuar}`;
         const html = `
             <p>¡Gracias por tu compra!</p>
             <p>Tu paquete <strong>${nombrePaquete}</strong> ha sido confirmado.</p>
+            <p>Tipo de suscripción: <strong>${tipoSuscripcion || 'No especificado'}</strong></p>
             <p>Adjuntamos los detalles en formato PDF.</p>
             <p><strong>${mensajeContinuar}</strong></p>
         `;
@@ -84,7 +83,6 @@ async function sendPaymentConfirmationToClient(req, res) {
         res.status(500).json({ message: 'Error interno del servidor al enviar correo de confirmación de pago.', error: error.message });
     }
 }
-
 module.exports = {
     sendOrderConfirmationToCompany,
     sendPaymentConfirmationToClient,

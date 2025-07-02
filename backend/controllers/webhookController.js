@@ -44,6 +44,7 @@ const webhookSuscripcion = async (req, res) => {
                             nombrePaquete: row.nombre_paquete,
                             resumenServicios: row.resumen_servicios,
                             monto: row.monto,
+                            tipoSuscripcion,
                             fecha: row.fecha,
                             clienteEmail: row.cliente_email,
                             mensajeContinuar: row.mensaje_continuar
@@ -80,6 +81,7 @@ const webhookSuscripcion = async (req, res) => {
                             nombrePaquete: row.nombre_paquete,
                             resumenServicios: row.resumen_servicios,
                             monto: row.monto,
+                            tipoSuscripcion,
                             fecha: row.fecha,
                             clienteEmail: row.cliente_email,
                             mensajeContinuar: row.mensaje_continuar

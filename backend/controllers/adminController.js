@@ -39,6 +39,7 @@ const registrarVentaManual = async (req, res) => {
         nombrePaquete: nombre_paquete,
         resumenServicios: resumen_servicios,
         monto,
+        tipoSuscripcion,
         fecha,
         mensajeContinuar: mensaje_continuar,
       },
