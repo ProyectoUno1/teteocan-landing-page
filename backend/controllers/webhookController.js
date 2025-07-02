@@ -12,7 +12,7 @@ const webhookSuscripcion = async (req, res) => {
         if ((topic === 'payment' || mpNotification.type === 'payment') && mpNotification.data?.id) {
             const paymentId = mpNotification.data.id;
 
-            // Obtener información del pago en Mercado Pago
+            // Obtener información del pago
             const response = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
                 headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}` },
             });
@@ -28,71 +28,48 @@ const webhookSuscripcion = async (req, res) => {
                 return res.status(200).send('Webhook recibido sin preapprovalId');
             }
 
-            // Verificar si la orden ya existe
-            const existingOrder = await pool.query('SELECT * FROM ventas WHERE preapproval_id = $1', [preapprovalId]);
+            // Buscar orden en la base de datos
+            const result = await pool.query('SELECT * FROM ventas WHERE preapproval_id = $1', [preapprovalId]);
+            const row = result.rows[0];
 
-            if (existingOrder.rows.length === 0) {
-                // Si no existe, insertar la orden (obteniendo los datos necesarios del paymentInfo)
-                // *** Aquí debes decidir cómo obtener datos de la orden para guardar (puedes incluirlos en metadata en MP o buscar en otra tabla)
-
-                // Como ejemplo, guardamos con datos mínimos:
-                await pool.query(`
-                    INSERT INTO ventas (
-                        preapproval_id,
-                        cliente_email,
-                        nombre_paquete,
-                        resumen_servicios,
-                        monto,
-                        fecha,
-                        mensaje_continuar,
-                        tipo_suscripcion,
-                        estado
-                    ) VALUES ($1, $2, $3, $4, $5, NOW(), $6, $7, 'procesada')
-                `, [
-                    preapprovalId,
-                    paymentInfo.payer?.email || 'email_desconocido@example.com',
-                    'Paquete desconocido',
-                    'Servicios desconocidos',
-                    paymentInfo.transaction_amount || 0,
-                    'La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.',
-                    'mensual'
-                ]);
-            } else {
-                // Si existe, actualizar estado
-                await pool.query('UPDATE ventas SET estado = $1 WHERE preapproval_id = $2', ['procesada', preapprovalId]);
+            if (!row) {
+                console.log('Orden no encontrada para preapprovalId:', preapprovalId);
+                return res.status(200).send('Orden no encontrada, webhook ignorado');
             }
 
-            // Recuperar orden para enviar correos
-            const orderResult = await pool.query('SELECT * FROM ventas WHERE preapproval_id = $1', [preapprovalId]);
-            const order = orderResult.rows[0];
+            // Solo actualizar si aún no está procesada
+            if (row.estado !== 'procesada') {
+                await pool.query('UPDATE ventas SET estado = $1 WHERE preapproval_id = $2', ['procesada', preapprovalId]);
+                console.log(`Estado actualizado a 'procesada' para orden ${preapprovalId}`);
 
-            if (order) {
+                // Enviar correos
                 const reqMock = {
                     body: {
-                        nombrePaquete: order.nombre_paquete,
-                        resumenServicios: order.resumen_servicios,
-                        monto: order.monto,
-                        tipoSuscripcion: order.tipo_suscripcion,
-                        fecha: order.fecha,
-                        clienteEmail: order.cliente_email,
-                        mensajeContinuar: order.mensaje_continuar
+                        nombrePaquete: row.nombre_paquete,
+                        resumenServicios: row.resumen_servicios,
+                        monto: row.monto,
+                        tipoSuscripcion: row.tipo_suscripcion,
+                        fecha: row.fecha,
+                        clienteEmail: row.cliente_email,
+                        mensajeContinuar: row.mensaje_continuar
                     }
                 };
                 const resMock = { status: () => ({ json: () => { } }) };
 
                 await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
                 await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+                console.log(`Correos enviados para orden ${preapprovalId}`);
             } else {
-                console.log('Orden no encontrada para enviar correos:', preapprovalId);
+                console.log(`Orden ${preapprovalId} ya estaba procesada.`);
             }
 
-            return res.status(200).send('Webhook procesado y correos enviados');
+            return res.status(200).send('Webhook procesado correctamente');
         }
 
         // Paso: autorización de preaprobación (opcional)
         if (topic === 'preapproval' && action === 'authorized') {
-            // Similar lógica si quieres procesar cuando se autoriza la suscripción
-            return res.status(200).send('Webhook preapproval autorizado');
+            console.log('Preapproval autorizado, sin acción requerida.');
+            return res.status(200).send('Preapproval autorizado');
         }
 
         return res.status(200).send('Evento no relevante');

@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
+const pool = require('../db');
 
 const preciosFile = path.join(__dirname, '../precios.json');
 
@@ -37,16 +38,11 @@ const crearSuscripcionDinamica = async (req, res) => {
         if (Array.isArray(orderData.extrasSeleccionados)) {
             for (const extraKey of orderData.extrasSeleccionados) {
                 const precioExtra = preciosExtras[extraKey];
-
                 if (precioExtra === undefined) {
                     return res.status(400).json({ message: `El servicio extra "${extraKey}" no existe en los precios oficiales.` });
                 }
-
                 const esGratis = isTitan && isAnual && extrasGratisTitanAnual.includes(extraKey);
-
-                if (!esGratis) {
-                    extrasTotales += precioExtra;
-                }
+                if (!esGratis) extrasTotales += precioExtra;
             }
         }
 
@@ -99,8 +95,47 @@ const crearSuscripcionDinamica = async (req, res) => {
         }
 
         const data = await response.json();
+        const preapprovalId = data.id;
 
-        // 8. Sólo devolver el link de pago (no guardar nada en DB aquí)
+        // 8. Guardar orden con estado "pendiente"
+        try {
+            await pool.query(`
+                INSERT INTO ventas (
+                    preapproval_id,
+                    cliente_email,
+                    nombre_paquete,
+                    resumen_servicios,
+                    monto,
+                    fecha,
+                    mensaje_continuar,
+                    tipo_suscripcion,
+                    estado
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'pendiente')
+                ON CONFLICT (preapproval_id) DO UPDATE SET
+                    cliente_email = EXCLUDED.cliente_email,
+                    nombre_paquete = EXCLUDED.nombre_paquete,
+                    resumen_servicios = EXCLUDED.resumen_servicios,
+                    monto = EXCLUDED.monto,
+                    fecha = EXCLUDED.fecha,
+                    mensaje_continuar = EXCLUDED.mensaje_continuar,
+                    tipo_suscripcion = EXCLUDED.tipo_suscripcion,
+                    estado = 'pendiente';
+            `, [
+                preapprovalId,
+                clienteEmail,
+                orderData.nombrePaquete,
+                orderData.resumenServicios,
+                montoCalculado,
+                orderData.fecha,
+                orderData.mensajeContinuar || 'La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.',
+                tipo
+            ]);
+            console.log(`Orden guardada (pendiente): ${preapprovalId}`);
+        } catch (err) {
+            console.error('Error guardando orden en DB:', err);
+        }
+
+        // 9. Devolver el link de pago
         res.json({ init_point: data.init_point });
 
     } catch (error) {
