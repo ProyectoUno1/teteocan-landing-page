@@ -5,7 +5,7 @@ const {
   obtenerVentas,
   borrarTodasLasVentas
 } = require('../controllers/adminController');
-const { exportarVentasAGoogleSheets } = require('../controllers/exportController');
+const { exportarVentasAExcel } = require('../controllers/exportController');
 
 // Obtener todas las ventas
 router.get('/ventas', obtenerVentas);
@@ -13,8 +13,8 @@ router.get('/ventas', obtenerVentas);
 // Registrar una venta manual desde el panel
 router.post('/venta-manual', registrarVentaManual);
 
-// Exportar ventas a Google Sheets
-router.post('/exportar-a-sheets', exportarVentasAGoogleSheets);
+// Exportar ventas a excel
+router.get('/exportar-a-excel', exportarVentasAExcel);
 
 // Vaciar todas las ventas de la base de datos
 router.delete('/ventas', borrarTodasLasVentas);
