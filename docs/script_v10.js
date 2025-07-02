@@ -1,49 +1,5 @@
 // Mobile menu functionality
 document.addEventListener('DOMContentLoaded', function () {
-async function verificarEstadoExplorador() {
-  const exploradorCard = document.querySelector('.pricing-card[data-package-id="explorador"]');
-  if (!exploradorCard) return;
-
-  try {
-    const res = await fetch('https://tlatec-backend.onrender.com/api/public/estado-explorador');
-    const data = await res.json();
-
-    const button = exploradorCard.querySelector('.btnConfirmSubscription');
-    const tooltip = document.getElementById('soldOutTooltip');
-
-    if (data.soldOut) {
-      exploradorCard.classList.add('sold-out');
-      if (button) {
-        button.disabled = true;
-        button.textContent = 'AGOTADO';
-      }
-
-      if (tooltip) {
-        const ahora = new Date();
-        const proximoMes = new Date(ahora.getFullYear(), ahora.getMonth() + 1, 1);
-        const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-        const fechaFormateada = `01/${meses[proximoMes.getMonth()]}/${proximoMes.getFullYear()}`;
-        tooltip.innerHTML = `Agotado.<br>Disponible el ${fechaFormateada} a las 00:00:01`;
-      }
-    } else {
-      // No está agotado
-      exploradorCard.classList.remove('sold-out');
-      if (button) {
-        button.disabled = false;
-        button.textContent = 'SELECT EXPLORADOR';
-      }
-
-      if (tooltip && data.restantes !== undefined) {
-        tooltip.innerHTML = `¡Quedan ${data.restantes} lugares este mes!`;
-      }
-    }
-
-  } catch (err) {
-    console.error('Error al verificar estado del paquete explorador:', err);
-  }
-}
-verificarEstadoExplorador()
-
 
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileNav = document.getElementById('mobileNav');
@@ -87,6 +43,50 @@ verificarEstadoExplorador()
         document.body.classList.remove('mobile-menu-open');
     });
 });
+
+async function verificarEstadoExplorador() {
+    const exploradorCard = document.querySelector('.pricing-card[data-package-id="explorador"]');
+    if (!exploradorCard) return;
+
+    try {
+        const res = await fetch('https://tlatec-backend.onrender.com/api/public/estado-explorador');
+        const data = await res.json();
+
+        const button = exploradorCard.querySelector('.btnConfirmSubscription');
+        const tooltip = document.getElementById('soldOutTooltip');
+
+        if (data.soldOut) {
+            exploradorCard.classList.add('sold-out');
+            if (button) {
+                button.disabled = true;
+                button.textContent = 'AGOTADO';
+            }
+
+            if (tooltip) {
+                const ahora = new Date();
+                const proximoMes = new Date(ahora.getFullYear(), ahora.getMonth() + 1, 1);
+                const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                const fechaFormateada = `01/${meses[proximoMes.getMonth()]}/${proximoMes.getFullYear()}`;
+                tooltip.innerHTML = `Agotado.<br>Disponible el ${fechaFormateada} a las 00:00:01`;
+            }
+        } else {
+            // No está agotado
+            exploradorCard.classList.remove('sold-out');
+            if (button) {
+                button.disabled = false;
+                button.textContent = 'SELECT EXPLORADOR';
+            }
+
+            if (tooltip && data.restantes !== undefined) {
+                tooltip.innerHTML = `¡Quedan ${data.restantes} lugares este mes!`;
+            }
+        }
+
+    } catch (err) {
+        console.error('Error al verificar estado del paquete explorador:', err);
+    }
+}
+verificarEstadoExplorador()
 
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -489,16 +489,16 @@ function openConfirmModal() {
     const spId = selectedPackage.id?.toLowerCase();
 
     // validar precio oficial desde JSON
-     const precioJSON = preciosOficiales?.[tipo]?.[spId];
+    const precioJSON = preciosOficiales?.[tipo]?.[spId];
 
-   if (typeof precioJSON !== 'number' || isNaN(precioJSON)) {
+    if (typeof precioJSON !== 'number' || isNaN(precioJSON)) {
         console.error(`Precio inválido para el paquete "${spId}" y tipo "${tipo}"`);
         Swal.fire('Error', 'No se encontró el precio oficial del paquete seleccionado.', 'error');
         return;
     }
 
     // actualizar el precio base del paquete
-      selectedPackage.price = precioJSON;
+    selectedPackage.price = precioJSON;
     setPackageBasePrice(precioJSON);
     updateExtraPricesInForm();
 
@@ -797,12 +797,14 @@ btnConfirmPurchase?.addEventListener('click', async () => {
                 confirmButtonText: 'ACEPTAR',
                 customClass: { confirmButton: 'custom-alert-button' },
                 buttonsStyling: false
+            }).then(() => {
+                closeConfirmModal();
+                selectedPackage = null;
+                document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
+
+                // Aseguramos actualización visual
+                verificarEstadoExplorador();
             });
-
-            closeConfirmModal();
-            selectedPackage = null;
-            document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
-
         }
 
     } catch (error) {
