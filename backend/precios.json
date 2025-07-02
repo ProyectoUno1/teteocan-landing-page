@@ -3,12 +3,26 @@
     "explorador": 0,
     "impulso": 299,
     "dominio": 359,
-    "titan": 399
+    "titan": 399,
+    "extras": {
+      "scraping": 1000,
+      "basededatos": 1000,
+      "negocios": 999,
+      "tpv": 1500,
+      "logotipo": 3999
+    }
   },
   "anual": {
     "explorador": 0,
     "impulso": 3588,
     "dominio": 4308,
-    "titan": 4788
+    "titan": 4788,
+    "extras": {
+      "scraping": 1000,
+      "basededatos": 1000,
+      "negocios": 999,
+      "tpv": 1500,
+      "logotipo": 3999
+    }
   }
 }
