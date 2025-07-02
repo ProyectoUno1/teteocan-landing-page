@@ -137,7 +137,18 @@ function renderSales(data) {
 // Obtener todas las ventas
 async function fetchSales() {
   try {
-    const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/ventas');
+    const token = localStorage.getItem('adminToken');
+    if (!token) throw new Error('No se encontró token de autenticación');
+
+    const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/ventas', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!res.ok) throw new Error('Error al cargar ventas');
+
     const data = await res.json();
     renderSales(data);
   } catch (error) {
@@ -145,7 +156,7 @@ async function fetchSales() {
   }
 }
 
-// Registrar una nueva venta
+
 // Registrar una nueva venta
 saleForm.addEventListener('submit', async e => {
   e.preventDefault();
@@ -182,9 +193,13 @@ saleForm.addEventListener('submit', async e => {
       didOpen: () => Swal.showLoading()
     });
 
+    const token = localStorage.getItem('adminToken');
     const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/venta-manual', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
       body: JSON.stringify(ventaData),
     });
 
@@ -234,8 +249,12 @@ document.getElementById('exportButton').addEventListener('click', async () => {
       didOpen: () => Swal.showLoading()
     });
 
+    const token = localStorage.getItem('adminToken');
     const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/exportar-a-sheets', {
-      method: 'POST'
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+      },
     });
 
     if (!res.ok) throw new Error('Error al exportar');
