@@ -698,8 +698,6 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         extrasSeleccionados.push(label);
     });
 
-    const montoBase = Number(selectedPackage.price || 0);
-
     const resumenServicios = [...servicios, ...extrasSeleccionados].join(', ');
 
     const orderData = {
