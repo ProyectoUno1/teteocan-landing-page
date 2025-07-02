@@ -160,3 +160,4 @@ if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
     input.addEventListener('focus', () => { input.style.fontSize = '16px'; });
   });
 }
+new AdminLogin();
