@@ -14,7 +14,7 @@ const crearSuscripcionDinamica = async (req, res) => {
     try {
         const { clienteEmail, orderData, tipoSuscripcion, planId } = req.body;
 
-        if (!clienteEmail || !orderData || !orderData.monto || !planId) {
+        if (!clienteEmail || !orderData || !planId) {
             console.log('Faltan datos obligatorios');
             return res.status(400).json({ message: 'Datos incompletos' });
         }
@@ -53,9 +53,6 @@ const crearSuscripcionDinamica = async (req, res) => {
 
         montoFinal += extrasTotales;
 
-        if (orderData.monto && Number(orderData.monto) > montoFinal) {
-            montoFinal = Number(orderData.monto);
-        }
 
         const isSandbox = process.env.NODE_ENV !== 'production';
         const payerEmail = isSandbox ? process.env.MP_PAYER_EMAIL : clienteEmail;
