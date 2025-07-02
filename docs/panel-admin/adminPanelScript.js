@@ -244,42 +244,75 @@ cargarOpcionesFiltroPaquetes();
 fetchSales();
 
 
-document.getElementById('exportButton').addEventListener('click', async () => {
+// document.getElementById('exportButton').addEventListener('click', async () => {
+//   try {
+//     const token = localStorage.getItem('adminToken');
+//     if (!token) {
+//       alert('No estás autenticado');
+//       return;
+//     }
+
+//     const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/exportar-a-excel', {
+//       method: 'GET',
+//       headers: {
+//         'Authorization': 'Bearer ' + token
+//       }
+//     });
+
+//     if (!res.ok) {
+//       alert('Error al exportar ventas');
+//       return;
+//     }
+
+//     const blob = await res.blob();
+//     const url = window.URL.createObjectURL(blob);
+//     const a = document.createElement('a');
+//     a.href = url;
+//     a.download = 'ventas.xlsx';
+//     document.body.appendChild(a);
+//     a.click();
+//     a.remove();
+//     window.URL.revokeObjectURL(url);
+//   } catch (error) {
+//     console.error('Error al exportar ventas:', error);
+//     alert('Error al exportar ventas');
+//   }
+// });
+
+document.getElementById('exportToSheetsButton').addEventListener('click', async () => {
   try {
     const token = localStorage.getItem('adminToken');
     if (!token) {
-      alert('No estás autenticado');
+      Swal.fire('No estás autenticado', '', 'warning');
       return;
     }
 
-    const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/exportar-a-excel', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token
-      }
+    Swal.fire({
+      title: 'Exportando a Google Sheets...',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading(),
     });
 
+    const res = await fetch('https://tlatec-backend.onrender.com/api/exportar-ventas', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    Swal.close();
+
     if (!res.ok) {
-      alert('Error al exportar ventas');
-      return;
+      const errorText = await res.text();
+      throw new Error(errorText || 'Error al exportar a Google Sheets');
     }
 
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'ventas.xlsx';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    window.URL.revokeObjectURL(url);
+    Swal.fire('¡Exportación completada!', 'Los datos fueron enviados a Google Sheets.', 'success');
   } catch (error) {
-    console.error('Error al exportar ventas:', error);
-    alert('Error al exportar ventas');
+    console.error('Error al exportar a Google Sheets:', error);
+    Swal.fire('Error', 'No se pudo exportar a Google Sheets.', 'error');
   }
 });
-
-
 
 const clearDBButton = document.getElementById('clearDBButton');
 

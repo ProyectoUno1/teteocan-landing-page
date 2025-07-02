@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Administrador de ventas - Tlatec</title>
+        <link rel="stylesheet" href="styleAdminPanel.css" />
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Administrador de ventas - Tlatec</title>
-    <link rel="stylesheet" href="styleAdminPanel.css" />
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <body class="background">
+        <div class="container">
+            <header class="header" role="banner">
+                <div class="logo-container">
+                    <img src="\docs\assets\images\LogoTlatec.png" alt="Logo de la empresa" class="logo-image" />
 
-</head>
-
-<body class="background">
-    <div class="container">
-        <header class="header" role="banner">
-            <div class="logo-container">
-                <img src="\docs\assets\images\LogoTlatec.png" alt="Logo de la empresa" class="logo-image" />
-
-            </div>
-            <h1>Administrador de ventas</h1>
-        </header>
+                </div>
+                <h1>Administrador de ventas</h1>
+            </header>
 
         <!-- Main content -->
         <main>
@@ -34,81 +32,83 @@
                         <input type="email" id="customerEmail" placeholder="Correo del cliente" class="form-control"
                             required autocomplete="email" />
 
-                        <label for="packageSelect" class="form-label">Paquete</label>
-                        <select id="packageSelect" class="form-control" required>
-                            <option value="">Selecciona un paquete</option>
-                            <option value="explorador">Paquete Explorador</option>
+                            <label for="packageSelect" class="form-label">Paquete</label>
+                            <select id="packageSelect" class="form-control" required>
+                                <option value="">Selecciona un paquete</option>
+                                <option value="explorador">Paquete Explorador</option>
 
-                        </select>
-                        <label class="form-label">Tipo de Suscripción:</label>
-                        <select id="saleSubscription" class="form-control" required>
-                            <option value="">Seleccione...</option>
-                            <option value="mensual">Mensual</option>
-                        </select>
-
-                        <label for="saleDate" class="form-label">Fecha</label>
-                        <input type="date" id="saleDate" class="form-control" required value="" />
-
-                        <div class="purchase-summary" aria-live="polite" aria-atomic="true">
-                            <p><strong>Resumen de servicios:</strong></p>
-                            <ul id="servicesSummary"></ul>
-                            <p>Total: <span id="totalSale" class="total-text">$0</span></p>
-                        </div>
-
-                        <button type="submit" class="btn green">Registrar venta</button>
-                    </form>
-                </div>
-            </section>
-
-            <!-- Sección de tabla de ventas -->
-            <section aria-labelledby="sales-records-title" class="card" style="margin-top: 2rem;">
-                <div class="card table-card">
-                    <h2 id="sales-records-title">Ventas registradas</h2>
-
-                    <div class="filter-bar">
-                        <div class="filter-group">
-                            <label for="filterPackage">Filtrar por paquete:</label>
-                            <select id="filterPackage" class="filter-select">
-                                <option value="">Todos</option>
                             </select>
-                        </div>
+                            <label class="form-label">Tipo de Suscripción:</label>
+                            <select id="saleSubscription" class="form-control" required>
+                                <option value="">Seleccione...</option>
+                                <option value="mensual">Mensual</option>
+                            </select>
 
-                        <div class="filter-group">
-                            <label for="filterMonth">Filtrar por mes:</label>
-                            <input type="month" id="filterMonth" class="filter-select" />
-                        </div>
+                            <label for="saleDate" class="form-label">Fecha</label>
+                            <input type="date" id="saleDate" class="form-control" required value="" />
 
-                        <div class="button-row">
-                            <button id="exportButton" class="btn">Exportar a Excel</button>
-                            <button id="clearDBButton" class="btn">Vaciar base de datos</button>
-                        </div>
+                            <div class="purchase-summary" aria-live="polite" aria-atomic="true">
+                                <p><strong>Resumen de servicios:</strong></p>
+                                <ul id="servicesSummary"></ul>
+                                <p>Total: <span id="totalSale" class="total-text">$0</span></p>
+                            </div>
 
+                            <button type="submit" class="btn green">Registrar venta</button>
+                        </form>
                     </div>
-                    <div class="table-wrapper">
-                        <table class="table" role="table" aria-describedby="salesDescription">
-                            <thead>
-                                <tr>
-                                    <th scope="col">ID</th>
-                                    <th scope="col">Correo</th>
-                                    <th scope="col">Paquete</th>
-                                    <th scope="col">Servicios</th>
-                                    <th scope="col">Fecha</th>
-                                    <th scope="col">Tipo de suscripción</th>
-                                    <th scope="col">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="salesTable"></tbody>
-                        </table>
+                </section>
+
+                <!-- Sección de tabla de ventas -->
+                <section aria-labelledby="sales-records-title" class="card" style="margin-top: 2rem;">
+                    <div class="card table-card">
+                        <h2 id="sales-records-title">Ventas registradas</h2>
+
+                        <div class="filter-bar">
+                            <div class="filter-group">
+                                <label for="filterPackage">Filtrar por paquete:</label>
+                                <select id="filterPackage" class="filter-select">
+                                    <option value="">Todos</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group">
+                                <label for="filterMonth">Filtrar por mes:</label>
+                                <input type="month" id="filterMonth" class="filter-select" />
+                            </div>
+
+                            <div class="button-row">
+                                <button id="exportToSheetsButton" class="btn">Google Sheets</button>
+                                <button id="clearDBButton" class="btn">Vaciar base de datos</button>
+                            </div>
+
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="table" role="table" aria-describedby="salesDescription">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Correo</th>
+                                        <th scope="col">Paquete</th>
+                                        <th scope="col">Servicios</th>
+                                        <th scope="col">Fecha</th>
+                                        <th scope="col">Tipo de suscripción</th>
+                                        <th scope="col">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="salesTable"></tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            </section>
-        </main>
+                </section>
+            </main>
 
-        <!-- Pie de página -->
-        <footer role="contentinfo">
-        </footer>
+            <!-- Pie de página -->
+            <footer role="contentinfo">
+            </footer>
 
 
+           
+        </div>
         <script src="adminPanelScript.js"></script>
-
+    </body>
 </html>
