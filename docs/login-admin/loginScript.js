@@ -25,16 +25,20 @@ class AdminLogin {
   }
 
   setupPasswordToggle() {
-    const eyeIcon = document.getElementById('eyeIcon');
-    const eyeOffIcon = document.getElementById('eyeOffIcon');
-    this.passwordToggle.addEventListener('click', () => {
-      const isPassword = this.passwordInput.type === 'password';
-      this.passwordInput.type = isPassword ? 'text' : 'password';
-      this.passwordToggle.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
-      eyeIcon.style.display = isPassword ? 'none' : 'block';
-      eyeOffIcon.style.display = isPassword ? 'block' : 'none';
-    });
-  }
+  const eyeIcon = document.getElementById('eyeIcon');
+  const eyeOffIcon = document.getElementById('eyeOffIcon');
+
+  this.passwordToggle.addEventListener('click', () => {
+  const isPasswordHidden = this.passwordInput.type === 'password';
+  this.passwordInput.type = isPasswordHidden ? 'text' : 'password';
+
+  this.passwordToggle.setAttribute('aria-label', isPasswordHidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
+
+  // Mostrar el ícono correcto según el estado
+  eyeIcon.style.display = isPasswordHidden ? 'inline' : 'none';
+  eyeOffIcon.style.display = isPasswordHidden ? 'none' : 'inline';
+});
+}
 
   handleInput(field) { if (this.touched[field]) this.validateField(field); }
   handleBlur(field) { this.touched[field] = true; this.validateField(field); }
@@ -160,4 +164,3 @@ if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
     input.addEventListener('focus', () => { input.style.fontSize = '16px'; });
   });
 }
-new AdminLogin();

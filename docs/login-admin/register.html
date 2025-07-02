@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registrar nuevo administrador - Tlatec</title>
+  <link rel="stylesheet" href="../panel-admin/styleAdminPanel.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body class="background">
+  <div class="container">
+    <!-- Header -->
+    <header class="header" role="banner">
+      <div class="logo-container">
+        <img src="\docs\assets\images\LogoTlatec.png" alt="Logo de la empresa" class="logo-image" />
+      </div>
+      <h1>Registrar nuevo administrador</h1>
+    </header>
+
+    <!-- Formulario -->
+    <main class="center-grid">
+      <div class="card-form">
+        <form id="registerForm" class="form" novalidate>
+          <div class="general-error" id="generalError" style="display: none;" role="alert" aria-live="polite">
+            <span id="generalErrorText"></span>
+          </div>
+
+          <label for="name" class="form-label">Nombre completo</label>
+          <input type="text" id="name" name="name" class="form-control" placeholder="Nombre del administrador" required/>
+
+          <label for="email" class="form-label">Correo electrónico</label>
+          <input type="email" id="email" name="email" class="form-control" placeholder="correo@dominio.com" autocomplete="email" required/>
+
+          <label for="password" class="form-label">Contraseña</label>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Contraseña" autocomplete="new-password" required/>
+
+          <button type="submit" class="btn green" id="submitButton">
+            <span id="buttonText">REGISTRAR ADMIN</span>
+            <div class="loading-spinner" id="loadingSpinner" style="display: none;"></div>
+          </button>
+
+          <button type="button" class="btn" style="margin-top: 1rem;" onclick="window.location.href='../panel-admin/adminPanel.html'">
+            Cancelar y volver
+          </button>
+        </form>
+      </div>
+    </main>
+
+    <!-- Pie de página -->
+    <footer role="contentinfo">
+    </footer>
+  </div>
+
+  <script src="registerScript.js"></script>
+</body>
+</html>
+</html>
