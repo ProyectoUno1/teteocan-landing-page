@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Administrador de ventas - Tlatec</title>
     <link rel="stylesheet" href="styleAdminPanel.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body class="background">
@@ -13,6 +15,7 @@
         <header class="header" role="banner">
             <div class="logo-container">
                 <img src="\docs\assets\images\LogoTlatec.png" alt="Logo de la empresa" class="logo-image" />
+
             </div>
             <h1>Administrador de ventas</h1>
         </header>
@@ -31,7 +34,8 @@
                         <label for="packageSelect" class="form-label">Paquete</label>
                         <select id="packageSelect" class="form-control" required>
                             <option value="">Selecciona un paquete</option>
-                            <option value="explorer" data-price="0">Explorador</option>
+                            <option value="explorador">Paquete Explorador</option>
+
                         </select>
 
                         <label for="saleDate" class="form-label">Fecha</label>
@@ -52,6 +56,26 @@
             <section aria-labelledby="sales-records-title" class="card" style="margin-top: 2rem;">
                 <div class="card table-card">
                     <h2 id="sales-records-title">Ventas registradas</h2>
+
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <label for="filterPackage">Filtrar por paquete:</label>
+                            <select id="filterPackage" class="filter-select">
+                                <option value="">Todos</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filterMonth">Filtrar por mes:</label>
+                            <input type="month" id="filterMonth" class="filter-select" />
+                        </div>
+
+                        <div class="button-row">
+                            <button id="exportButton" class="btn">Exportar a Google Sheets</button>
+                            <button id="clearDBButton" class="btn">Vaciar base de datos</button>
+                        </div>
+
+                    </div>
                     <div class="table-wrapper">
                         <table class="table" role="table" aria-describedby="salesDescription">
                             <thead>

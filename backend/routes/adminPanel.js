@@ -1,12 +1,22 @@
-// backend/routes/admin.js
 const express = require('express');
 const router = express.Router();
-const { registrarVentaManual, obtenerVentas } = require('../controllers/adminController');
+const {
+  registrarVentaManual,
+  obtenerVentas,
+  borrarTodasLasVentas
+} = require('../controllers/adminController');
+const { exportarVentasAGoogleSheets } = require('../controllers/exportController');
 
-// Ruta POST para registrar venta manual desde el panel
+// Obtener todas las ventas
+router.get('/ventas', obtenerVentas);
+
+// Registrar una venta manual desde el panel
 router.post('/venta-manual', registrarVentaManual);
 
-// Ruta GET para obtener todas las ventas
-router.get('/ventas', obtenerVentas);
+// Exportar ventas a Google Sheets
+router.post('/exportar-a-sheets', exportarVentasAGoogleSheets);
+
+// Vaciar todas las ventas de la base de datos
+router.delete('/ventas', borrarTodasLasVentas);
 
 module.exports = router;
