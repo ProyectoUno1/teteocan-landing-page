@@ -30,12 +30,42 @@ const webhookSuscripcion = async (req, res) => {
             const result = await pool.query('SELECT * FROM ventas WHERE preapproval_id = $1', [preapprovalId]);
             const row = result.rows[0];
 
+            // Leer metadata enviado en la suscripción
+            const meta = paymentInfo.metadata || {};
+
+            // Si no existe registro, crear uno nuevo solo si el pago está aprobado
             if (!row) {
-                console.log('Orden no encontrada para preapprovalId:', preapprovalId);
-                return res.status(200).send('Orden no encontrada, webhook ignorado');
+                if (paymentInfo.status === 'approved') {
+                    await pool.query(`
+                        INSERT INTO ventas (
+                            preapproval_id,
+                            cliente_email,
+                            nombre_paquete,
+                            resumen_servicios,
+                            monto,
+                            fecha,
+                            mensaje_continuar,
+                            tipo_suscripcion,
+                            estado
+                        ) VALUES ($1, $2, $3, $4, $5, NOW(), $6, $7, 'procesada')
+                    `, [
+                        preapprovalId,
+                        meta.clienteEmail || paymentInfo.payer?.email || 'email_desconocido@correo.com',
+                        meta.nombrePaquete || 'Paquete desconocido',
+                        meta.resumenServicios || 'Sin servicios',
+                        meta.monto || paymentInfo.transaction_amount || 0,
+                        meta.mensajeContinuar || 'La empresa se pondrá en contacto contigo.',
+                        meta.tipoSuscripcion || 'mensual',
+                    ]);
+                    console.log(`Orden creada desde webhook: ${preapprovalId}`);
+                } else {
+                    console.log('Pago no aprobado, no se registra en base de datos.');
+                    return res.status(200).send('Pago no aprobado, no se crea registro');
+                }
             }
 
-            if (row.estado !== 'procesada') {
+            // Si existe y no está procesada, enviar correos y actualizar estado
+            if (row && row.estado !== 'procesada') {
                 const reqMock = {
                     body: {
                         nombrePaquete: row.nombre_paquete,
@@ -55,7 +85,7 @@ const webhookSuscripcion = async (req, res) => {
                 await pool.query('UPDATE ventas SET estado = $1 WHERE preapproval_id = $2', ['procesada', preapprovalId]);
 
                 console.log(`Correos enviados y estado actualizado para orden ${preapprovalId}`);
-            } else {
+            } else if (row && row.estado === 'procesada') {
                 console.log(`Orden ${preapprovalId} ya estaba procesada.`);
             }
 
