@@ -1,7 +1,6 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
-const pool = require('../db');
 
 const preciosFile = path.join(__dirname, '../precios.json');
 
@@ -14,20 +13,20 @@ const crearSuscripcionDinamica = async (req, res) => {
             return res.status(400).json({ message: 'Datos incompletos' });
         }
 
-        // 1. Leer precios oficiales
+        // Leer precios oficiales
         const preciosRaw = fs.readFileSync(preciosFile, 'utf-8');
         const precios = JSON.parse(preciosRaw);
 
-        // 2. Validar tipo de suscripción
+        // Validar tipo de suscripción
         const tipo = ['mensual', 'anual'].includes(tipoSuscripcion) ? tipoSuscripcion : 'mensual';
 
-        // 3. Validar plan
+        // Validar plan
         const precioOficial = precios[tipo]?.[planId.toLowerCase()];
         if (precioOficial === undefined) {
             return res.status(400).json({ message: `No existe el plan "${planId}" en los precios oficiales (${tipo})` });
         }
 
-        // 4. Validar y calcular extras
+        // Validar y calcular extras
         const isTitan = planId.toLowerCase() === 'titan';
         const isAnual = tipo === 'anual';
         const extrasGratisTitanAnual = ['logotipo', 'tpv', 'negocios'];
@@ -48,7 +47,7 @@ const crearSuscripcionDinamica = async (req, res) => {
 
         const montoCalculado = precioOficial + extrasTotales;
 
-        // 5. Validar monto enviado desde frontend
+        // Validar monto enviado desde frontend
         const montoEnviado = Number(orderData.monto);
         if (isNaN(montoEnviado)) {
             return res.status(400).json({ message: 'Monto inválido enviado desde el frontend.' });
@@ -60,7 +59,7 @@ const crearSuscripcionDinamica = async (req, res) => {
             });
         }
 
-        // 6. Preparar datos de Mercado Pago
+        // Preparar datos de Mercado Pago
         const isSandbox = process.env.NODE_ENV !== 'production';
         const payerEmail = isSandbox ? process.env.MP_PAYER_EMAIL : clienteEmail;
 
@@ -86,7 +85,7 @@ const crearSuscripcionDinamica = async (req, res) => {
             }
         };
 
-        // 7. Crear suscripción en Mercado Pago
+        // Crear suscripción en Mercado Pago
         const response = await fetch('https://api.mercadopago.com/preapproval', {
             method: 'POST',
             headers: {
@@ -104,7 +103,7 @@ const crearSuscripcionDinamica = async (req, res) => {
 
         const data = await response.json();
 
-        // 8. Devolver el link de pago
+        // Devolver el link de pago sin guardar nada en BD aún
         res.json({ init_point: data.init_point });
 
     } catch (error) {
