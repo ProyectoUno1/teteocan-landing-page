@@ -14,20 +14,20 @@ const ordenGratuita = async (req, res) => {
       mensajeContinuar
     } = orderData;
 
-    //  Validar si es un preapproval gratuito
-    if (preapproval_id && preapproval_id.startsWith('free-')) {
-      const countResult = await pool.query(
-        'SELECT COUNT(*) FROM ventas WHERE preapproval_id = $1',
-        [preapproval_id]
-      );
-      const ventaCount = parseInt(countResult.rows[0].count);
+// Validar límite de 10 órdenes gratuitas
+if (preapproval_id && preapproval_id.startsWith('free-')) {
+  const countResult = await pool.query(
+    `SELECT COUNT(*) FROM ventas WHERE preapproval_id LIKE 'free-%'`
+  );
+  const ventaCount = parseInt(countResult.rows[0].count);
 
-      if (ventaCount >= 10) {
-        return res.status(403).json({
-          message: 'Límite alcanzado: solo se permiten 10 órdenes con este plan gratuito.'
-        });
-      }
-    }
+  if (ventaCount >= 10) {
+    return res.status(403).json({
+      message: 'Límite alcanzado: solo se permiten 10 órdenes gratuitas.'
+    });
+  }
+}
+
 
     // Guardar la orden en la base de datos
     await pool.query(`
