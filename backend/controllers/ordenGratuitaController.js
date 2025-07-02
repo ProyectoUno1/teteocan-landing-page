@@ -1,5 +1,6 @@
 const pool = require('../db');
 const emailController = require('../pdf/controllers/emailController');
+
 const ordenGratuita = async (req, res) => {
   try {
     const { orderData } = req.body;
