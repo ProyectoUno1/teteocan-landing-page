@@ -30,8 +30,8 @@ const registrarVentaManual = async (req, res) => {
       `INSERT INTO ventas 
         (preapproval_id, cliente_email, nombre_paquete, resumen_servicios, monto, fecha, estado, mensaje_continuar,tipo_suscripcion,)
        VALUES 
-        ($1, $2, $3, $4, $5, 'manual', $6, $7,$8,$9)`,
-      [preapproval_id, cliente_email, nombre_paquete, resumen_servicios, monto, fecha, estado,mensaje_continuar,tipo_suscripcion]
+        ($1, $2, $3, $4, $5, 'manual', $6, $7,$8)`,
+      [preapproval_id, cliente_email, nombre_paquete, resumen_servicios, monto, fecha,mensaje_continuar,tipo_suscripcion]
     );
 
     const reqMock = {
