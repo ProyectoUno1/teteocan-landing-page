@@ -31,27 +31,28 @@ const crearSuscripcionDinamica = async (req, res) => {
         if (precioOficial === undefined) {
             return res.status(400).json({ message: `No existe el plan "${planId}" en los precios oficiales (${tipo})` });
         }
+        let montoFinal = precioOficial;
 
-        // Validar y sumar extras oficiales
-        let extrasFinales = 0;
-        if (orderData.extrasSeleccionados && Array.isArray(orderData.extrasSeleccionados)) {
-            const extrasPrecios = precios[tipo]?.extras || {};
+        // validar extras con lógica de gratis en Titan anual
+        const isTitan = planId.toLowerCase() === 'titan';
+        const isAnual = tipo === 'anual';
+        const extrasGratisTitanAnual = ['logotipo', 'tpv', 'negocios'];
+        const preciosExtras = precios[tipo]?.extras || {};
 
-            const isTitan = planId.toLowerCase() === 'titan';
-            const isAnual = tipo === 'anual';
-            const extrasGratisTitanAnual = ['logotipo', 'tpv', 'negocios'];
+        let extrasTotales = 0;
 
-            orderData.extrasSeleccionados.forEach(extraKey => {
+        if (Array.isArray(orderData.extrasSeleccionados)) {
+            for (const extraKey of orderData.extrasSeleccionados) {
                 const esGratis = isTitan && isAnual && extrasGratisTitanAnual.includes(extraKey);
-                if (!esGratis && extrasPrecios[extraKey]) {
-                    extrasFinales += extrasPrecios[extraKey];
+                const precioExtra = preciosExtras[extraKey] || 0;
+                if (!esGratis) {
+                    extrasTotales += precioExtra;
                 }
-            });
+            }
         }
 
-        let montoFinal = precioOficial + extrasFinales;
+        montoFinal += extrasTotales;
 
-        // Si el monto enviado es mayor (por seguridad), tomar ese
         if (orderData.monto && Number(orderData.monto) > montoFinal) {
             montoFinal = Number(orderData.monto);
         }
