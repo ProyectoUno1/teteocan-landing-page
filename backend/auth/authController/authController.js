@@ -65,5 +65,12 @@ const loginAdmin = async (req, res) => {
     });
   }
 };
+const registerAdmin = async (req, res) => {
+  // Aquí va tu lógica de registro
+  res.json({ message: 'Registro de admin (dummy)' });
+};
 
-module.exports = { loginAdmin };
+module.exports = { 
+  loginAdmin, 
+  registerAdmin 
+};
