@@ -1747,11 +1747,11 @@ input:checked+.slider::before {
         background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(79, 70, 229, 0.05));
     }
 
-    .pricing-grid:hover .pricing-card:not(:hover) {
-        opacity: 0.7;
-        transform: scale(0.98);
-        filter: blur(1px);
-    }
+    .pricing-grid:hover .pricing-card:not(:hover):not(.sold-out) {
+    opacity: 0.7;
+    transform: scale(0.98);
+    filter: blur(1px);
+}
 
     .pricing-card:hover .btn {
         transform: translateY(-2px);
