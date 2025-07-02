@@ -91,20 +91,43 @@ class AdminLogin {
   }
 
   async handleSubmit(e) {
-    e.preventDefault(); if (this.isLoading) return;
-    this.clearGeneralError();
-    if (!this.validateForm()) return;
-    this.setLoading(true);
-    try {
-      await this.simulateLogin();
-      const email = this.emailInput.value, password = this.passwordInput.value;
-      if (email === 'admin@piercingstudio.com' && password === 'admin123') this.handleLoginSuccess();
-      else this.showGeneralError('Invalid email or password. Please try again.');
-    } catch (error) { this.showGeneralError('An error occurred. Please try again later.'); }
-    finally { this.setLoading(false); }
-  }
+  e.preventDefault();
+  if (this.isLoading) return;
+  this.clearGeneralError();
+  if (!this.validateForm()) return;
+  this.setLoading(true);
 
-  simulateLogin() { return new Promise(resolve => setTimeout(resolve, 2000)); }
+  try {
+    // 1. Petición real al backend
+    const res = await fetch('https://tlatec-backend.onrender.com/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: this.emailInput.value,
+        password: this.passwordInput.value
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      this.showGeneralError(data.error || 'Credenciales inválidas');
+      this.setLoading(false);
+      return;
+    }
+
+    // 2. Guardar token
+    localStorage.setItem('adminToken', data.token);
+
+    // 3. Redirigir al panel de admin
+    window.location.href = '../panel-admin/adminPanel.html';
+
+  } catch (error) {
+    this.showGeneralError('Error de conexión. Intenta más tarde.');
+  } finally {
+    this.setLoading(false);
+  }
+}
 
   handleLoginSuccess() {
     this.submitButton.style.backgroundColor = '#10B981'; this.submitButton.style.borderColor = '#10B981'; document.getElementById('buttonText').textContent = 'Success!';
@@ -137,3 +160,4 @@ if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
     input.addEventListener('focus', () => { input.style.fontSize = '16px'; });
   });
 }
+new AdminLogin();

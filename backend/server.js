@@ -4,6 +4,8 @@ const app = express();
 const dotenv = require('dotenv'); // Para cargar variables de entorno desde .env
 const path = require('path');
 const pool = require('./db');
+const authRoutes = require('./auth/routes/authRoutes'); // Nueva ruta
+const { verifyToken } = require('./auth/middlewares/authMiddleware'); // Middleware
 
 // importar rutas definidas para pagos y webhook
 const pagosRoutes = require('./routes/pagos');
@@ -31,7 +33,10 @@ app.use('/api/webhook', webhookRoutes);
 
 app.use('/api/precios', preciosRouter);
 
-app.use('/api/adminPanel', adminRoutes);
+app.use('/api/adminPanel', verifyToken, adminRoutes);
+
+app.use('/api/auth', authRoutes); // Nueva ruta para autenticación
+
 
 // controlador de email para pruebas manuales
 const emailController = require('./pdf/controllers/emailController');

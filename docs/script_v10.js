@@ -364,7 +364,7 @@ fetch('https://tlatec-backend.onrender.com/api/precios')
     })
     .then(data => {
         preciosOficiales = data;
-        
+        console.log(' preciosOficiales:', preciosOficiales);
         actualizarPrecios(tipoSuscripcion);
     })
     .catch(err => {
@@ -822,5 +822,3 @@ document.addEventListener("DOMContentLoaded", function () {
         logoMobileNav.addEventListener("touchstart", handleLogoClick);
     }
 });
-
-
