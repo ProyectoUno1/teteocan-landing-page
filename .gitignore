@@ -4,3 +4,5 @@ node_modules/
 backend/.env
 tree_file.txt
 backend/testSheets.js
+backend/testToken.js
+backend/serviceCredentials.json
