@@ -325,3 +325,13 @@ clearDBButton.addEventListener('click', async () => {
     }
   }
 });
+// Registrar nuevo administrador
+// Este botón redirige a la página de registro de administrador
+document.addEventListener('DOMContentLoaded', () => {
+    const registerBtn = document.getElementById('registerAdminButton');
+    if (registerBtn) {
+      registerBtn.addEventListener('click', () => {
+        window.location.href = '../login-admin/register.html';
+      });
+    }
+  });

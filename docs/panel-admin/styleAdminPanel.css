@@ -306,6 +306,28 @@ input[type="month"].filter-select::-webkit-calendar-picker-indicator {
   background: #c53030;
 }
 
+.special-btn {
+  color: var(--color-white);
+  padding: 0.75rem 1.2rem;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.special-btn:hover {
+  filter: brightness(1.1);
+}
+.register-admin-button-container {
+  justify-content: center;
+  margin-bottom: 2rem; /* separa del contenido de abajo */
+  margin-top: 1rem;    /* agrega espacio desde el header */
+}
+
 /* Responsivo */
 
 /* Pantallas medianas */

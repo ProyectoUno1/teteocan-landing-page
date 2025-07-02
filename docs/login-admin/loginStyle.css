@@ -130,11 +130,13 @@ body {
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3);
 }
 
-/* Campo de contraseña */
 .password-container {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
+/* Botón del ojito */
 .password-toggle {
   position: absolute;
   right: 0.75rem;
@@ -145,15 +147,17 @@ body {
   color: var(--color-text-light);
   cursor: pointer;
   padding: 0.25rem;
-  border-radius: 4px;
-  transition: var(--transition);
+  border-radius: 50%;
+  font-size: 1.2rem; /* Tamaño consistente con otros íconos */
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .password-toggle:hover {
   color: var(--color-primary);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .password-toggle:focus {
