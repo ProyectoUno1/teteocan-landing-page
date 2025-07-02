@@ -66,8 +66,32 @@ const loginAdmin = async (req, res) => {
   }
 };
 const registerAdmin = async (req, res) => {
-  // Aquí va tu lógica de registro
-  res.json({ message: 'Registro de admin (dummy)' });
+  const { name, email, password } = req.body;
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: 'Todos los campos son requeridos' });
+  }
+
+  try {
+    // Verifica si el email ya existe
+    const existing = await pool.query('SELECT id FROM admins WHERE email = $1', [email.trim()]);
+    if (existing.rows.length > 0) {
+      return res.status(409).json({ error: 'El correo ya está registrado' });
+    }
+
+    // Hashea la contraseña
+    const password_hash = await bcrypt.hash(password.trim(), 10);
+
+    // Inserta el nuevo admin
+    const result = await pool.query(
+      'INSERT INTO admins (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, name, email',
+      [name.trim(), email.trim(), password_hash]
+    );
+
+    res.status(201).json({ admin: result.rows[0] });
+  } catch (error) {
+    console.error('Error en registro:', error.message);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
 };
 
 module.exports = { 
