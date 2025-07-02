@@ -1,5 +1,49 @@
 // Mobile menu functionality
 document.addEventListener('DOMContentLoaded', function () {
+    async function verificarEstadoExplorador() {
+        const exploradorCard = document.querySelector('.pricing-card[data-package-id="explorador"]');
+        if (!exploradorCard) return;
+
+        try {
+            const res = await fetch('https://tlatec-backend.onrender.com/api/public/estado-explorador');
+            const data = await res.json();
+
+            const button = exploradorCard.querySelector('.btnConfirmSubscription');
+            const tooltip = document.getElementById('soldOutTooltip');
+
+            if (data.soldOut) {
+                exploradorCard.classList.add('sold-out');
+                if (button) {
+                    button.disabled = true;
+                    button.textContent = 'AGOTADO';
+                }
+
+                if (tooltip) {
+                    const ahora = new Date();
+                    const proximoMes = new Date(ahora.getFullYear(), ahora.getMonth() + 1, 1);
+                    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                    const fechaFormateada = `01/${meses[proximoMes.getMonth()]}/${proximoMes.getFullYear()}`;
+                    tooltip.innerHTML = `Agotado.<br>Disponible el ${fechaFormateada} a las 00:00:01`;
+                }
+            } else {
+                // No está agotado
+                exploradorCard.classList.remove('sold-out');
+                if (button) {
+                    button.disabled = false;
+                    button.textContent = 'SELECT EXPLORADOR';
+                }
+
+                if (tooltip && data.restantes !== undefined) {
+                    tooltip.innerHTML = `¡Quedan ${data.restantes} lugares este mes!`;
+                }
+            }
+
+        } catch (err) {
+            console.error('Error al verificar estado del paquete explorador:', err);
+        }
+    }
+    verificarEstadoExplorador()
+
 
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileNav = document.getElementById('mobileNav');
@@ -43,50 +87,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.classList.remove('mobile-menu-open');
     });
 });
-
-async function verificarEstadoExplorador() {
-    const exploradorCard = document.querySelector('.pricing-card[data-package-id="explorador"]');
-    if (!exploradorCard) return;
-
-    try {
-        const res = await fetch('https://tlatec-backend.onrender.com/api/public/estado-explorador');
-        const data = await res.json();
-
-        const button = exploradorCard.querySelector('.btnConfirmSubscription');
-        const tooltip = document.getElementById('soldOutTooltip');
-
-        if (data.soldOut) {
-            exploradorCard.classList.add('sold-out');
-            if (button) {
-                button.disabled = true;
-                button.textContent = 'AGOTADO';
-            }
-
-            if (tooltip) {
-                const ahora = new Date();
-                const proximoMes = new Date(ahora.getFullYear(), ahora.getMonth() + 1, 1);
-                const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-                const fechaFormateada = `01/${meses[proximoMes.getMonth()]}/${proximoMes.getFullYear()}`;
-                tooltip.innerHTML = `Agotado.<br>Disponible el ${fechaFormateada} a las 00:00:01`;
-            }
-        } else {
-            // No está agotado
-            exploradorCard.classList.remove('sold-out');
-            if (button) {
-                button.disabled = false;
-                button.textContent = 'SELECT EXPLORADOR';
-            }
-
-            if (tooltip && data.restantes !== undefined) {
-                tooltip.innerHTML = `¡Quedan ${data.restantes} lugares este mes!`;
-            }
-        }
-
-    } catch (err) {
-        console.error('Error al verificar estado del paquete explorador:', err);
-    }
-}
-verificarEstadoExplorador()
 
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -745,73 +745,70 @@ btnConfirmPurchase?.addEventListener('click', async () => {
         }
     });
 
-    try {
-        const esConSuscripcion = paquetesConSuscripcion.includes(selectedPackage.id.toLowerCase());
+try {
+    const esConSuscripcion = paquetesConSuscripcion.includes(selectedPackage.id.toLowerCase());
 
-        if (esConSuscripcion || tieneExtrasConCosto) {
-            // Paquete con suscripción O gratuito con extras (requiere pago)
-            const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/suscripcion', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    planId: selectedPackage.id,
-                    clienteEmail,
-                    orderData,
-                    tipoSuscripcion // <-- Aquí se envía el tipo mensual/anual al backend
-                })
-            });
+    if (esConSuscripcion || tieneExtrasConCosto) {
+        // Paquete con suscripción O gratuito con extras (requiere pago)
+        const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/suscripcion', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                planId: selectedPackage.id,
+                clienteEmail,
+                orderData,
+                tipoSuscripcion // <-- Aquí se envía el tipo mensual/anual al backend
+            })
+        });
 
-            const result = await res.json();
+        const result = await res.json();
 
-            if (!res.ok || !result.init_point) {
-                throw new Error(result.message || 'ERROR AL CREAR SUSCRIPCIÓN');
-            }
-
-            Swal.close();
-            window.location.href = result.init_point;
-
-        } else {
-            // Paquete gratuito sin extras
-
-            // Generar preapproval_id falso (ej. free-1721779912345)
-            const preapprovalIdFalso = 'free-' + Date.now();
-            orderData.preapproval_id = preapprovalIdFalso;
-
-            const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/orden-gratis', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderData })
-            });
-
-            if (!res.ok) {
-                const result = await res.json();
-                throw new Error(result.message || 'Error al registrar orden gratuita');
-            }
-
-            // Mostrar mensaje de éxito
-            Swal.close();
-            Swal.fire({
-                title: '¡REGISTRO COMPLETO!',
-                text: `TE HAS REGISTRADO AL ${selectedPackage.name}. REVISA TU CORREO.`,
-                icon: 'success',
-                confirmButtonText: 'ACEPTAR',
-                customClass: { confirmButton: 'custom-alert-button' },
-                buttonsStyling: false
-            }).then(() => {
-                closeConfirmModal();
-                selectedPackage = null;
-                document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
-
-                // Aseguramos actualización visual
-                verificarEstadoExplorador();
-            });
+        if (!res.ok || !result.init_point) {
+            throw new Error(result.message || 'ERROR AL CREAR SUSCRIPCIÓN');
         }
 
-    } catch (error) {
-        const resBody = await error.response?.json().catch(() => null);
-        console.error('Error detallado:', resBody);
-        Swal.fire('Error', (resBody?.message || error.message) + '', 'error');
+        Swal.close();
+        window.location.href = result.init_point;
+
+    } else {
+        // Paquete gratuito sin extras
+        const preapprovalIdFalso = 'free-' + Date.now();
+        orderData.preapproval_id = preapprovalIdFalso;
+
+        const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/orden-gratis', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderData })
+        });
+
+        if (!res.ok) {
+            const result = await res.json();
+            throw new Error(result.message || 'Error al registrar orden gratuita');
+        }
+
+        // Mostrar mensaje de éxito
+        Swal.close();
+        await Swal.fire({
+            title: '¡REGISTRO COMPLETO!',
+            text: `TE HAS REGISTRADO AL ${selectedPackage.name}. REVISA TU CORREO.`,
+            icon: 'success',
+            confirmButtonText: 'ACEPTAR',
+            customClass: { confirmButton: 'custom-alert-button' },
+            buttonsStyling: false
+        });
+
+        closeConfirmModal();
+        selectedPackage = null;
+        document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
+
+        location.reload();
     }
+
+} catch (error) {
+    const resBody = await error.response?.json().catch(() => null);
+    console.error('Error detallado:', resBody);
+    Swal.fire('Error', (resBody?.message || error.message) + '', 'error');
+}
 });
 
 // Selección de paquete y apertura modal
