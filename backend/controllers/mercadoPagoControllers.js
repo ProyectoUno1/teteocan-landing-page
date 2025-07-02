@@ -107,10 +107,13 @@ const crearSuscripcionDinamica = async (req, res) => {
 
         res.json({ init_point: data.init_point });
 
-    } catch (error) {
-        console.error('Error en crearSuscripcionDinamica:', error);
-        res.status(500).json({ message: 'Error al crear suscripción' });
-    }
+     } catch (error) {
+    console.error('Error en crearSuscripcionDinamica:', error);
+    res.status(500).json({
+        message: 'Error al crear suscripción',
+        error: error.message || 'Error desconocido'
+    });
+}
 };
 
 module.exports = { crearSuscripcionDinamica };
