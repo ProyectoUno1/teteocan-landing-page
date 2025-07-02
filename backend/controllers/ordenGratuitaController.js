@@ -1,3 +1,5 @@
+const pool = require('../db');
+const emailController = require('../pdf/controllers/emailController');
 const ordenGratuita = async (req, res) => {
   try {
     const { orderData } = req.body;
@@ -9,7 +11,7 @@ const ordenGratuita = async (req, res) => {
       monto,
       fecha,
       mensajeContinuar,
-      tipoSuscripcion // <-- Lo agregamos aquí
+      tipoSuscripcion  // <-- Recibimos aquí el tipo mensual/anual
     } = orderData;
 
     // Validar límite de 10 órdenes gratuitas
@@ -26,7 +28,7 @@ const ordenGratuita = async (req, res) => {
       }
     }
 
-    // Guardar la orden en la base de datos
+    // Guardar la orden en la base de datos, agregando tipo_suscripcion
     await pool.query(`
       INSERT INTO ventas (
         preapproval_id,
@@ -36,9 +38,9 @@ const ordenGratuita = async (req, res) => {
         monto,
         fecha,
         mensaje_continuar,
-        estado,
-        tipo_suscripcion
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,'pendiente',$8)
+        tipo_suscripcion,
+        estado
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'pendiente')
     `, [
       preapproval_id,
       clienteEmail,
@@ -47,7 +49,7 @@ const ordenGratuita = async (req, res) => {
       monto,
       fecha,
       mensajeContinuar,
-      tipoSuscripcion // <-- Lo insertamos aquí
+      tipoSuscripcion || null  // Guarda null si no viene
     ]);
 
     // Enviar correos
@@ -63,3 +65,5 @@ const ordenGratuita = async (req, res) => {
     res.status(500).json({ message: 'Error al registrar orden gratuita' });
   }
 };
+
+module.exports = { ordenGratuita };

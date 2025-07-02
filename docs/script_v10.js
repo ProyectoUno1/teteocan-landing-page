@@ -774,6 +774,7 @@ try {
         // Paquete gratuito sin extras
         const preapprovalIdFalso = 'free-' + Date.now();
         orderData.preapproval_id = preapprovalIdFalso;
+         orderData.tipoSuscripcion = tipoSuscripcion;
 
         const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/orden-gratis', {
             method: 'POST',
