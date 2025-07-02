@@ -1,19 +1,16 @@
+
 const express = require('express');
 const router = express.Router();
 
-// importa solo la función para crear suscripciones
 const { crearSuscripcionDinamica } = require('../controllers/mercadoPagoControllers');
 const { ordenGratuita } = require('../controllers/ordenGratuitaController');
+const { obtenerVentas } = require('../controllers/adminController');
+const { registrarVentaManual } = require('../controllers/adminController');  
 
-
-
-/**
- * ruta POST para crear una suscripción.
- * recibe en el body clienteEmail y orderData.
- * responde con init_point para redirigir a Mercado Pago.
- */
+// Rutas de pago y ventas
 router.post('/suscripcion', crearSuscripcionDinamica);
 router.post('/orden-gratis', ordenGratuita);
-
+router.get('/ventas', obtenerVentas);
+router.post('/venta-manual', registrarVentaManual);
 
 module.exports = router;

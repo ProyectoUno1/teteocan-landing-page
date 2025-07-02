@@ -9,6 +9,7 @@ const pool = require('./db');
 const pagosRoutes = require('./routes/pagos');
 const webhookRoutes = require('./routes/webhook');
 const preciosRouter = require('./routes/precios'); //nueva ruta para obtener los precios
+const adminRoutes = require('./routes/adminPanel');
 
 // carga las variables de entorno del archivo .env ubicado en la raíz del backend
 dotenv.config({ path: path.resolve(__dirname, '.env') });
@@ -29,6 +30,8 @@ app.use('/api/pagos', pagosRoutes);
 app.use('/api/webhook', webhookRoutes);
 
 app.use('/api/precios', preciosRouter);
+
+app.use('/api/adminPanel', adminRoutes);
 
 // controlador de email para pruebas manuales
 const emailController = require('./pdf/controllers/emailController');
