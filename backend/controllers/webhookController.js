@@ -8,11 +8,11 @@ const webhookSuscripcion = async (req, res) => {
         const topic = req.query.topic || mpNotification.type || mpNotification.topic;
         const action = mpNotification.action;
 
-        // Paso: pago confirmado
+        // Pago confirmado
         if ((topic === 'payment' || mpNotification.type === 'payment') && mpNotification.data?.id) {
             const paymentId = mpNotification.data.id;
 
-            // Obtener información del pago
+            // Obtener info del pago
             const response = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
                 headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}` },
             });
@@ -27,6 +27,7 @@ const webhookSuscripcion = async (req, res) => {
                 return res.status(200).send('Webhook recibido sin preapprovalId');
             }
 
+            // Buscar orden en BD
             const result = await pool.query('SELECT * FROM ventas WHERE preapproval_id = $1', [preapprovalId]);
             const row = result.rows[0];
 
@@ -37,18 +38,18 @@ const webhookSuscripcion = async (req, res) => {
             if (!row) {
                 if (paymentInfo.status === 'approved') {
                     await pool.query(`
-            INSERT INTO ventas (
-                preapproval_id,
-                cliente_email,
-                nombre_paquete,
-                resumen_servicios,
-                monto,
-                fecha,
-                mensaje_continuar,
-                tipo_suscripcion,
-                estado
-            ) VALUES ($1, $2, $3, $4, $5, NOW(), $6, $7, 'pendiente')
-        `, [
+                        INSERT INTO ventas (
+                            preapproval_id,
+                            cliente_email,
+                            nombre_paquete,
+                            resumen_servicios,
+                            monto,
+                            fecha,
+                            mensaje_continuar,
+                            tipo_suscripcion,
+                            estado
+                        ) VALUES ($1, $2, $3, $4, $5, NOW(), $6, $7, 'pendiente')
+                    `, [
                         preapprovalId,
                         meta.clienteEmail || paymentInfo.payer?.email || 'email_desconocido@correo.com',
                         meta.nombrePaquete || 'Paquete desconocido',
@@ -59,12 +60,11 @@ const webhookSuscripcion = async (req, res) => {
                     ]);
                     console.log(`Orden creada desde webhook: ${preapprovalId}`);
 
-                    // Recuperamos la fila recién creada para enviar correos
+                    // Recuperar fila para enviar correos
                     const newResult = await pool.query('SELECT * FROM ventas WHERE preapproval_id = $1', [preapprovalId]);
                     const newRow = newResult.rows[0];
 
                     if (newRow) {
-                        // Enviar correos para la nueva orden creada
                         const reqMock = {
                             body: {
                                 nombrePaquete: newRow.nombre_paquete,
@@ -115,7 +115,7 @@ const webhookSuscripcion = async (req, res) => {
             return res.status(200).send('Webhook procesado correctamente');
         }
 
-        // Paso: autorización de preaprobación (opcional)
+        // Autorización preaprobación (opcional)
         if (topic === 'preapproval' && action === 'authorized') {
             console.log('Preapproval autorizado, sin acción requerida.');
             return res.status(200).send('Preapproval autorizado');
