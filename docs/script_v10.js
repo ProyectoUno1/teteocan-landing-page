@@ -1,47 +1,48 @@
 // Mobile menu functionality
 document.addEventListener('DOMContentLoaded', function () {
-// --- INICIA CÓDIGO AÑADIDO ---
-// --- Bloque para la funcionalidad "Agotado" ---
-
 async function verificarEstadoExplorador() {
   const exploradorCard = document.querySelector('.pricing-card[data-package-id="explorador"]');
-  if (!exploradorCard) {
-    console.error("No se encontró la tarjeta del Paquete Explorador.");
-    return;
-  }
+  if (!exploradorCard) return;
 
   try {
     const res = await fetch('https://tlatec-backend.onrender.com/api/public/estado-explorador');
     const data = await res.json();
 
+    const button = exploradorCard.querySelector('.btnConfirmSubscription');
+    const tooltip = document.getElementById('soldOutTooltip');
+
     if (data.soldOut) {
       exploradorCard.classList.add('sold-out');
-
-      const button = exploradorCard.querySelector('.btnConfirmSubscription');
       if (button) {
         button.disabled = true;
         button.textContent = 'AGOTADO';
       }
 
-      const tooltip = document.getElementById('soldOutTooltip');
       if (tooltip) {
         const ahora = new Date();
-        const proximoMesDate = new Date(ahora.getFullYear(), ahora.getMonth() + 1, 1);
+        const proximoMes = new Date(ahora.getFullYear(), ahora.getMonth() + 1, 1);
         const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-        const fechaFormateada = `01/${meses[proximoMesDate.getMonth()]}/${proximoMesDate.getFullYear()}`;
+        const fechaFormateada = `01/${meses[proximoMes.getMonth()]}/${proximoMes.getFullYear()}`;
         tooltip.innerHTML = `Agotado.<br>Disponible el ${fechaFormateada} a las 00:00:01`;
       }
+    } else {
+      // No está agotado
+      exploradorCard.classList.remove('sold-out');
+      if (button) {
+        button.disabled = false;
+        button.textContent = 'SELECT EXPLORADOR';
+      }
+
+      if (tooltip && data.restantes !== undefined) {
+        tooltip.innerHTML = `¡Quedan ${data.restantes} lugares este mes!`;
+      }
     }
+
   } catch (err) {
-    console.error('No se pudo verificar el estado del paquete explorador:', err);
+    console.error('Error al verificar estado del paquete explorador:', err);
   }
 }
-
-// 2. Ejecutar al cargar la página
-document.addEventListener('DOMContentLoaded', verificarEstadoExplorador);
-
-// --- Fin del bloque ---
-// --- TERMINA CÓDIGO AÑADIDO ---
+verificarEstadoExplorador()
 
 
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
