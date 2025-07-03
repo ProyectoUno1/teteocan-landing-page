@@ -130,7 +130,7 @@ const forgotPassword = async (req, res) => {
         }
       });
 
-      const resetUrl = `https://proyectouno1.github.io/teteocan-landing-page/docs/login-admin/resetPassword.html?token=${token}`;
+      const resetUrl = `https://proyectouno1.github.io/teteocan-landing-page/login-admin/resetPassword.html?token=${token}`;
       await transporter.sendMail({
         from: '"Tlatec" <no-reply@teteocan.com>',
         to: email,
