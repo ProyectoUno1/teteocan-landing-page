@@ -229,11 +229,13 @@ body {
   margin-bottom: 0.3rem;
   font-size: 0.9rem;
   white-space: nowrap;
+  color:  var(--color-primary);
+  
 }
 
 .filter-select {
   background: linear-gradient(135deg, var(--color-primary), var(--color-tertiary));
-  color: var(--color-white);
+color:  var(--color-light);
   padding: 0.75rem 1rem;
   border: none;
   border-radius: 30px;
@@ -246,6 +248,13 @@ body {
   appearance: none;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
+
+.filter-select option {
+  background-color: white;
+  color: var(--color-primary);
+}
+
+
 
 .filter-select:hover,
 .filter-select:focus {
@@ -324,8 +333,8 @@ input[type="month"].filter-select::-webkit-calendar-picker-indicator {
 }
 .register-admin-button-container {
   justify-content: center;
-  margin-bottom: 2rem; /* separa del contenido de abajo */
-  margin-top: 1rem;    /* agrega espacio desde el header */
+  margin-bottom: 2rem; 
+  margin-top: 1rem;   
 }
 
 /* Responsivo */

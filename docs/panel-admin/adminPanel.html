@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Administrador de ventas - Tlatec</title>
         <link rel="stylesheet" href="styleAdminPanel.css" />
+        <link rel="icon" href="docs\assets\images\LogoTlatec.ico" type="image/x-icon">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
 
@@ -65,9 +66,9 @@
 
                         <div class="filter-bar">
                             <div class="filter-group">
-                                <label for="filterPackage">Filtrar por paquete:</label>
+                                <label class="filter-package"  for="filterPackage">Filtrar por paquete:</label>
                                 <select id="filterPackage" class="filter-select">
-                                    <option value="">Todos</option>
+                                    <option id="option" value="">Todos</option>
                                 </select>
                             </div>
 

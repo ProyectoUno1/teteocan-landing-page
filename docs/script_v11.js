@@ -1,8 +1,5 @@
 // Mobile menu functionality
 document.addEventListener('DOMContentLoaded', function () {
-    
-
-
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileNav = document.getElementById('mobileNav');
     const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
@@ -47,48 +44,48 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 async function verificarEstadoExplorador() {
-        const exploradorCard = document.querySelector('.pricing-card[data-package-id="explorador"]');
-        if (!exploradorCard) return;
+    const exploradorCard = document.querySelector('.pricing-card[data-package-id="explorador"]');
+    if (!exploradorCard) return;
 
-        try {
-            const res = await fetch('https://tlatec-backend.onrender.com/api/public/estado-explorador');
-            const data = await res.json();
+    try {
+        const res = await fetch('https://tlatec-backend.onrender.com/api/public/estado-explorador');
+        const data = await res.json();
 
-            const button = exploradorCard.querySelector('.btnConfirmSubscription');
-            const tooltip = document.getElementById('soldOutTooltip');
+        const button = exploradorCard.querySelector('.btnConfirmSubscription');
+        const tooltip = document.getElementById('soldOutTooltip');
 
-            if (data.soldOut) {
-                exploradorCard.classList.add('sold-out');
-                if (button) {
-                    button.disabled = true;
-                    button.textContent = 'AGOTADO';
-                }
-
-                if (tooltip) {
-                    const ahora = new Date();
-                    const proximoMes = new Date(ahora.getFullYear(), ahora.getMonth() + 1, 1);
-                    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-                    const fechaFormateada = `01/${meses[proximoMes.getMonth()]}/${proximoMes.getFullYear()}`;
-                    tooltip.innerHTML = `Agotado.<br>Disponible el ${fechaFormateada} a las 00:00:01`;
-                }
-            } else {
-                // No está agotado
-                exploradorCard.classList.remove('sold-out');
-                if (button) {
-                    button.disabled = false;
-                    button.textContent = 'SELECT EXPLORADOR';
-                }
-
-                if (tooltip && data.restantes !== undefined) {
-                    tooltip.innerHTML = `¡Quedan ${data.restantes} lugares este mes!`;
-                }
+        if (data.soldOut) {
+            exploradorCard.classList.add('sold-out');
+            if (button) {
+                button.disabled = true;
+                button.textContent = 'AGOTADO';
             }
 
-        } catch (err) {
-            console.error('Error al verificar estado del paquete explorador:', err);
+            if (tooltip) {
+                const ahora = new Date();
+                const proximoMes = new Date(ahora.getFullYear(), ahora.getMonth() + 1, 1);
+                const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                const fechaFormateada = `01/${meses[proximoMes.getMonth()]}/${proximoMes.getFullYear()}`;
+                tooltip.innerHTML = `Agotado.<br>Disponible el ${fechaFormateada} a las 00:00:01`;
+            }
+        } else {
+            // No está agotado
+            exploradorCard.classList.remove('sold-out');
+            if (button) {
+                button.disabled = false;
+                button.textContent = 'SELECT EXPLORADOR';
+            }
+
+            if (tooltip && data.restantes !== undefined) {
+                tooltip.innerHTML = `¡Quedan ${data.restantes} lugares este mes!`;
+            }
         }
+
+    } catch (err) {
+        console.error('Error al verificar estado del paquete explorador:', err);
     }
-    verificarEstadoExplorador()
+}
+verificarEstadoExplorador()
 
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -345,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Modal for service details
 const serviceModal = document.getElementById('serviceModal');
-const closeModalBtn = document.getElementById('closeModal'); // Este es para serviceModal
+const closeModalBtn = document.getElementById('closeModal');
 
 document.querySelectorAll('.feature-item').forEach(item => {
     item.addEventListener('click', () => {
@@ -476,8 +473,6 @@ toggleSubscriptionType?.addEventListener('change', (e) => {
 
 
 });
-
-
 
 // función para abrir modal de confirmación
 function openConfirmModal() {
@@ -801,8 +796,6 @@ btnConfirmPurchase?.addEventListener('click', async () => {
                 closeConfirmModal();
                 selectedPackage = null;
                 document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
-
-                // Aseguramos actualización visual
                 verificarEstadoExplorador();
             });
         }

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,14 +7,14 @@
     <meta name="description"
         content="Impulsa tu negocio con Teteocan. Soluciones digitales integrales desde paquetes gratuitos hasta servicios completos de transformación digital">
     <link rel="icon" href="assets\images\LogoTlatec.ico" type="image/x-icon">
-    <link rel="stylesheet" href="styles_v2.css">
+    <link rel="stylesheet" href="styles_v3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="script_v10.js" defer></script>
+    <script src="script_v11.js" defer></script>
 </head>
 
 <body>
@@ -27,7 +26,6 @@
                     <div class="logo-area">
 
                         <img src="assets/images/LogoTlatec.png" alt="Logo" class="logo-icon" id="logo-desktop" />
-                        <!-- Aca el logo-icon en el css es el que cambia el tamaño de la imagen del logo -->
                     </div>
                     <ul class="nav-links">
                         <li><a href="#package" class="boton-nav">PAQUETES</a></li>
@@ -58,7 +56,6 @@
                                 id="logo-mobile-nav" />
                         </div>
                         <div class="mobile-nav-links">
-
                             <a href="#package" class="boton-nav-paquete">Paquetes</a>
                             <a href="#contacto" class="boton-nav">Contacto</a>
                         </div>
@@ -80,7 +77,6 @@
                     INTEGRALES, DESDE PAQUETES DE INICIO GRATUITOS HASTA UNA TRANSFORMACIÓN
                     DIGITAL COMPLETA.
                 </p>
-
             </div>
 
             <div class="features-grid">
@@ -95,8 +91,6 @@
                         IMPLEMENTACIÓN INMEDIATA DE SOLUCIONES DIGITALES QUE GENERAN RESULTADOS DESDE EL PRIMER DÍA.
                     </p>
                 </div>
-
-
                 <div class="feature-card">
                     <div class="feature-header">
                         <div class="feature-icon feature-icon-blue">
@@ -107,7 +101,6 @@
                     <p class="feature-description"> TECNOLOGÍAS ROBUSTAS Y SEGURAS QUE PROTEGEN TU INFORMACIÓN Y LA
                         DE TUS CLIENTES.</p>
                 </div>
-
                 <div class="feature-card">
                     <div class="feature-header">
                         <div class="feature-icon feature-icon-blue">
@@ -130,7 +123,6 @@
                     DESDE EMPRENDEDORES HASTA GRANDES EMPRESAS, TENEMOS EL PLAN PERFECTO PARA TU NEGOCIO
                 </p>
             </div>
-
             <div class="subscription-switch">
                 <span class="switch-option">Mensual</span>
                 <label class="switch">
@@ -143,18 +135,15 @@
             <div class="pricing-grid">
                 <div class="pricing-card" data-package-id="explorador" data-package-name="PAQUETE EXPLORADOR"
                     data-package-price="0">
-
-
-
                     <div class="pricing-header">
                         <div class="header-top">
+                            <div class="plan-badge plan-badge-blue">Basico</div>
                             <h3 class="plan-title">PAQUETE EXPLORADOR</h3>
                             <div class="plan-price">
                                 <span class="price-amount">$0</span>
                                 <span class="price-period">/mes</span>
                             </div>
                         </div>
-
                         <p class="plan-description-explorador">DA EL PRIMER PASO</p>
                     </div>
                     <div class="pricing-body">
@@ -213,7 +202,6 @@
                                 data-description="Incluye los servicios más básicos más algunos complementos avanzados para comenzar con datos.">
                                 <i class="fas fa-gem feature-check-impulso"></i>
                                 <span><b>Paquete Explorador +</b></span>
-
                             </li>
                             <li class="feature-item" data-title="2 dashboards"
                                 data-description="Te entregamos dos paneles visuales para que veas y analices tus datos de manera clara.">
@@ -240,6 +228,7 @@
                     data-package-price="359">
                     <div class="pricing-header">
                         <div class="header-top">
+                            <div class="plan-badge plan-badge-blue">Premium</div>
                             <h3 class="plan-title">PAQUETE <span class="line-break">DOMINIO</span></h3>
                             <div class="plan-price">
                                 <span class="price-amount">$359</span>
@@ -296,14 +285,13 @@
                     data-package-price="399">
                     <div class="pricing-header">
                         <div class="header-top">
-                            <div class="plan-badge plan-badge-blue">Más Popular</div>
-                            <h3 class="plan-title">PAQUETE TITAN</h3>
+
+                            <h3 class="plan-title">PAQUETE <span class="line-break">TITAN</span></h3>
                             <div class="plan-price">
                                 <span class="price-amount">$399</span>
                                 <span class="price-period">/mes</span>
                             </div>
                         </div>
-
                         <p class="plan-description-titan">CONQUISTA TU MERCADO</p>
                     </div>
                     <div class="pricing-body">
@@ -338,9 +326,9 @@
                                 <i class="fa-brands fa-google feature-check-titan"></i>
                                 <span>Configuración y ajuste de Google Business</span>
                             </li>
-                             <li class="feature-item" data-title="Asistente de objetivos quincenales"
+                            <li class="feature-item" data-title="Asistente de objetivos quincenales"
                                 data-description="Recibe apoyo y seguimiento personalizado cada dos semanas para establecer, medir y alcanzar tus metas comerciales con base en datos reales.">
-                                 <i class="fa-solid fa-bullseye feature-check-titan"></i>
+                                <i class="fa-solid fa-bullseye feature-check-titan"></i>
                                 <span>Asistente de objetivos quincenales</span>
                             </li>
                             <li class="feature-item" data-title="Scraping de 100 registros de potenciales clientes"
@@ -628,13 +616,9 @@
                         </ul>
                     </div>
                 </div>
-
-
             </div>
         </div>
     </footer>
-
-    
 
     <div class="whatsapp-floating">
         <button class="whatsapp-btn" id="whatsappBtn">
