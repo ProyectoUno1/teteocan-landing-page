@@ -7,9 +7,8 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-cron.schedule('* * * * *', async () => {
-  console.log('[CRON] Ejecutando limpieza automática...');
-
+cron.schedule('*/10 * * * *', async () => {
+  console.log('[CRON] Ejecutando limpieza automática cada 10 minutos...');
   try {
     await pool.query('CALL CleanPendiente();');
     console.log('[CRON] Limpieza completada correctamente.');
