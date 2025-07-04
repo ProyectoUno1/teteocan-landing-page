@@ -536,7 +536,7 @@ button {
     text-shadow:
         1px 1px 1px rgb(6, 0, 0),
         1px 1px 1px rgb(0, 0, 0);
-    margin-bottom: 0.5rem;
+   
 }
 
 
@@ -742,11 +742,11 @@ input:checked+.slider::before {
 /* Explorador */
 .pricing-card:nth-child(1) .header-top {
     background: #36CFC9;
-    padding: 1rem;
+    padding-top: 1rem;
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
     color: white;
-    
+    padding-bottom: 1rem;
    
 }
 
@@ -789,6 +789,41 @@ input:checked+.slider::before {
 .pricing-card:nth-child(3) {
     border: 5px solid #5F8FC5;
 }
+.pricing-card:nth-child(3) .plan-title{
+    padding-top: 3rem;
+   padding-bottom: 0.5rem;
+}
+
+
+.pricing-card:nth-child(3) .header-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.pricing-card:nth-child(3) .price-before-group {
+    background: #5F8FC5;
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #e0e0e0;
+    text-decoration: line-through;
+}
+
+
+.pricing-card:nth-child(3) .plan-price {
+    display: flex;
+    
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.header-top span {
+  line-height: 1.2;
+}
 
 
 /* Titan */
@@ -807,10 +842,15 @@ input:checked+.slider::before {
 
 .header-top.header-top .plan-title {
     color: white;
+    margin-bottom: 0.05rem;
 }
-.pricing-card:nth-child(4) .plan-title{
-   padding-top: 3rem;
-   padding-bottom: 0.5rem;
+
+
+.price-before-group {
+  color: #f0f0f0; 
+  text-decoration: line-through;
+  font-size: 1rem;
+  margin-right: 0.5rem;
 }
 
 
