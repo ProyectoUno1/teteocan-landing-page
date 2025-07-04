@@ -458,21 +458,30 @@ function actualizarPrecios(tipo) {
 
 // cambiar tipo de suscripción (mensual/anual)
 toggleSubscriptionType?.addEventListener('change', (e) => {
-    tipoSuscripcion = e.target.checked ? 'anual' : 'mensual';
-    actualizarPrecios(tipoSuscripcion);
+  tipoSuscripcion = e.target.checked ? 'anual' : 'mensual';
+  actualizarPrecios(tipoSuscripcion);
 
-
-    const exploradorCard = document.querySelector('.pricing-card[data-package-id="explorador"]');
-    if (exploradorCard) {
-        if (tipoSuscripcion === 'anual') {
-            exploradorCard.classList.add('oculto');
-        } else {
-            exploradorCard.classList.remove('oculto');
-        }
+  const exploradorCard = document.querySelector('.pricing-card[data-package-id="explorador"]');
+  if (exploradorCard) {
+    if (tipoSuscripcion === 'anual') {
+      exploradorCard.classList.add('oculto');
+    } else {
+      exploradorCard.classList.remove('oculto');
     }
+  }
 
+  
+document.querySelectorAll('.price-before-group').forEach(span => {
+  const nuevoTexto = tipoSuscripcion === 'anual'
+    ? span.dataset.beforeAnual
+    : span.dataset.beforeMensual;
+
+  span.textContent = nuevoTexto;
+} )
 
 });
+
+
 
 // función para abrir modal de confirmación
 function openConfirmModal() {
