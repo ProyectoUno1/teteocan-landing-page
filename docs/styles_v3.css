@@ -521,27 +521,16 @@ button {
     margin-bottom: 1rem;
 }
 
-.plan-badge-gray {
-    background: #f3f4f6;
-    color: #374151;
-}
+
 
 .plan-badge-blue {
     background: #dbeafe;
     color: #2563eb;
 }
 
-.plan-badge-purple {
-    background: #e9d5ff;
-    color: #7c3aed;
-}
-
-.plan-badge-gold {
-    background: #fef3c7;
-    color: #d97706;
-}
 
 .plan-title {
+    
     font-size: 1.5rem;
     font-weight: bold;
     text-shadow:
@@ -757,13 +746,14 @@ input:checked+.slider::before {
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
     color: white;
-    padding-bottom: 1rem;
-    padding-top: 1rem;
+    
+   
 }
 
 .pricing-card:nth-child(1) {
     border: 5px solid #36CFC9;
 }
+
 
 /* Impulso */
 .pricing-card:nth-child(2) .header-top {
@@ -777,6 +767,9 @@ input:checked+.slider::before {
 
 .pricing-card:nth-child(2) {
     border: 5px solid #03C2BB;
+}
+.pricing-card:nth-child(2) .plan-title{
+   padding-top: 3rem;
 }
 
 .line-break {
@@ -814,6 +807,10 @@ input:checked+.slider::before {
 
 .header-top.header-top .plan-title {
     color: white;
+}
+.pricing-card:nth-child(4) .plan-title{
+   padding-top: 3rem;
+   padding-bottom: 0.5rem;
 }
 
 
@@ -1556,14 +1553,12 @@ input:checked+.slider::before {
     text-decoration: none;
 }
 
-/* --- ESTILOS PARA PAQUETE AGOTADO (MODIFICADOS) --- */
+/*paquete agotado */
 .pricing-card.sold-out {
     position: relative;
     filter: grayscale(90%);
     opacity: 0.7;
-    /* Se elimina 'pointer-events: none' de aquí para permitir el hover */
     cursor: help;
-    /* Cambia el cursor para indicar que hay información */
 }
 
 /* Deshabilitamos los clics en el contenido interno, pero no en la tarjeta principal */
@@ -1592,7 +1587,7 @@ input:checked+.slider::before {
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
     pointer-events: none;
-    /* Importante para que detecte el hover */
+    
 }
 
 .sold-out-stamp {
@@ -1606,11 +1601,10 @@ input:checked+.slider::before {
      pointer-events: all;
 }
 
-/* --- NUEVOS ESTILOS PARA EL TOOLTIP --- */
+/* --- estilo toltip --- */
 .sold-out-tooltip {
     position: absolute;
     bottom: 20%;
-    /* Posición del tooltip */
     background-color: rgba(0, 0, 0, 0.8);
     color: #fff;
     text-align: center;
@@ -1623,7 +1617,7 @@ input:checked+.slider::before {
     transition: opacity 0.3s, visibility 0.3s;
     font-size: 0.9rem;
     pointer-events: none;
-    /* El tooltip en sí no debe ser interactivo */
+    
 }
 
 /* Muestra el tooltip al pasar el cursor sobre la capa del sello */

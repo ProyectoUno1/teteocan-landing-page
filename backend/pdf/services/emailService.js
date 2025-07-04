@@ -40,7 +40,7 @@ async function generatePdf(data, templatePath) {
             border: '10mm',
             header: {
                 height: '10mm',
-                contents: '<div style="text-align: center;">Teteocan Landing Page</div>'
+                contents: '<div style="text-align: center;">Este es un producto de Teteocan Technologies</div>'
             },
             footer: {
                 height: '10mm',

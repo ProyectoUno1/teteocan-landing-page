@@ -8,6 +8,7 @@ const saleSubscription = document.getElementById('saleSubscription');
 const filterPackageSelect = document.getElementById('filterPackage');
 const filterMonthSelect = document.getElementById('filterMonth');
 
+
 // Definición de paquetes y servicios
 const paquetes = {
   explorador: {
@@ -243,41 +244,6 @@ updateSummaryAndTotal();
 cargarOpcionesFiltroPaquetes();
 fetchSales();
 
-
-// document.getElementById('exportButton').addEventListener('click', async () => {
-//   try {
-//     const token = localStorage.getItem('adminToken');
-//     if (!token) {
-//       alert('No estás autenticado');
-//       return;
-//     }
-
-//     const res = await fetch('https://tlatec-backend.onrender.com/api/adminPanel/exportar-a-excel', {
-//       method: 'GET',
-//       headers: {
-//         'Authorization': 'Bearer ' + token
-//       }
-//     });
-
-//     if (!res.ok) {
-//       alert('Error al exportar ventas');
-//       return;
-//     }
-
-//     const blob = await res.blob();
-//     const url = window.URL.createObjectURL(blob);
-//     const a = document.createElement('a');
-//     a.href = url;
-//     a.download = 'ventas.xlsx';
-//     document.body.appendChild(a);
-//     a.click();
-//     a.remove();
-//     window.URL.revokeObjectURL(url);
-//   } catch (error) {
-//     console.error('Error al exportar ventas:', error);
-//     alert('Error al exportar ventas');
-//   }
-// });
 
 document.getElementById('exportToSheetsButton').addEventListener('click', async () => {
   try {
