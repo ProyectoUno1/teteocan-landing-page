@@ -41,7 +41,7 @@ const ordenGratuita = async (req, res) => {
         mensaje_continuar,
         tipo_suscripcion,
         estado
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'pendiente')
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'procesada')
     `, [
       preapproval_id,
       clienteEmail,
