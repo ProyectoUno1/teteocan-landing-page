@@ -6,6 +6,7 @@ const path = require('path');
 const pool = require('./db');
 const authRoutes = require('./auth/routes/authRoutes'); // Nueva ruta
 const { verifyToken } = require('./auth/middlewares/authMiddleware'); // Middleware
+require('./crondb/cleanPendiente');
 
 // importar rutas definidas para pagos y webhook
 const pagosRoutes = require('./routes/pagos');
