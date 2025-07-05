@@ -51,6 +51,10 @@ const crearSuscripcionDinamica = async (req, res) => {
             ? process.env.MP_PAYER_EMAIL
             : clienteEmail;
 
+        console.log(' payer_email usado:', payerEmail);
+        console.log('NODE_ENV:', process.env.NODE_ENV);
+
+
         const preapproval_data = {
             reason: `Suscripción ${orderData.nombrePaquete}`,
             auto_recurring: {
@@ -109,13 +113,13 @@ const crearSuscripcionDinamica = async (req, res) => {
 
         res.json({ init_point: data.init_point });
 
-     } catch (error) {
-    console.error('Error en crearSuscripcionDinamica:', error);
-    res.status(500).json({
-        message: 'Error al crear suscripción',
-        error: error.message || 'Error desconocido'
-    });
-}
+    } catch (error) {
+        console.error('Error en crearSuscripcionDinamica:', error);
+        res.status(500).json({
+            message: 'Error al crear suscripción',
+            error: error.message || 'Error desconocido'
+        });
+    }
 };
 
 module.exports = { crearSuscripcionDinamica };
