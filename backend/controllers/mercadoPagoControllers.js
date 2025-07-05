@@ -47,7 +47,7 @@ const crearSuscripcionDinamica = async (req, res) => {
         }
 
         // Crear preapproval
-        const payerEmail = process.env.NODE_ENV === 'developer'
+        const payerEmail = process.env.NODE_ENV !== 'production'
             ? process.env.MP_PAYER_EMAIL
             : clienteEmail;
 
