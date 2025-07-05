@@ -1,10 +1,13 @@
-const pool = require('../db');
-const emailController = require('../pdf/controllers/emailController');
-const mercadopago = require('mercadopago');
+import pool from '../db.js';
+import * as emailController from '../pdf/controllers/emailController.js';
+import mercadopago from 'mercadopago';
 
-const mp = new mercadopago(process.env.MP_ACCESS_TOKEN);
 
-const webhookSuscripcion = async (req, res) => {
+
+export const webhookSuscripcion = async (req, res) => {
+  mercadopago.configure({
+  access_token: process.env.MP_ACCESS_TOKEN,
+});
   try {
     const mpNotification = req.body;
     const topic = req.query.topic || mpNotification.type || mpNotification.topic;
@@ -15,7 +18,7 @@ const webhookSuscripcion = async (req, res) => {
 
       let paymentInfo;
       try {
-        const payment = await mp.payment.findById(paymentId);
+        const payment = await mercadopago.payment.findById(paymentId);
         paymentInfo = payment.response;
       } catch (error) {
         console.error('Error obteniendo el pago con SDK:', error);
@@ -86,5 +89,3 @@ const webhookSuscripcion = async (req, res) => {
     return res.status(500).send('Error interno');
   }
 };
-
-module.exports = { webhookSuscripcion };

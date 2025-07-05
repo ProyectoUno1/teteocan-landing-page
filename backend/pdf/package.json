@@ -2,6 +2,8 @@
   "dependencies": {
     "axios": "^1.10.0",
     "nodemailer": "^7.0.3",
-    "pdf-creator-node": "^2.3.5"
+    "pdf-creator-node": "^2.3.5",
+    "type": "module"
+
   }
 }
