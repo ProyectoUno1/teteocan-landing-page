@@ -1,10 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const pool = require('../db');
-const mercadopago = require('mercadopago');
+const mercadopago = require('mercadopago'); // Importa el SDK
 
-// Instanciar Mercado Pago con Access Token
-const mp = new mercadopago(process.env.MP_ACCESS_TOKEN);
+// Configura el SDK con tu token
+mercadopago.configure({
+  access_token: process.env.MP_ACCESS_TOKEN
+});
 
 const preciosFile = path.join(__dirname, '../precios.json');
 
@@ -49,7 +51,6 @@ const crearSuscripcionDinamica = async (req, res) => {
       });
     }
 
-    // Crear preapproval con SDK
     const payerEmail = process.env.NODE_ENV !== 'production'
       ? process.env.MP_PAYER_EMAIL
       : clienteEmail;
@@ -61,7 +62,7 @@ const crearSuscripcionDinamica = async (req, res) => {
       reason: `Suscripción ${orderData.nombrePaquete}`,
       auto_recurring: {
         frequency: 1,
-        frequency_type: "months",
+        frequency_type: tipo === 'anual' ? 'years' : 'months',
         transaction_amount: montoCalculado,
         currency_id: "MXN",
         start_date: new Date().toISOString(),
@@ -71,12 +72,11 @@ const crearSuscripcionDinamica = async (req, res) => {
       payer_email: payerEmail
     };
 
-    // Llamada al SDK para crear preapproval
-    const preapproval = await mp.preapproval.create(preapprovalData);
-    const data = preapproval.body || preapproval.response || preapproval; // según SDK
+    // Crear suscripción con el SDK
+    const preapproval = await mercadopago.preapproval.create(preapprovalData);
+    const data = preapproval.body || preapproval.response || preapproval;
     const preapprovalId = data.id;
 
-    // Guardar en ventas como pendiente
     await pool.query(`
       INSERT INTO ventas (
         preapproval_id,
