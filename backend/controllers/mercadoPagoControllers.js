@@ -3,10 +3,8 @@ const path = require('path');
 const pool = require('../db');
 const mercadopago = require('mercadopago');
 
-// Configurar el SDK al inicio del archivo (opcional si ya lo haces en otro lado)
-mercadopago.configure({
-  access_token: process.env.MP_ACCESS_TOKEN
-});
+// Instanciar Mercado Pago con Access Token
+const mp = new mercadopago(process.env.MP_ACCESS_TOKEN);
 
 const preciosFile = path.join(__dirname, '../precios.json');
 
@@ -73,8 +71,9 @@ const crearSuscripcionDinamica = async (req, res) => {
       payer_email: payerEmail
     };
 
-    const preapproval = await mercadopago.preapproval.create(preapprovalData);
-    const data = preapproval.response;
+    // Llamada al SDK para crear preapproval
+    const preapproval = await mp.preapproval.create(preapprovalData);
+    const data = preapproval.body || preapproval.response || preapproval; // según SDK
     const preapprovalId = data.id;
 
     // Guardar en ventas como pendiente
