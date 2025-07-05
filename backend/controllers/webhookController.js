@@ -1,13 +1,15 @@
-import pool from '../db.js';
-import * as emailController from '../pdf/controllers/emailController.js';
-import mercadopago from 'mercadopago';
+const pool = require('../db');
+const emailController = require('../pdf/controllers/emailController');
+const { MercadoPagoConfig, Payment } = require('mercadopago');
 
 
-
-export const webhookSuscripcion = async (req, res) => {
-  mercadopago.configure({
-  access_token: process.env.MP_ACCESS_TOKEN,
+const mpClient = new MercadoPagoConfig({
+  accessToken: process.env.MP_ACCESS_TOKEN,
 });
+
+const paymentAPI = new Payment(mpClient);
+
+const webhookSuscripcion = async (req, res) => {
   try {
     const mpNotification = req.body;
     const topic = req.query.topic || mpNotification.type || mpNotification.topic;
@@ -18,21 +20,22 @@ export const webhookSuscripcion = async (req, res) => {
 
       let paymentInfo;
       try {
-        const payment = await mercadopago.payment.findById(paymentId);
-        paymentInfo = payment.response;
+        const result = await paymentAPI.get({ id: paymentId });
+        paymentInfo = result;
       } catch (error) {
-        console.error('Error obteniendo el pago con SDK:', error);
+        console.error(' Error obteniendo el pago:', error);
         return res.status(500).send('Error consultando el pago');
       }
 
-      console.log('Datos completos de paymentInfo:', paymentInfo);
+      console.log(' paymentInfo recibido:', paymentInfo);
 
-      const preapprovalId = paymentInfo.preapproval_id
-        || paymentInfo.subscription_id
-        || paymentInfo.point_of_interaction?.transaction_data?.subscription_id;
+      const preapprovalId =
+        paymentInfo.preapproval_id ||
+        paymentInfo.subscription_id ||
+        paymentInfo.point_of_interaction?.transaction_data?.subscription_id;
 
       if (!preapprovalId) {
-        console.log('No preapprovalId en el pago.');
+        console.log(' No preapprovalId en el pago.');
         return res.status(200).send('Sin preapprovalId');
       }
 
@@ -40,12 +43,12 @@ export const webhookSuscripcion = async (req, res) => {
       const venta = result.rows[0];
 
       if (!venta) {
-        console.warn(`No se encontró venta pendiente para ${preapprovalId}`);
+        console.warn(` No se encontró venta pendiente para ${preapprovalId}`);
         return res.status(200).send('Venta no encontrada');
       }
 
       if (venta.estado === 'procesada') {
-        console.log(`Venta ${preapprovalId} ya estaba procesada`);
+        console.log(` Venta ${preapprovalId} ya estaba procesada`);
         return res.status(200).send('Ya procesada');
       }
 
@@ -72,20 +75,22 @@ export const webhookSuscripcion = async (req, res) => {
         );
         console.log(`Venta confirmada y correos enviados: ${preapprovalId}`);
       } else {
-        console.log(`Pago no aprobado para ${preapprovalId}, no se actualiza estado.`);
+        console.log(` Pago no aprobado para ${preapprovalId}, no se actualiza estado.`);
       }
 
       return res.status(200).send('Webhook procesado');
     }
 
     if (topic === 'preapproval' && action === 'authorized') {
-      console.log('Autorización preapproval recibida');
+      console.log('📥 Autorización preapproval recibida');
       return res.status(200).send('Autorizado');
     }
 
     return res.status(200).send('Evento ignorado');
   } catch (error) {
-    console.error('Error en webhook:', error);
+    console.error(' Error en webhook:', error);
     return res.status(500).send('Error interno');
   }
 };
+
+module.exports = { webhookSuscripcion };
