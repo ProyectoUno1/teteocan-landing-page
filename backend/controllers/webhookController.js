@@ -16,6 +16,9 @@ const webhookSuscripcion = async (req, res) => {
             });
             const paymentInfo = await response.json();
 
+            console.log('Datos completos de paymentInfo:', paymentInfo);
+
+
             const preapprovalId = paymentInfo.preapproval_id
                 || paymentInfo.subscription_id
                 || paymentInfo.point_of_interaction?.transaction_data?.subscription_id;
