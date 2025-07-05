@@ -2,9 +2,7 @@ const pool = require('../db');
 const emailController = require('../pdf/controllers/emailController');
 const mercadopago = require('mercadopago');
 
-mercadopago.configure({
-  access_token: process.env.MP_ACCESS_TOKEN
-});
+const mp = new mercadopago(process.env.MP_ACCESS_TOKEN);
 
 const webhookSuscripcion = async (req, res) => {
   try {
@@ -17,7 +15,7 @@ const webhookSuscripcion = async (req, res) => {
 
       let paymentInfo;
       try {
-        const payment = await mercadopago.payment.findById(paymentId);
+        const payment = await mp.payment.findById(paymentId);
         paymentInfo = payment.response;
       } catch (error) {
         console.error('Error obteniendo el pago con SDK:', error);
