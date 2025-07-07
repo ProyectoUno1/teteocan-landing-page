@@ -3,9 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const pool = require('../db');
 
-
 const { MercadoPagoConfig, PreApproval } = require('mercadopago');
-
 
 const mercadopago = new MercadoPagoConfig({
   accessToken: process.env.MP_ACCESS_TOKEN,
@@ -58,13 +56,14 @@ const crearSuscripcionDinamica = async (req, res) => {
       ? process.env.MP_PAYER_EMAIL
       : clienteEmail;
 
+    
     const preapprovalData = {
       reason: `Suscripción ${orderData.nombrePaquete}`,
       auto_recurring: {
         frequency: 1,
         frequency_type: tipo === 'anual' ? 'years' : 'months',
         transaction_amount: montoCalculado,
-        currency_id: "MXN",
+        currency_id: "MXN",  // <-- Moneda explícita aquí
         start_date: new Date().toISOString(),
         end_date: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString()
       },
@@ -72,7 +71,6 @@ const crearSuscripcionDinamica = async (req, res) => {
       payer_email: payerEmail
     };
 
-    
     const preapproval = new PreApproval(mercadopago);
     const response = await preapproval.create({ body: preapprovalData });
     const data = response.id ? response : response.body || response.response;
