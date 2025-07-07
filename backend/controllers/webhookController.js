@@ -20,8 +20,13 @@ const webhookSuscripcion = async (req, res) => {
       let paymentInfo;
       try {
         const result = await paymentAPI.get({ id: paymentId });
-        paymentInfo = result.body || result; 
+        paymentInfo = result.body || result;
       } catch (error) {
+        // Si no se encuentra el pago, responder 200 para evitar reintentos.
+        if (error.status === 404) {
+          console.warn(`Pago ID ${paymentId} no encontrado en Mercado Pago.`);
+          return res.status(200).send('Pago no encontrado, ignorando.');
+        }
         console.error('Error obteniendo el pago:', error);
         return res.status(500).send('Error consultando el pago');
       }
@@ -34,7 +39,7 @@ const webhookSuscripcion = async (req, res) => {
         paymentInfo.point_of_interaction?.transaction_data?.subscription_id;
 
       if (!preapprovalId) {
-        console.log('⚠️ No preapprovalId en el pago.');
+        console.log(' No preapprovalId en el pago.');
         return res.status(200).send('Sin preapprovalId');
       }
 
@@ -42,7 +47,7 @@ const webhookSuscripcion = async (req, res) => {
       const venta = result.rows[0];
 
       if (!venta) {
-        console.warn(` No se encontró venta pendiente para ${preapprovalId}`);
+        console.warn(`No se encontró venta pendiente para ${preapprovalId}`);
         return res.status(200).send('Venta no encontrada');
       }
 
@@ -73,12 +78,11 @@ const webhookSuscripcion = async (req, res) => {
           ['procesada', preapprovalId]
         );
 
-        console.log(` Venta confirmada y correos enviados: ${preapprovalId}`);
+        console.log(`Venta confirmada y correos enviados: ${preapprovalId}`);
       } else {
-        
         const detalleRechazo = paymentInfo.status_detail || 'Motivo no disponible';
         console.warn(`Pago rechazado para ${preapprovalId}`);
-        console.warn(` Detalle del rechazo: ${detalleRechazo}`);
+        console.warn(`Detalle del rechazo: ${detalleRechazo}`);
 
         await pool.query(
           'UPDATE ventas SET estado = $1, mensaje_continuar = $2 WHERE preapproval_id = $3',
@@ -90,7 +94,7 @@ const webhookSuscripcion = async (req, res) => {
     }
 
     if (topic === 'preapproval' && action === 'authorized') {
-      console.log('📥 Autorización preapproval recibida');
+      console.log('Autorización preapproval recibida');
       return res.status(200).send('Autorizado');
     }
 
