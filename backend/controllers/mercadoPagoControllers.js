@@ -52,7 +52,9 @@ const crearSuscripcionDinamica = async (req, res) => {
       });
     }
 
-   const payerEmail = clienteEmail;
+    const payerEmail = process.env.NODE_ENV !== 'production'
+      ? process.env.MP_PAYER_EMAIL
+      : clienteEmail;
 
     
     const preapprovalData = {

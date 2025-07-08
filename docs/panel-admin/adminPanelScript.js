@@ -16,7 +16,7 @@ const paquetes = {
     servicios: [
       "1 dashboard automático",
       "1 imagen genérica editable",
-      "demo de pagina web tipo landing",
+      "demo de página web tipo landing",
       "app para registro simple",
       "canal de whatsapp",
     ],
