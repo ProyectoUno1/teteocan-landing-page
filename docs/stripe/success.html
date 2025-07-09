@@ -4,147 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>¡Pago Exitoso! - Teteocan</title>
-    <link rel="stylesheet" href="../styles_v4.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .success-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 2rem;
-        }
-        
-        .success-card {
-            background: white;
-            border-radius: 20px;
-            padding: 3rem;
-            text-align: center;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        
-        .success-icon {
-            font-size: 4rem;
-            color: #28a745;
-            margin-bottom: 1.5rem;
-            animation: bounce 1s ease-in-out;
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
-        }
-        
-        .success-title {
-            font-size: 2.5rem;
-            color: #333;
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-        
-        .success-message {
-            font-size: 1.2rem;
-            color: #666;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-        
-        .success-details {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            text-align: left;
-        }
-        
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .detail-item:last-child {
-            border-bottom: none;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .btn-home {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: transform 0.3s ease;
-        }
-        
-        .btn-home:hover {
-            transform: translateY(-2px);
-            color: white;
-        }
-        
-        .next-steps {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            border-radius: 0 10px 10px 0;
-        }
-        
-        .next-steps h4 {
-            color: #1976d2;
-            margin-bottom: 1rem;
-        }
-        
-        .next-steps ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .next-steps li {
-            margin-bottom: 0.5rem;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-        
-        .next-steps li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #4caf50;
-            font-weight: bold;
-        }
-        
-        @media (max-width: 768px) {
-            .success-card {
-                padding: 2rem;
-                margin: 1rem;
-            }
-            
-            .success-title {
-                font-size: 2rem;
-            }
-            
-            .success-message {
-                font-size: 1rem;
-            }
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" href="../assets/images/LogoTlatec.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="successStyle.css">
 </head>
 <body>
     <div class="success-container">
-        <div class="success-card">
+        <div class="success-header">
             <div class="success-icon">
                 <i class="fas fa-check-circle"></i>
             </div>
@@ -155,36 +24,39 @@
                 Tu suscripción ha sido procesada correctamente. Recibirás un correo de confirmación 
                 con todos los detalles de tu compra en los próximos minutos.
             </p>
-            
-            <div class="success-details">
-                <div class="detail-item">
-                    <span>Estado del pago:</span>
-                    <span style="color: #28a745; font-weight: 600;">Completado</span>
-                </div>
-                <div class="detail-item">
-                    <span>Método de pago:</span>
-                    <span>Stripe</span>
-                </div>
-                <div class="detail-item">
-                    <span>Fecha:</span>
-                    <span id="paymentDate"></span>
-                </div>
-            </div>
-            
-            <div class="next-steps">
-                <h4><i class="fas fa-clipboard-list"></i> Próximos pasos:</h4>
-                <ul>
-                    <li>Recibirás un correo con los detalles de acceso</li>
-                    <li>Nuestro equipo se pondrá en contacto contigo en 24 horas</li>
-                    <li>Comenzaremos la configuración de tu paquete</li>
-                    <li>Te proporcionaremos acceso a tu panel de control</li>
-                </ul>
-            </div>
-            
-            <a href="../index.html" class="btn-home">
-                <i class="fas fa-home"></i> Volver al inicio
-            </a>
         </div>
+        
+        <div class="success-details">
+            <div class="detail-item">
+                <span>Estado del pago:</span>
+                <span class="status-completed">
+                    <i class="fas fa-check-circle"></i>
+                    Completado
+                </span>
+            </div>
+            <div class="detail-item">
+                <span>Método de pago:</span>
+                <span>Stripe</span>
+            </div>
+            <div class="detail-item">
+                <span>Fecha:</span>
+                <span id="paymentDate"></span>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h4><i class="fas fa-clipboard-list"></i> Próximos pasos:</h4>
+            <ul>
+                <li>Recibirás un correo con los detalles de acceso</li>
+                <li>Nuestro equipo se pondrá en contacto contigo en 24 horas</li>
+                <li>Comenzaremos la configuración de tu paquete</li>
+                <li>Te proporcionaremos acceso a tu panel de control</li>
+            </ul>
+        </div>
+        
+        <a href="../index.html" class="btn-home">
+            <i class="fas fa-home"></i> Volver al inicio
+        </a>
     </div>
     
     <script>
