@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Carrito de Compra - Tlatec</title>
+    <meta name="description" content="Resumen y pago del carrito de compra - Proyecto Tlatec" />
+    <link rel="stylesheet" href="styleCarrito.css" />
+    <link rel="icon" href="assets/images/LogoTlatec.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <nav class="nav-desktop">
+                    <div class="logo-area">
+                        <img src="assets/images/LogoTlatec.png" alt="Logo" class="logo-icon" id="logo-desktop" />
+                    </div>
+                    <ul class="nav-links">
+                        <li><a href="index.html#package" class="boton-nav">Paquetes</a></li>
+                        <li><a href="index.html#contacto" class="boton-nav">Contacto</a></li>
+                    </ul>
+                </nav>
+
+                <div class="mobile-header">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars" id="menuIcon"></i>
+                    </button>
+                    <div class="mobile-logo-area">
+                        <img src="assets/images/LogoTlatec.png" alt="Logo" class="mobile-logo-icon" id="logo-mobile" />
+                    </div>
+                    <div class="mobile-spacer"></div>
+                </div>
+                <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+                <nav class="nav-mobile" id="mobileNav">
+                    <div class="nav-mobile-content">
+                        <div class="mobile-nav-logo-area">
+                            <img src="assets/images/LogoTlatec.png" alt="Logo" class="mobile-nav-logo" id="logo-mobile-nav" />
+                        </div>
+                        <div class="mobile-nav-links">
+                            <a href="index.html#package" class="nav-link">Paquetes</a>
+                            <a href="index.html#contacto" class="nav-link">Contacto</a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="cart-main">
+        <section class="cart-section container">
+            <h1 class="section-title"><i class="fas fa-shopping-cart"></i> Carrito de Compra</h1>
+
+            <!-- Paquete seleccionado -->
+            <div class="package-summary">
+                <h2>Paquete Seleccionado</h2>
+                <div>
+                    <strong>Nombre:</strong> <span id="confirmPackageName"></span>
+                </div>
+                <div>
+                    <strong>Tipo de Suscripción:</strong> <span id="subscriptionTypeDisplay"></span>
+                </div>
+                <div>
+                    <strong>Precio Paquete:</strong> $<span id="confirmPackagePrice"></span>
+                </div>
+            </div>
+
+            <!-- Servicios incluidos -->
+            <div class="services-summary">
+                <h3>Servicios Incluidos</h3>
+                <ul id="servicesList" class="services-list"></ul>
+            </div>
+
+            <!-- Servicios extra -->
+            <div class="extras-summary">
+                <h3>Servicios Extra</h3>
+                <form id="extraServicesForm" class="extras-form">
+                    <!-- Aquí puedes repetir los servicios extras con checkbox, igual que en el modal -->
+                    <!-- Ejemplo de un extra -->
+                    <label class="extra-item">
+                        <input type="checkbox" name="extras" value="scraping" data-price="1000" />
+                        Scraping por slots - $1000
+                    </label>
+                    <label class="extra-item">
+                        <input type="checkbox" name="extras" value="basededatos" data-price="1000" />
+                        Bases de datos listas - $1000
+                    </label>
+                    <label class="extra-item">
+                        <input type="checkbox" name="extras" value="negocios" data-price="999" />
+                        Asesoría de negocios - $999
+                    </label>
+                    <label class="extra-item">
+                        <input type="checkbox" name="extras" value="tpv" data-price="1500" />
+                        TPV - $1500
+                    </label>
+                    <label class="extra-item">
+                        <input type="checkbox" name="extras" value="logotipo" data-price="3999" />
+                        Diseño de logotipo - $3999
+                    </label>
+                </form>
+            </div>
+
+            <!-- Totales -->
+            <div class="totals">
+                <div><strong>Subtotal paquete:</strong> $<span id="packageSubtotal"></span></div>
+                <div><strong>Servicios extra:</strong> $<span id="extrasTotalAmount">0</span></div>
+                <div><strong>Total a pagar:</strong> $<span id="totalFinalPrice"></span></div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="cart-actions">
+                <button id="btnCancelPurchase" class="btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button id="btnConfirmPurchase" class="btn-primary">
+                    <i class="fas fa-lock"></i> Proceder al pago
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-main">
+                    <div class="footer-brand">
+                        <div class="logo">
+                            <div class="logo-area">
+                                <img src="assets/images/logo-teteocan.png" alt="Logo" class="logo-icon-footer"
+                                    title="Desarrollado por: Teteocan Technologies" />
+                            </div>
+                        </div>
+                        <p class="footer-description">
+                            Transformando negocios a través de soluciones digitales innovadoras y escalables.
+                        </p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4 class="footer-title">Paquetes</h4>
+                            <ul class="footer-list">
+                                <li><a href="index.html#package" class="footer-link">Explorador</a></li>
+                                <li><a href="index.html#package" class="footer-link">Impulso</a></li>
+                                <li><a href="index.html#package" class="footer-link">Dominio</a></li>
+                                <li><a href="index.html#package" class="footer-link">Titan</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">Contacto</h4>
+                            <ul class="footer-list">
+                                <li><a href="#" class="footer-link">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>Cuautitlán Izcalli, Estado de México, México</span>
+                                    </a></li>
+                                <li><a href="#" class="footer-link">
+                                        <i class="fas fa-envelope"></i>
+                                        <span>contacto@teteocan.com</span>
+                                    </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <div class="footer-copyright">
+                        <p>&copy; 2025 Teteocan Technologies. Todos los derechos reservados.</p>
+                        <ul class="footer-list">
+                            <li><a href="https://teteocan.com/politica-privacidad/" class="footer-link">Política de Privacidad</a></li>
+                            <li><a href="terms.html" class="footer-link">Términos y Condiciones</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="whatsapp-floating">
+        <button class="whatsapp-btn" id="whatsappBtn">
+            <i class="fab fa-whatsapp"></i>
+        </button>
+        <div class="headset-float">
+            <i class="fas fa-headset"></i>
+            <span class="headset-text">¡Hola!</span>
+        </div>
+    </div>
+    <script src="script_carrito.js"></script>
+</body>
+
+</html>

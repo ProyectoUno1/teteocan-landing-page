@@ -75,6 +75,7 @@ const session = await stripe.checkout.sessions.create({
       product_data: {
         name: `${orderData.nombrePaquete} - ${tipo}`,
         description: orderData.resumenServicios  
+        
       },
       recurring: {
         interval: tipo === 'anual' ? 'year' : 'month'
