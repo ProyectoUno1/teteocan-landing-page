@@ -9,9 +9,12 @@
     <link rel="stylesheet" href="styleCarrito.css" />
     <link rel="icon" href="assets/images/LogoTlatec.ico" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="script_carrito.js"></script>
 </head>
 
 <body>
@@ -42,7 +45,8 @@
                 <nav class="nav-mobile" id="mobileNav">
                     <div class="nav-mobile-content">
                         <div class="mobile-nav-logo-area">
-                            <img src="assets/images/LogoTlatec.png" alt="Logo" class="mobile-nav-logo" id="logo-mobile-nav" />
+                            <img src="assets/images/LogoTlatec.png" alt="Logo" class="mobile-nav-logo"
+                                id="logo-mobile-nav" />
                         </div>
                         <div class="mobile-nav-links">
                             <a href="index.html#package" class="nav-link">Paquetes</a>
@@ -82,36 +86,45 @@
             <div class="extras-summary">
                 <h3>Servicios Extra</h3>
                 <form id="extraServicesForm" class="extras-form">
-                    <!-- Aquí puedes repetir los servicios extras con checkbox, igual que en el modal -->
-                    <!-- Ejemplo de un extra -->
                     <label class="extra-item">
                         <input type="checkbox" name="extras" value="scraping" data-price="1000" />
-                        Scraping por slots - $1000
+                        <span class="extra-name">Scraping por slots</span> - <span class="extra-price">$1000</span>
                     </label>
                     <label class="extra-item">
                         <input type="checkbox" name="extras" value="basededatos" data-price="1000" />
-                        Bases de datos listas - $1000
+                        <span class="extra-name">Bases de datos listas</span> - <span class="extra-price">$1000</span>
                     </label>
                     <label class="extra-item">
                         <input type="checkbox" name="extras" value="negocios" data-price="999" />
-                        Asesoría de negocios - $999
+                        <span class="extra-name">Asesoría de negocios</span> - <span class="extra-price">$999</span>
                     </label>
                     <label class="extra-item">
                         <input type="checkbox" name="extras" value="tpv" data-price="1500" />
-                        TPV - $1500
+                        <span class="extra-name">TPV</span> - <span class="extra-price">$1500</span>
                     </label>
                     <label class="extra-item">
                         <input type="checkbox" name="extras" value="logotipo" data-price="3999" />
-                        Diseño de logotipo - $3999
+                        <span class="extra-name">Diseño de logotipo</span> - <span class="extra-price">$3999</span>
                     </label>
                 </form>
+
+
+            </div>
+
+            <!-- Extras seleccionados (lista visible) -->
+            <div id="selectedExtrasContainer" style="margin-top: 1rem;">
+                <h4>Extras seleccionados:</h4>
+                <ul id="selectedExtrasList" style="list-style-type: disc; padding-left: 1.5rem; margin-top: 0.3rem;">
+                </ul>
             </div>
 
             <!-- Totales -->
-            <div class="totals">
-                <div><strong>Subtotal paquete:</strong> $<span id="packageSubtotal"></span></div>
-                <div><strong>Servicios extra:</strong> $<span id="extrasTotalAmount">0</span></div>
-                <div><strong>Total a pagar:</strong> $<span id="totalFinalPrice"></span></div>
+            <div class="totals" style="margin-top: 1rem;">
+                <div><strong>Subtotal paquete:</strong> <span id="packageSubtotal"></span></div>
+                <div id="extrasTotal" style="display:none;">
+                    <strong>Servicios extra:</strong> <span id="extrasTotalAmount">0</span>
+                </div>
+                <div><strong>Total a pagar:</strong> <span id="totalFinalPrice"></span></div>
             </div>
 
             <!-- Botones de acción -->
@@ -170,7 +183,8 @@
                     <div class="footer-copyright">
                         <p>&copy; 2025 Teteocan Technologies. Todos los derechos reservados.</p>
                         <ul class="footer-list">
-                            <li><a href="https://teteocan.com/politica-privacidad/" class="footer-link">Política de Privacidad</a></li>
+                            <li><a href="https://teteocan.com/politica-privacidad/" class="footer-link">Política de
+                                    Privacidad</a></li>
                             <li><a href="terms.html" class="footer-link">Términos y Condiciones</a></li>
                         </ul>
                     </div>
@@ -188,7 +202,7 @@
             <span class="headset-text">¡Hola!</span>
         </div>
     </div>
-    <script src="script_carrito.js"></script>
+    
 </body>
 
 </html>
