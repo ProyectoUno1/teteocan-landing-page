@@ -974,11 +974,11 @@ input:checked+.slider::before {
 
 #confirmModal .modal-content {
     background: white;
-    padding: 2.5rem 3rem;
+    padding:  3rem 4rem;
     border-radius: 12px;
-    max-width: 700px;
-    width: 90%;
-    max-height: 80vh;
+    max-width: 1000px; /* antes 700px */
+    width: 100%;        /* antes 90% */
+    max-height: 100vh;  /* antes 80vh */
     overflow-y: auto;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     text-align: left;
@@ -1009,21 +1009,98 @@ input:checked+.slider::before {
     color: #3773B8;
 }
 
-#confirmModal h3 {
-    font-size: 2rem;
-    margin: 0;
-    font-weight: 600;
-    text-align: center;
-    color: #00ADD5;
+/* Estilo principal para títulos del modal */
+#confirmModal h2 {
+  font-size: 2.3rem;
+  margin: 0;
+  font-weight: 700;
+  text-align: center;
+  color: #3773B8;
 }
 
+#confirmModal h3 {
+  font-size: 1.8rem;
+  margin: 0;
+  font-weight: 600;
+  text-align: center;
+  color: #00ADD5;
+}
 
 #confirmModal p {
-    font-size: 1.2rem;
-    color: #5F8FC5;
-    text-align: center;
-    margin: 0;
-    line-height: 1;
+  font-size: 1.2rem;
+  color: #5F8FC5;
+  text-align: center;
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Encabezado del paquete (nombre + precio) */
+.package-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem auto 1.5rem auto;
+  flex-wrap: wrap;
+}
+
+.package-header h3 {
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: #00ADD5;
+  margin: 0;
+  text-align: center;
+}
+
+.package-header span {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #3773B8;
+  text-align: center;
+}
+
+/* Lista de servicios extra */
+.extras-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto 1rem auto;
+  color: #3773B8;
+  font-size: 1rem;
+  max-width: 90%;
+  border-radius: 12px;
+  background-color: #f3f8ff;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  border: 1px solid #dbeafe;
+}
+
+.extras-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed #cbd5e1;
+}
+
+.extras-list li:last-child {
+  border-bottom: none;
+}
+
+/* Total final */
+.total-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #03475D;
+  background-color: #e0f2fe;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  max-width: 90%;
+  margin: 1rem auto 0 auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  border: 1px solid #bae6fd;
 }
 
 
@@ -2380,3 +2457,4 @@ html {
         padding: 0.75rem;
     }
 }
+

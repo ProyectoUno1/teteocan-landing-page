@@ -456,30 +456,39 @@ function actualizarPrecios(tipo) {
     }
 }
 
-// cambiar tipo de suscripción (mensual/anual)
+
+
+function actualizarPreciosAnteriores(tipoSuscripcion) {
+  document.querySelectorAll('.price-before-group').forEach(span => {
+    const nuevoTexto = tipoSuscripcion === 'anual'
+      ? span.dataset.beforeAnual
+      : span.dataset.beforeMensual;
+
+    if (nuevoTexto) span.textContent = nuevoTexto;
+  });
+}
+
+
+window.addEventListener('DOMContentLoaded', () => {
+  actualizarPreciosAnteriores('mensual');
+
+ 
+  if (toggleSubscriptionType) toggleSubscriptionType.checked = false;
+});
+
+
 toggleSubscriptionType?.addEventListener('change', (e) => {
-  tipoSuscripcion = e.target.checked ? 'anual' : 'mensual';
-  actualizarPrecios(tipoSuscripcion);
+  const tipoSuscripcion = e.target.checked ? 'anual' : 'mensual';
+
+  actualizarPrecios(tipoSuscripcion); // esta es tu función ya existente
+  actualizarPreciosAnteriores(tipoSuscripcion);
 
   const exploradorCard = document.querySelector('.pricing-card[data-package-id="explorador"]');
   if (exploradorCard) {
-    if (tipoSuscripcion === 'anual') {
-      exploradorCard.classList.add('oculto');
-    } else {
-      exploradorCard.classList.remove('oculto');
-    }
+    exploradorCard.classList.toggle('oculto', tipoSuscripcion === 'anual');
   }
-
-  
-document.querySelectorAll('.price-before-group').forEach(span => {
-  const nuevoTexto = tipoSuscripcion === 'anual'
-    ? span.dataset.beforeAnual
-    : span.dataset.beforeMensual;
-
-  span.textContent = nuevoTexto;
-} )
-
 });
+
 
 
 
@@ -624,19 +633,49 @@ function updatePriceWithExtras() {
 
     let total = basePrice;
 
+    const extrasList = document.getElementById('selectedExtrasList');
+    extrasList.innerHTML = '';
+
     document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(cb => {
         const extraKey = cb.value;
-        const precioExtra = extras[extraKey];
+        const labelEl = cb.closest('label');
+        const iconHTML = labelEl.querySelector('i')?.outerHTML || '';
+        const priceSpan = labelEl.querySelector('.extra-price');
+        const textoCompleto = labelEl.cloneNode(true);
+        
+        // Eliminar elementos innecesarios (input y .extra-price)
+        textoCompleto.querySelector('input')?.remove();
+        textoCompleto.querySelector('.extra-price')?.remove();
+        textoCompleto.querySelector('i')?.remove();
 
+        const nombreExtra = textoCompleto.textContent.trim();
+
+        const precioExtra = extras[extraKey];
         const esGratis = isTitan && isAnual && ['negocios', 'tpv', 'logotipo'].includes(extraKey);
+
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <span style="display: flex; align-items: center; gap: 0.5rem;">
+                ${iconHTML}<span>${nombreExtra}</span>
+            </span>
+            <span>${esGratis ? 'Gratis' : `$${precioExtra.toLocaleString('es-MX')}`}</span>
+        `;
+        extrasList.appendChild(li);
+
         if (!esGratis && precioExtra) {
             total += precioExtra;
         }
     });
 
     finalPrice = total;
-    confirmPackagePrice.textContent = `$${finalPrice.toLocaleString('es-MX')} MXN`;
+
+    confirmPackagePrice.textContent = `$${basePrice.toLocaleString('es-MX')} MXN`;
+
+    const totalFinalPrice = document.getElementById('totalFinalPrice');
+    totalFinalPrice.textContent = `$${finalPrice.toLocaleString('es-MX')} MXN`;
 }
+
+
 
 
 // Actualiza precio base y precio final
@@ -874,4 +913,6 @@ document.addEventListener("DOMContentLoaded", function () {
         logoMobileNav.addEventListener("touchstart", handleLogoClick);
     }
 });
+
+
 
