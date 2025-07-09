@@ -28,7 +28,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="script_v12.js" defer></script>
+    <script src="script_v15.js" defer></script>
 </head>
 
 <body>
@@ -416,10 +416,18 @@
     <div id="confirmModal" class="modal">
         <div class="modal-content">
             <span class="close-button" id="closeConfirmModal">&times;</span>
-            <h2>CONFIRMAR COMPRA</h2>
-            <p>ESTÁS A PUNTO DE ADQUIRIR</p>
-            <h3 id="confirmPackageName"></h3>
-            <p>POR UN PRECIO DE: <strong id="confirmPackagePrice"></strong></p>
+            <h2>CARRITO DE COMPRA</h2>
+            <div class="package-header">
+                <h3 id="confirmPackageName"></h3>
+                <span id="confirmPackagePrice"></span>
+            </div>
+            <ul id="selectedExtrasList" class="extras-list"></ul>
+
+            <div class="total-line">
+                <span>Total a pagar:</span>
+                <strong id="totalFinalPrice"></strong>
+            </div>
+
 
             <!-- Resumen de servicios incluidos -->
             <div id="confirmPackageSummary" class="package-summary">
@@ -464,9 +472,9 @@
                 </label>
             </form>
 
-            <p>¿DESEAS CONTINUAR CON LA SUSCRIPCIÓN?</p>
+            <p>¿DESEAS CONTINUAR CON LA COMPRA?</p>
             <div class="modal-actions">
-                <button id="btnConfirmPurchase" class="btn-primary">CONFIRMAR SUSCRIPCIÓN</button>
+                <button id="btnConfirmPurchase" class="btn-primary">CONFIRMAR Y COMPRAR</button>
                 <button id="btnCancelPurchase" class="btn-secondary">CANCELAR</button>
             </div>
         </div>
@@ -713,5 +721,12 @@
             <span class="headset-text">¡Hola!</span>
         </div>
     </div>
+    <div id="cart" class="cart hidden">
+        <h3>🛒 Tu carrito</h3>
+        <ul id="cartItems"></ul>
+        <p>Total: <span id="cartTotal">$0</span></p>
+        <button id="checkoutButton" class="btn-primary">PAGAR</button>
+    </div>
+
 
 </html>
