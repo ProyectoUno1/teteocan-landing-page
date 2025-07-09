@@ -1,45 +1,60 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Carrito de Compra - Tlatec</title>
-    <meta name="description" content="Resumen y pago del carrito de compra - Proyecto Tlatec" />
+    <meta
+      name="description"
+      content="Resumen y pago del carrito de compra - Proyecto Tlatec"
+    />
     <link rel="stylesheet" href="styleCarrito.css" />
     <link rel="icon" href="assets/images/LogoTlatec.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="script_carrito.js"></script>
-</head>
+  </head>
 
-<body>
-    <header class="header">
+  <body>    <header class="header">
         <div class="container">
             <div class="header-content">
+
                 <nav class="nav-desktop">
                     <div class="logo-area">
+
                         <img src="assets/images/LogoTlatec.png" alt="Logo" class="logo-icon" id="logo-desktop" />
                     </div>
                     <ul class="nav-links">
-                        <li><a href="index.html#package" class="boton-nav">Paquetes</a></li>
-                        <li><a href="index.html#contacto" class="boton-nav">Contacto</a></li>
+                        <li><a href="index.html#package" class="boton-nav">PAQUETES</a></li>
+                        <li><a href="https://teteocan.com/contacto/" class="boton-nav">CONTACTO</a></li>
                     </ul>
                 </nav>
 
+                <!-- Mobile Header -->
                 <div class="mobile-header">
-                    <button class="mobile-menu-btn" id="mobileMenuBtn">
-                        <i class="fas fa-bars" id="menuIcon"></i>
-                    </button>
-                    <div class="mobile-logo-area">
-                        <img src="assets/images/LogoTlatec.png" alt="Logo" class="mobile-logo-icon" id="logo-mobile" />
+                    <div class="mobile-header">
+
+                        <button class="mobile-menu-btn" id="mobileMenuBtn">
+                            <i class="fas fa-bars" id="menuIcon"></i>
+                        </button>
+                        <div class="mobile-logo-area">
+                            <img src="assets/images/LogoTlatec.png" alt="Logo" class="mobile-logo-icon"
+                                id="logo-mobile" />
+                        </div>
+                        <div class="mobile-spacer"></div>
                     </div>
-                    <div class="mobile-spacer"></div>
-                </div>
+                </div> <!-- Mobile Menu Overlay -->
                 <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 
                 <nav class="nav-mobile" id="mobileNav">
@@ -49,8 +64,8 @@
                                 id="logo-mobile-nav" />
                         </div>
                         <div class="mobile-nav-links">
-                            <a href="index.html#package" class="nav-link">Paquetes</a>
-                            <a href="index.html#contacto" class="nav-link">Contacto</a>
+                            <a href="index.html#package" class="boton-nav-paquete">Paquetes</a>
+                            <a href="https://teteocan.com/contacto/" class="boton-nav">Contacto</a>
                         </div>
                     </div>
                 </nav>
@@ -59,150 +74,187 @@
     </header>
 
     <main class="cart-main">
-        <section class="cart-section container">
-            <h1 class="section-title"><i class="fas fa-shopping-cart"></i> Carrito de Compra</h1>
+      <section class="cart-section container">
+        <h1 class="section-title">
+          <i class="fas fa-shopping-cart"></i> Carrito de Compra
+        </h1>
 
-            <!-- Paquete seleccionado -->
-            <div class="package-summary">
-                <h2>Paquete Seleccionado</h2>
-                <div>
-                    <strong>Nombre:</strong> <span id="confirmPackageName"></span>
-                </div>
-                <div>
-                    <strong>Tipo de Suscripción:</strong> <span id="subscriptionTypeDisplay"></span>
-                </div>
-                <div>
-                    <strong>Precio Paquete:</strong> $<span id="confirmPackagePrice"></span>
-                </div>
-            </div>
+        <!-- Paquete seleccionado -->
+        <div class="package-summary">
+          <h2>Paquete Seleccionado</h2>
+          <div>
+            <strong>Nombre:</strong> <span id="confirmPackageName"></span>
+          </div>
+          <div>
+            <strong>Tipo de Suscripción:</strong>
+            <span id="subscriptionTypeDisplay"></span>
+          </div>
+          <div>
+            <strong>Precio Paquete:</strong> $<span
+              id="confirmPackagePrice"
+            ></span>
+          </div>
+        </div>
 
-            <!-- Servicios incluidos -->
-            <div class="services-summary">
-                <h3>Servicios Incluidos</h3>
-                <ul id="servicesList" class="services-list"></ul>
-            </div>
+        <!-- Servicios incluidos -->
+        <div class="services-summary">
+          <h3>Servicios Incluidos</h3>
+          <ul id="servicesList" class="services-list"></ul>
+        </div>
 
-            <!-- Servicios extra -->
-            <div class="extras-summary">
-                <h3>Servicios Extra</h3>
-                <form id="extraServicesForm" class="extras-form">
-                    <label class="extra-item">
-                        <input type="checkbox" name="extras" value="scraping" data-price="1000" />
-                        <span class="extra-name">Scraping por slots</span> - <span class="extra-price">$1000</span>
-                    </label>
-                    <label class="extra-item">
-                        <input type="checkbox" name="extras" value="basededatos" data-price="1000" />
-                        <span class="extra-name">Bases de datos listas</span> - <span class="extra-price">$1000</span>
-                    </label>
-                    <label class="extra-item">
-                        <input type="checkbox" name="extras" value="negocios" data-price="999" />
-                        <span class="extra-name">Asesoría de negocios</span> - <span class="extra-price">$999</span>
-                    </label>
-                    <label class="extra-item">
-                        <input type="checkbox" name="extras" value="tpv" data-price="1500" />
-                        <span class="extra-name">TPV</span> - <span class="extra-price">$1500</span>
-                    </label>
-                    <label class="extra-item">
-                        <input type="checkbox" name="extras" value="logotipo" data-price="3999" />
-                        <span class="extra-name">Diseño de logotipo</span> - <span class="extra-price">$3999</span>
-                    </label>
-                </form>
+        <!-- Servicios extra -->
+        <div class="extras-summary">
+          <h3>Servicios Extra</h3>
+          <form id="extraServicesForm" class="extras-form">
+            <label class="extra-item">
+              <input
+                type="checkbox"
+                name="extras"
+                value="scraping"
+                data-price="1000"
+              />
+              <span class="extra-name">Scraping por slots</span> -
+              <span class="extra-price">$1000</span>
+            </label>
+            <label class="extra-item">
+              <input
+                type="checkbox"
+                name="extras"
+                value="basededatos"
+                data-price="1000"
+              />
+              <span class="extra-name">Bases de datos listas</span> -
+              <span class="extra-price">$1000</span>
+            </label>
+            <label class="extra-item">
+              <input
+                type="checkbox"
+                name="extras"
+                value="negocios"
+                data-price="999"
+              />
+              <span class="extra-name">Asesoría de negocios</span> -
+              <span class="extra-price">$999</span>
+            </label>
+            <label class="extra-item">
+              <input
+                type="checkbox"
+                name="extras"
+                value="tpv"
+                data-price="1500"
+              />
+              <span class="extra-name">TPV</span> -
+              <span class="extra-price">$1500</span>
+            </label>
+            <label class="extra-item">
+              <input
+                type="checkbox"
+                name="extras"
+                value="logotipo"
+                data-price="3999"
+              />
+              <span class="extra-name">Diseño de logotipo</span> -
+              <span class="extra-price">$3999</span>
+            </label>
+          </form>
+        </div>
 
+        <!-- Extras seleccionados (lista visible) -->
+        <div id="selectedExtrasContainer" style="margin-top: 1rem">
+          <h4>Extras seleccionados:</h4>
+          <ul
+            id="selectedExtrasList"
+            style="
+              list-style-type: disc;
+              padding-left: 1.5rem;
+              margin-top: 0.3rem;
+            "
+          ></ul>
+        </div>
 
-            </div>
+        <!-- Totales -->
+        <div class="totals" style="margin-top: 1rem">
+          <div>
+            <strong>Subtotal paquete:</strong>
+            <span id="packageSubtotal"></span>
+          </div>
+          <div id="extrasTotal" style="display: none">
+            <strong>Servicios extra:</strong>
+            <span id="extrasTotalAmount">0</span>
+          </div>
+          <div>
+            <strong>Total a pagar:</strong> <span id="totalFinalPrice"></span>
+          </div>
+        </div>
 
-            <!-- Extras seleccionados (lista visible) -->
-            <div id="selectedExtrasContainer" style="margin-top: 1rem;">
-                <h4>Extras seleccionados:</h4>
-                <ul id="selectedExtrasList" style="list-style-type: disc; padding-left: 1.5rem; margin-top: 0.3rem;">
-                </ul>
-            </div>
-
-            <!-- Totales -->
-            <div class="totals" style="margin-top: 1rem;">
-                <div><strong>Subtotal paquete:</strong> <span id="packageSubtotal"></span></div>
-                <div id="extrasTotal" style="display:none;">
-                    <strong>Servicios extra:</strong> <span id="extrasTotalAmount">0</span>
-                </div>
-                <div><strong>Total a pagar:</strong> <span id="totalFinalPrice"></span></div>
-            </div>
-
-            <!-- Botones de acción -->
-            <div class="cart-actions">
-                <button id="btnCancelPurchase" class="btn-secondary">
-                    <i class="fas fa-times"></i> Cancelar
-                </button>
-                <button id="btnConfirmPurchase" class="btn-primary">
-                    <i class="fas fa-lock"></i> Proceder al pago
-                </button>
-            </div>
-        </section>
+        <!-- Botones de acción -->
+        <div class="cart-actions">
+          <button id="btnCancelPurchase" class="btn-secondary">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
+          <button id="btnConfirmPurchase" class="btn-primary">
+            <i class="fas fa-lock"></i> Proceder al pago
+          </button>
+        </div>
+      </section>
     </main>
 
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-main">
-                    <div class="footer-brand">
-                        <div class="logo">
-                            <div class="logo-area">
-                                <img src="assets/images/logo-teteocan.png" alt="Logo" class="logo-icon-footer"
-                                    title="Desarrollado por: Teteocan Technologies" />
-                            </div>
-                        </div>
-                        <p class="footer-description">
-                            Transformando negocios a través de soluciones digitales innovadoras y escalables.
-                        </p>
-                    </div>
-                    <div class="footer-links">
-                        <div class="footer-column">
-                            <h4 class="footer-title">Paquetes</h4>
-                            <ul class="footer-list">
-                                <li><a href="index.html#package" class="footer-link">Explorador</a></li>
-                                <li><a href="index.html#package" class="footer-link">Impulso</a></li>
-                                <li><a href="index.html#package" class="footer-link">Dominio</a></li>
-                                <li><a href="index.html#package" class="footer-link">Titan</a></li>
-                            </ul>
-                        </div>
-                        <div class="footer-column">
-                            <h4 class="footer-title">Contacto</h4>
-                            <ul class="footer-list">
-                                <li><a href="#" class="footer-link">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        <span>Cuautitlán Izcalli, Estado de México, México</span>
-                                    </a></li>
-                                <li><a href="#" class="footer-link">
-                                        <i class="fas fa-envelope"></i>
-                                        <span>contacto@teteocan.com</span>
-                                    </a></li>
-                            </ul>
-                        </div>
-                    </div>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-main">
+            <div class="footer-brand">
+              <div class="logo">
+                <div class="logo-area">
+                  <img
+                    src="assets/images/logo-teteocan.png"
+                    alt="Logo"
+                    class="logo-icon-footer"
+                    title="Desarrollado por: Teteocan Technologies"
+                  />
                 </div>
-                <div class="footer-bottom">
-                    <div class="footer-copyright">
-                        <p>&copy; 2025 Teteocan Technologies. Todos los derechos reservados.</p>
-                        <ul class="footer-list">
-                            <li><a href="https://teteocan.com/politica-privacidad/" class="footer-link">Política de
-                                    Privacidad</a></li>
-                            <li><a href="terms.html" class="footer-link">Términos y Condiciones</a></li>
-                        </ul>
-                    </div>
-                </div>
+              </div>              <p class="footer-description">
+                TRANSFORMANDO NEGOCIOS A TRAVÉS DE SOLUCIONES DIGITALES
+                INNOVADORAS Y ESCALABLES.
+              </p>
             </div>
+            <div class="footer-links">
+              <div class="footer-column">
+                <h4 class="footer-title">PAQUETES</h4>
+                <ul class="footer-list">                  <li><a href="index.html#package" class="footer-link">EXPLORADOR</a></li>
+                  <li><a href="index.html#package" class="footer-link">IMPULSO</a></li>
+                  <li><a href="index.html#package" class="footer-link">DOMINIO</a></li>
+                  <li><a href="index.html#package" class="footer-link">TITAN</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="footer-bottom">
+            <div class="footer-copyright">
+              <p>
+                &copy; 2025 Teteocan Technologies. Todos los derechos
+                reservados.
+              </p>
+              <ul class="footer-list">
+                <li>
+                  <a
+                    href="https://teteocan.com/politica-de-privacidad/"
+                    class="footer-link"
+                    >Política de Privacidad</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="terminos_y_condiciones/terms.html"
+                    class="footer-link"
+                    >Términos y Condiciones</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
+      </div>
     </footer>
-
-    <div class="whatsapp-floating">
-        <button class="whatsapp-btn" id="whatsappBtn">
-            <i class="fab fa-whatsapp"></i>
-        </button>
-        <div class="headset-float">
-            <i class="fas fa-headset"></i>
-            <span class="headset-text">¡Hola!</span>
-        </div>
-    </div>
-    
-</body>
-
+  </body>
 </html>

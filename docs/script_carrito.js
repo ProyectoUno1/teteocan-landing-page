@@ -1,3 +1,94 @@
+// Mobile menu functionality
+document.addEventListener('DOMContentLoaded', function () {
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    const menuIcon = document.getElementById('menuIcon');
+
+    if (mobileMenuBtn && mobileNav && menuIcon) {
+        mobileMenuBtn.addEventListener('click', function () {
+            mobileNav.classList.toggle('active');
+            if (mobileNav.classList.contains('active')) {
+                menuIcon.className = 'fas fa-times';
+                document.body.style.overflow = 'hidden';
+                document.body.classList.add('mobile-menu-open');
+            } else {
+                menuIcon.className = 'fas fa-bars';
+                document.body.style.overflow = '';
+                document.body.classList.remove('mobile-menu-open');
+            }
+        });
+
+        const mobileLinks = mobileNav.querySelectorAll('.nav-link');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                mobileNav.classList.remove('active');
+                menuIcon.className = 'fas fa-bars';
+                document.body.style.overflow = '';
+                document.body.classList.remove('mobile-menu-open');
+            });
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!mobileMenuBtn.contains(event.target) && !mobileNav.contains(event.target)) {
+                mobileNav.classList.remove('active');
+                menuIcon.className = 'fas fa-bars';
+                document.body.style.overflow = '';
+                document.body.classList.remove('mobile-menu-open');
+            }
+        });
+
+        const logoMobileNav = document.getElementById('logo-mobile-nav');
+        if (logoMobileNav) {
+            logoMobileNav.addEventListener('click', function () {
+                mobileNav.classList.remove('active');
+                menuIcon.className = 'fas fa-bars';
+                document.body.style.overflow = '';
+                document.body.classList.remove('mobile-menu-open');
+            });
+        }
+    }
+});
+
+// Header scroll animation
+let lastScroll = 0;
+let ticking = false;
+
+const updateHeader = () => {
+    const header = document.querySelector('.header');
+    const currentScroll = window.scrollY;
+
+    if (currentScroll > 80) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
+
+    lastScroll = currentScroll;
+    ticking = false;
+};
+
+window.addEventListener('scroll', () => {
+    if (!ticking) {
+        window.requestAnimationFrame(updateHeader);
+        ticking = true;
+    }
+});
+
+// Suavizar el efecto al cargar la página
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        const header = document.querySelector('.header');
+        if (header) {
+            header.style.transition = `
+              background var(--transition-time) var(--transition-easing),
+              box-shadow var(--transition-time) var(--transition-easing),
+              padding var(--transition-time) var(--transition-easing)
+            `;
+        }
+    }, 100);
+});
+
 // VARIABLES GLOBALES DEL CARRITO 
 let selectedPackage = null;
 let tipoSuscripcion = 'mensual';
