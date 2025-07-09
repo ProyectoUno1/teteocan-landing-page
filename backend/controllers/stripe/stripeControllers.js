@@ -226,7 +226,6 @@ const crearPagoUnicoStripe = async (req, res) => {
   }
 };
 
-// Webhook para manejar eventos de Stripe
 const webhookStripe = async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
@@ -242,9 +241,9 @@ const webhookStripe = async (req, res) => {
     switch (event.type) {
       case 'checkout.session.completed':
         const session = event.data.object;
-        
+
         if (session.mode === 'subscription') {
-          // Actualizar estado de suscripción
+          // Actualizar estado
           await pool.query(`
             UPDATE ventas 
             SET estado = 'completado', 
@@ -252,14 +251,24 @@ const webhookStripe = async (req, res) => {
                 fecha_pago = NOW()
             WHERE stripe_session_id = $2
           `, [session.customer, session.id]);
-          
+
           console.log('Suscripción completada:', session.id);
 
-          // Enviar correos tras confirmación
+          // Enviar correos
           const ventaRes = await pool.query('SELECT * FROM ventas WHERE stripe_session_id = $1', [session.id]);
           if (ventaRes.rows.length > 0) {
             const venta = ventaRes.rows[0];
-            const reqMock = { body: venta };
+
+            const reqMock = {
+              body: {
+                ...venta,
+                nombrePaquete: venta.nombre_paquete,
+                resumenServicios: venta.resumen_servicios,
+                clienteEmail: venta.cliente_email,
+                mensajeContinuar: venta.mensaje_continuar,
+                tipoSuscripcion: venta.tipo_suscripcion
+              }
+            };
             const resMock = { status: () => ({ json: () => {} }) };
 
             await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
@@ -267,7 +276,7 @@ const webhookStripe = async (req, res) => {
           }
 
         } else if (session.mode === 'payment') {
-          // Actualizar estado de pago único
+          // Actualizar estado
           await pool.query(`
             UPDATE pagos_unicos 
             SET estado = 'completado',
@@ -275,14 +284,23 @@ const webhookStripe = async (req, res) => {
                 fecha_pago = NOW()
             WHERE stripe_session_id = $2
           `, [session.customer, session.id]);
-          
+
           console.log('Pago único completado:', session.id);
 
-          // Enviar correos tras confirmación
           const pagoRes = await pool.query('SELECT * FROM pagos_unicos WHERE stripe_session_id = $1', [session.id]);
           if (pagoRes.rows.length > 0) {
             const pago = pagoRes.rows[0];
-            const reqMock = { body: pago };
+
+            const reqMock = {
+              body: {
+                ...pago,
+                nombrePaquete: pago.nombre_paquete,
+                resumenServicios: pago.resumen_servicios,
+                clienteEmail: pago.cliente_email,
+                mensajeContinuar: pago.mensaje_continuar,
+                tipoSuscripcion: pago.tipo_suscripcion
+              }
+            };
             const resMock = { status: () => ({ json: () => {} }) };
 
             await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
@@ -295,19 +313,16 @@ const webhookStripe = async (req, res) => {
         const invoice = event.data.object;
         if (invoice.subscription) {
           console.log('Pago de suscripción exitoso:', invoice.subscription);
-          
         }
         break;
 
       case 'customer.subscription.deleted':
         const subscription = event.data.object;
-        // Marcar suscripción como cancelada
         await pool.query(`
           UPDATE ventas 
           SET estado = 'cancelado'
           WHERE stripe_customer_id = $1 AND estado = 'completado'
         `, [subscription.customer]);
-        
         console.log('Suscripción cancelada:', subscription.id);
         break;
 
@@ -321,6 +336,7 @@ const webhookStripe = async (req, res) => {
     res.status(500).json({ error: 'Error procesando webhook' });
   }
 };
+
 
 // Obtener suscripciones activas del cliente
 const obtenerSuscripcionesCliente = async (req, res) => {
