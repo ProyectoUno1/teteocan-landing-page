@@ -1,8 +1,8 @@
-// Importaciones necesarias
 const fs = require('fs');
 const path = require('path');
 const pool = require('../../db');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const emailController = require('../pdf/controllers/emailController'); 
 
 const preciosFile = path.join(__dirname, '../../precios.json');
 
@@ -64,37 +64,35 @@ const crearSuscripcionStripe = async (req, res) => {
       });
     }
 
-   // Crear sesión de checkout directamente con price_data
-const session = await stripe.checkout.sessions.create({
-  customer: customer.id,
-  payment_method_types: ['card'],
-  line_items: [{
-    price_data: {
-      currency: 'mxn',
-      unit_amount: montoCalculado * 100,
-      product_data: {
-        name: `${orderData.nombrePaquete} - ${tipo}`,
-        description: orderData.resumenServicios  
-        
-      },
-      recurring: {
-        interval: tipo === 'anual' ? 'year' : 'month'
+    // Crear sesión de checkout directamente con price_data
+    const session = await stripe.checkout.sessions.create({
+      customer: customer.id,
+      payment_method_types: ['card'],
+      line_items: [{
+        price_data: {
+          currency: 'mxn',
+          unit_amount: montoCalculado * 100,
+          product_data: {
+            name: `${orderData.nombrePaquete} - ${tipo}`,
+            description: orderData.resumenServicios  
+          },
+          recurring: {
+            interval: tipo === 'anual' ? 'year' : 'month'
+          }
+        },
+        quantity: 1
+      }],
+      mode: 'subscription',
+      success_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/success.html?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/cancel.html`,
+      metadata: {
+        planId,
+        tipoSuscripcion: tipo,
+        clienteEmail,
+        nombrePaquete: orderData.nombrePaquete,
+        extrasSeleccionados: JSON.stringify(orderData.extrasSeleccionados || [])
       }
-    },
-    quantity: 1
-  }],
-  mode: 'subscription',
-  success_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/success.html?session_id={CHECKOUT_SESSION_ID}`,
-  cancel_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/cancel.html`,
-  metadata: {
-    planId,
-    tipoSuscripcion: tipo,
-    clienteEmail,
-    nombrePaquete: orderData.nombrePaquete,
-    extrasSeleccionados: JSON.stringify(orderData.extrasSeleccionados || [])
-  }
-});
-
+    });
 
     // Guardar en base de datos
     await pool.query(`
@@ -255,6 +253,18 @@ const webhookStripe = async (req, res) => {
           `, [session.customer, session.id]);
           
           console.log('Suscripción completada:', session.id);
+
+          // Enviar correos tras confirmación
+          const ventaRes = await pool.query('SELECT * FROM ventas WHERE stripe_session_id = $1', [session.id]);
+          if (ventaRes.rows.length > 0) {
+            const venta = ventaRes.rows[0];
+            const reqMock = { body: venta };
+            const resMock = { status: () => ({ json: () => {} }) };
+
+            await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+            await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+          }
+
         } else if (session.mode === 'payment') {
           // Actualizar estado de pago único
           await pool.query(`
@@ -266,6 +276,17 @@ const webhookStripe = async (req, res) => {
           `, [session.customer, session.id]);
           
           console.log('Pago único completado:', session.id);
+
+          // Enviar correos tras confirmación
+          const pagoRes = await pool.query('SELECT * FROM pagos_unicos WHERE stripe_session_id = $1', [session.id]);
+          if (pagoRes.rows.length > 0) {
+            const pago = pagoRes.rows[0];
+            const reqMock = { body: pago };
+            const resMock = { status: () => ({ json: () => {} }) };
+
+            await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+            await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+          }
         }
         break;
 
@@ -273,7 +294,7 @@ const webhookStripe = async (req, res) => {
         const invoice = event.data.object;
         if (invoice.subscription) {
           console.log('Pago de suscripción exitoso:', invoice.subscription);
-          // Aquí puedes agregar lógica adicional para renovaciones
+          
         }
         break;
 
