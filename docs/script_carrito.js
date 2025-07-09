@@ -441,7 +441,8 @@ async function confirmarCompraHandler() {
 
         } else {
             // Gratis sin extras
-            orderData.preapproval_id = 'free-' + Date.now();
+            orderData.stripe_session_id = 'free-' + Date.now();
+
 
             const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/orden-gratis', {
                 method: 'POST',

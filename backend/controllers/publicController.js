@@ -1,4 +1,3 @@
-
 const pool = require('../db');
 
 const verificarEstadoExplorador = async (req, res) => {
@@ -6,7 +5,7 @@ const verificarEstadoExplorador = async (req, res) => {
     const result = await pool.query(`
       SELECT COUNT(*) 
       FROM ventas 
-      WHERE preapproval_id LIKE 'free-%'
+      WHERE stripe_session_id LIKE 'free-%'
     `);
 
     const total = parseInt(result.rows[0].count, 10);
