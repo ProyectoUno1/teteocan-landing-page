@@ -216,7 +216,7 @@ const crearPagoUnicoStripe = async (req, res) => {
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/success.html?session_id={CHECKOUT_SESSION_ID}&tipo=extras`,
+      success_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/extras-success.html?session_id={CHECKOUT_SESSION_ID}&tipo=extras`,
       cancel_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/cancel.html`,
       metadata: {
         clienteEmail: clienteEmail,

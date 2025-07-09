@@ -50,9 +50,7 @@
                 <li>Recibirás un correo con los detalles de acceso</li>
                 <li>Nuestro equipo se pondrá en contacto contigo en 24 horas</li>
             </ul>
-        </div>
-        
-        <a href="https://tlatec.teteocan.com/" class="btn-home">
+        </div>        <a href="../index.html" class="btn-home">
             <i class="fas fa-home"></i> Volver al inicio
         </a>
     </div>    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -72,12 +70,13 @@
         
         if (sessionId) {
             console.log('Session ID:', sessionId);
-            // Aquí podrías hacer una llamada al backend para obtener detalles específicos
         }
 
         // Función para procesar servicios extra después de la suscripción
         async function procesarServiciosExtra(clienteEmail, servicios) {
             try {
+                console.log('Procesando servicios extra:', servicios);
+                
                 // Filtrar solo servicios con costo
                 const serviciosConCosto = servicios.filter(servicio => servicio.precio > 0);
                 
@@ -100,6 +99,7 @@
                 const data = await response.json();
                 
                 if (response.ok) {
+                    console.log('Redirigiendo a pago de extras:', data.url);
                     // Redirigir a Stripe para el pago de extras
                     window.location.href = data.url;
                     return data;
@@ -112,63 +112,145 @@
             }
         }
 
+        // Función para redirigir al inicio después de un tiempo
+        function redirigirAlInicio(tiempo = 5000) {
+            setTimeout(() => {
+                console.log('Redirigiendo al inicio...');
+                window.location.href = '../index.html';
+            }, tiempo);
+        }
+
         // Función para manejar el éxito de la suscripción y procesar extras
         function manejarExitoSuscripcion() {
+            console.log('Iniciando manejo de éxito de suscripción...');
+            
             // Esta función se ejecuta en la página de éxito
             const extrasPendientes = localStorage.getItem('extrasPendientes');
+            console.log('Extras pendientes encontrados:', extrasPendientes);
             
             if (extrasPendientes) {
-                const datos = JSON.parse(extrasPendientes);
-                const serviciosConCosto = datos.extras.filter(extra => extra.precio > 0);
-                
-                if (serviciosConCosto.length > 0) {
-                    // Mostrar modal o confirmación para procesar extras
-                    Swal.fire({
-                        title: 'SERVICIOS EXTRA DISPONIBLES',
-                        html: `¿Deseas procesar ${serviciosConCosto.length} servicios extra adicionales?<br><br>
-                               <strong>Servicios:</strong><br>
-                               ${serviciosConCosto.map(s => `• ${s.nombre} - $${s.precio.toLocaleString('es-MX')}`).join('<br>')}`,
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonText: 'SÍ, PROCESAR EXTRAS',
-                        cancelButtonText: 'NO, CONTINUAR SIN EXTRAS',
-                        customClass: {
-                            confirmButton: 'swal2-confirm',
-                            cancelButton: 'swal2-cancel'
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            Swal.fire({
-                                title: 'PROCESANDO EXTRAS...',
-                                html: 'Espera un momento mientras procesamos tus servicios adicionales.',
-                                allowOutsideClick: false,
-                                didOpen: () => Swal.showLoading()
-                            });
-
-                            procesarServiciosExtra(datos.email, serviciosConCosto)
-                                .then(() => {
-                                    localStorage.removeItem('extrasPendientes');
-                                })
-                                .catch(error => {
-                                    console.error('Error procesando extras:', error);
-                                    Swal.fire('Error', 'Error al procesar servicios extra. Contacta soporte.', 'error');
+                try {
+                    const datos = JSON.parse(extrasPendientes);
+                    console.log('Datos parseados:', datos);
+                    
+                    if (!datos.extras || !Array.isArray(datos.extras)) {
+                        console.log('No hay extras válidos en los datos');
+                        localStorage.removeItem('extrasPendientes');
+                        redirigirAlInicio();
+                        return;
+                    }
+                    
+                    const serviciosConCosto = datos.extras.filter(extra => extra.precio > 0);
+                    console.log('Servicios con costo encontrados:', serviciosConCosto);
+                    
+                    if (serviciosConCosto.length > 0) {
+                        // Mostrar modal o confirmación para procesar extras
+                        Swal.fire({
+                            title: '🎯 SERVICIOS EXTRA DISPONIBLES',
+                            html: `
+                                <div style="text-align: left; margin: 20px 0;">
+                                    <p style="margin-bottom: 15px;">¿Deseas agregar ${serviciosConCosto.length} servicios extra adicionales?</p>
+                                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                                        <strong>📋 Servicios disponibles:</strong><br><br>
+                                        ${serviciosConCosto.map(s => `
+                                            <div style="margin: 8px 0; padding: 8px; background: white; border-radius: 4px; border-left: 3px solid #28a745;">
+                                                • <strong>${s.nombre}</strong> - $${s.precio.toLocaleString('es-MX')} MXN
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    <p style="color: #6c757d; font-size: 14px; margin-top: 15px;">
+                                        💡 Puedes agregar estos servicios ahora o contactarnos después.
+                                    </p>
+                                </div>
+                            `,
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: '✅ SÍ, AGREGAR EXTRAS',
+                            cancelButtonText: '❌ NO, CONTINUAR SIN EXTRAS',
+                            customClass: {
+                                confirmButton: 'swal2-confirm',
+                                cancelButton: 'swal2-cancel'
+                            },
+                            buttonsStyling: true,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    title: '⏳ PROCESANDO EXTRAS...',
+                                    html: 'Espera un momento mientras procesamos tus servicios adicionales.',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    didOpen: () => Swal.showLoading()
                                 });
-                        } else {
-                            localStorage.removeItem('extrasPendientes');
-                        }
-                    });
-                } else {
+
+                                procesarServiciosExtra(datos.email, serviciosConCosto)
+                                    .then(() => {
+                                        localStorage.removeItem('extrasPendientes');
+                                    })
+                                    .catch(error => {
+                                        console.error('Error procesando extras:', error);
+                                        Swal.fire({
+                                            title: '❌ Error',
+                                            text: 'Error al procesar servicios extra. Por favor contacta a soporte.',
+                                            icon: 'error',
+                                            confirmButtonText: 'Entendido'
+                                        }).then(() => {
+                                            localStorage.removeItem('extrasPendientes');
+                                            redirigirAlInicio();
+                                        });
+                                    });
+                            } else {
+                                console.log('Usuario decidió no procesar extras');
+                                localStorage.removeItem('extrasPendientes');
+                                
+                                Swal.fire({
+                                    title: '✅ ¡Perfecto!',
+                                    text: 'Tu suscripción está completa. Serás redirigido al inicio en unos segundos.',
+                                    icon: 'success',
+                                    timer: 3000,
+                                    showConfirmButton: false
+                                });
+                                
+                                redirigirAlInicio(3000);
+                            }
+                        });
+                    } else {
+                        console.log('No hay servicios con costo, limpiando localStorage');
+                        localStorage.removeItem('extrasPendientes');
+                        redirigirAlInicio();
+                    }
+                } catch (error) {
+                    console.error('Error parseando extrasPendientes:', error);
                     localStorage.removeItem('extrasPendientes');
+                    redirigirAlInicio();
                 }
+            } else {
+                console.log('No hay extras pendientes, redirigiendo al inicio');
+                redirigirAlInicio();
             }
         }
 
         // Ejecutar cuando la página se carga completamente
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM cargado, iniciando proceso...');
+            
             // Esperar un poco para que la página se renderice completamente
             setTimeout(() => {
                 manejarExitoSuscripcion();
-            }, 1000);
+            }, 1500);
+        });
+
+        // Agregar evento al botón de volver al inicio
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnHome = document.querySelector('.btn-home');
+            if (btnHome) {
+                btnHome.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    localStorage.removeItem('extrasPendientes');
+                    window.location.href = '../index.html';
+                });
+            }
         });
     </script>
 </body>

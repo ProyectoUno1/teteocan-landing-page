@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Extras Agregados! - Tlatec</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" href="../assets/images/LogoTlatec.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="successStyle.css">
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-header">
+            <div class="success-icon">
+                <i class="fas fa-check-double"></i>
+            </div>
+            
+            <h1 class="success-title">¡Servicios Extra Agregados!</h1>
+            
+            <p class="success-message">
+                Excelente! Tus servicios adicionales han sido procesados correctamente. 
+                Ahora tienes acceso completo a todos los beneficios de tu suscripción y extras.
+            </p>
+        </div>
+        
+        <div class="success-details">
+            <div class="detail-item">
+                <span>Estado del pago:</span>
+                <span class="status-completed">
+                    <i class="fas fa-check-circle"></i>
+                    Completado
+                </span>
+            </div>
+            <div class="detail-item">
+                <span>Método de pago:</span>
+                <span>Stripe</span>
+            </div>
+            <div class="detail-item">
+                <span>Fecha:</span>
+                <span id="paymentDate"></span>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h4><i class="fas fa-star"></i> ¡Todo listo!</h4>
+            <ul>
+                <li>Tu suscripción principal está activa</li>
+                <li>Todos los servicios extra han sido agregados</li>
+                <li>Recibirás confirmación por correo electrónico</li>
+                <li>Nuestro equipo se pondrá en contacto contigo pronto</li>
+            </ul>
+        </div>
+        
+        <div class="info-section" style="background-color: #e8f5e8; border-left-color: #28a745;">
+            <h4><i class="fas fa-gift"></i> Próximos pasos:</h4>
+            <ul>
+                <li>Revisa tu correo para los detalles de acceso</li>
+                <li>Guarda este comprobante para tus registros</li>
+                <li>Contacta a soporte si tienes alguna pregunta</li>
+            </ul>
+        </div>
+        
+        <a href="../index.html" class="btn-home">
+            <i class="fas fa-home"></i> Volver al inicio
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Mostrar fecha actual
+        document.getElementById('paymentDate').textContent = new Date().toLocaleDateString('es-MX', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        // Limpiar localStorage al llegar aquí
+        localStorage.removeItem('extrasPendientes');
+        localStorage.removeItem('selectedPackage');
+        localStorage.removeItem('tipoSuscripcion');
+        
+        // Mostrar mensaje de bienvenida
+        setTimeout(() => {
+            Swal.fire({
+                title: '🎉 ¡Felicitaciones!',
+                text: 'Tu proceso de suscripción está 100% completo. Serás redirigido al inicio en unos segundos.',
+                icon: 'success',
+                timer: 4000,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+        }, 1000);
+        
+        // Redirigir automáticamente después de 8 segundos
+        setTimeout(() => {
+            window.location.href = '../index.html';
+        }, 8000);
+        
+        // Manejar clic en botón de inicio
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnHome = document.querySelector('.btn-home');
+            if (btnHome) {
+                btnHome.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Limpiar todo el localStorage relacionado
+                    localStorage.removeItem('extrasPendientes');
+                    localStorage.removeItem('selectedPackage');
+                    localStorage.removeItem('tipoSuscripcion');
+                    window.location.href = '../index.html';
+                });
+            }
+        });
+        
+        console.log('Página de éxito de extras cargada correctamente');
+    </script>
+</body>
+</html>
