@@ -427,6 +427,87 @@ if (toggleSubscriptionType) {
     });
 }
 
+// Función para procesar servicios extra después de la suscripción
+async function procesarServiciosExtra(clienteEmail, servicios) {
+    try {
+        // Filtrar solo servicios con costo
+        const serviciosConCosto = servicios.filter(servicio => servicio.precio > 0);
+        
+        if (serviciosConCosto.length === 0) {
+            console.log('No hay servicios extra con costo para procesar');
+            return { success: true, message: 'Solo servicios gratuitos' };
+        }
+
+        const response = await fetch('https://tlatec-backend.onrender.com/api/stripe/pago-unico', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                clienteEmail: clienteEmail,
+                servicios: serviciosConCosto
+            })
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Redirigir a Stripe para el pago de extras
+            window.location.href = data.url;
+            return data;
+        } else {
+            throw new Error(data.message || 'Error al procesar servicios extra');
+        }
+    } catch (error) {
+        console.error('Error procesando extras:', error);
+        throw error;
+    }
+}
+
+// Función para manejar el éxito de la suscripción y procesar extras
+function manejarExitoSuscripcion() {
+    // Esta función se ejecuta en la página de éxito
+    const extrasPendientes = localStorage.getItem('extrasPendientes');
+    
+    if (extrasPendientes) {
+        const datos = JSON.parse(extrasPendientes);
+        const serviciosConCosto = datos.extras.filter(extra => extra.precio > 0);
+        
+        if (serviciosConCosto.length > 0) {
+            // Mostrar modal o confirmación para procesar extras
+            Swal.fire({
+                title: 'SERVICIOS EXTRA DISPONIBLES',
+                html: `¿Deseas procesar ${serviciosConCosto.length} servicios extra adicionales?<br><br>
+                       <strong>Servicios:</strong><br>
+                       ${serviciosConCosto.map(s => `• ${s.nombre} - $${s.precio}`).join('<br>')}`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'SÍ, PROCESAR EXTRAS',
+                cancelButtonText: 'NO, CONTINUAR SIN EXTRAS',
+                customClass: {
+                    confirmButton: 'custom-alert-button',
+                    cancelButton: 'btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    procesarServiciosExtra(datos.email, serviciosConCosto)
+                        .then(() => {
+                            localStorage.removeItem('extrasPendientes');
+                        })
+                        .catch(error => {
+                            console.error('Error procesando extras:', error);
+                            Swal.fire('Error', 'Error al procesar servicios extra. Contacta soporte.', 'error');
+                        });
+                } else {
+                    localStorage.removeItem('extrasPendientes');
+                }
+            });
+        } else {
+            localStorage.removeItem('extrasPendientes');
+        }
+    }
+}
+
 async function confirmarCompraHandler() {
     const paquetesConSuscripcion = ['impulso', 'dominio', 'titan'];
 
@@ -474,6 +555,7 @@ async function confirmarCompraHandler() {
 
     const orderData = {
         nombrePaquete: selectedPackage.name,
+        nombreCliente: clienteEmail.split('@')[0], // Extraer nombre del email como fallback
         resumenServicios,
         extrasSeleccionados: extrasKeys,
         monto: finalPrice,
@@ -491,25 +573,11 @@ async function confirmarCompraHandler() {
         didOpen: () => Swal.showLoading()
     });
 
-    const isTitan = selectedPackage?.name.toLowerCase().includes('titan');
-    const isAnual = tipoSuscripcion === 'anual';
-    const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
-
-    let tieneExtrasConCosto = false;
-
-    document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(cb => {
-        const extraKey = cb.value;
-        const precio = Number(cb.dataset.price || 0);
-        const esGratisEnTitan = isTitan && isAnual && freeExtrasInTitan.includes(extraKey);
-        if (!esGratisEnTitan && precio > 0) {
-            tieneExtrasConCosto = true;
-        }
-    });
-
     try {
         const esConSuscripcion = paquetesConSuscripcion.includes(selectedPackage.id.toLowerCase());
 
-        if (esConSuscripcion || tieneExtrasConCosto) {
+        if (esConSuscripcion) {
+            // Crear suscripción con manejo de extrasSeparados
             const res = await fetch('https://tlatec-backend.onrender.com/api/stripe/crear-suscripcion', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -527,37 +595,91 @@ async function confirmarCompraHandler() {
                 throw new Error(result.message || 'ERROR AL CREAR SUSCRIPCIÓN');
             }
 
+            // Guardar extras para procesarlos después del éxito de la suscripción
+            if (result.extrasSeparados && result.extrasSeparados.length > 0) {
+                localStorage.setItem('extrasPendientes', JSON.stringify({
+                    email: clienteEmail,
+                    extras: result.extrasSeparados
+                }));
+                console.log('Extras guardados para procesamiento posterior:', result.extrasSeparados);
+            }
+
             Swal.close();
             window.location.href = result.url;
 
         } else {
-            // Gratis sin extras
-            orderData.stripe_session_id = 'free-' + Date.now();
+            // Paquete gratuito (explorador) - verificar si tiene extras con costo
+            const isTitan = selectedPackage?.name.toLowerCase().includes('titan');
+            const isAnual = tipoSuscripcion === 'anual';
+            const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
 
-
-            const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/orden-gratis', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderData })
+            let tieneExtrasConCosto = false;
+            document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(cb => {
+                const extraKey = cb.value;
+                const precio = Number(cb.dataset.price || 0);
+                const esGratisEnTitan = isTitan && isAnual && freeExtrasInTitan.includes(extraKey);
+                if (!esGratisEnTitan && precio > 0) {
+                    tieneExtrasConCosto = true;
+                }
             });
 
-            if (!res.ok) {
+            if (tieneExtrasConCosto) {
+                // Procesar como suscripción para manejar extras
+                const res = await fetch('https://tlatec-backend.onrender.com/api/stripe/crear-suscripcion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        planId: selectedPackage.id,
+                        clienteEmail,
+                        orderData,
+                        tipoSuscripcion
+                    })
+                });
+
                 const result = await res.json();
-                throw new Error(result.message || 'Error al registrar orden gratuita');
-            }
 
-            Swal.close();
-            Swal.fire({
-                title: '¡REGISTRO COMPLETO!',
-                text: `TE HAS REGISTRADO AL ${selectedPackage.name}. REVISA TU CORREO.`,
-                icon: 'success',
-                confirmButtonText: 'ACEPTAR',
-                customClass: { confirmButton: 'custom-alert-button' }
-            }).then(() => {
-                localStorage.removeItem('selectedPackage');
-                localStorage.removeItem('tipoSuscripcion');
-                window.location.href = 'index.html';
-            });
+                if (!res.ok || !result.url) {
+                    throw new Error(result.message || 'ERROR AL CREAR SUSCRIPCIÓN');
+                }
+
+                // Guardar extras para procesarlos después
+                if (result.extrasSeparados && result.extrasSeparados.length > 0) {
+                    localStorage.setItem('extrasPendientes', JSON.stringify({
+                        email: clienteEmail,
+                        extras: result.extrasSeparados
+                    }));
+                }
+
+                Swal.close();
+                window.location.href = result.url;
+            } else {
+                // Gratis sin extras con costo
+                orderData.stripe_session_id = 'free-' + Date.now();
+
+                const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/orden-gratis', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderData })
+                });
+
+                if (!res.ok) {
+                    const result = await res.json();
+                    throw new Error(result.message || 'Error al registrar orden gratuita');
+                }
+
+                Swal.close();
+                Swal.fire({
+                    title: '¡REGISTRO COMPLETO!',
+                    text: `TE HAS REGISTRADO AL ${selectedPackage.name}. REVISA TU CORREO.`,
+                    icon: 'success',
+                    confirmButtonText: 'ACEPTAR',
+                    customClass: { confirmButton: 'custom-alert-button' }
+                }).then(() => {
+                    localStorage.removeItem('selectedPackage');
+                    localStorage.removeItem('tipoSuscripcion');
+                    window.location.href = 'index.html';
+                });
+            }
         }
 
     } catch (error) {
