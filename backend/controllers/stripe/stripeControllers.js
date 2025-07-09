@@ -64,51 +64,36 @@ const crearSuscripcionStripe = async (req, res) => {
       });
     }
 
-    // Crear producto si no existe
-    const productName = `${orderData.nombrePaquete} - ${tipo}`;
-    let product;
-    const existingProducts = await stripe.products.list({
-      limit: 100
-    });
-    
-    product = existingProducts.data.find(p => p.name === productName);
-    
-    if (!product) {
-      product = await stripe.products.create({
-        name: productName,
-        description: orderData.resumenServicios
-      });
-    }
-
-    // Crear precio
-    const price = await stripe.prices.create({
-      unit_amount: montoCalculado * 100, // Stripe usa centavos
+   // Crear sesión de checkout directamente con price_data
+const session = await stripe.checkout.sessions.create({
+  customer: customer.id,
+  payment_method_types: ['card'],
+  line_items: [{
+    price_data: {
       currency: 'mxn',
+      unit_amount: montoCalculado * 100,
+      product_data: {
+        name: `${orderData.nombrePaquete} - ${tipo}`,
+        description: orderData.resumenServicios  
+      },
       recurring: {
         interval: tipo === 'anual' ? 'year' : 'month'
-      },
-      product: product.id
-    });
-
-    // Crear sesión de checkout
-    const session = await stripe.checkout.sessions.create({
-      customer: customer.id,
-      payment_method_types: ['card'],
-      line_items: [{
-        price: price.id,
-        quantity: 1
-      }],
-      mode: 'subscription',
-      success_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/success.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/cancel.html`,
-      metadata: {
-        planId: planId,
-        tipoSuscripcion: tipo,
-        clienteEmail: clienteEmail,
-        nombrePaquete: orderData.nombrePaquete,
-        extrasSeleccionados: JSON.stringify(orderData.extrasSeleccionados || [])
       }
-    });
+    },
+    quantity: 1
+  }],
+  mode: 'subscription',
+  success_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/success.html?session_id={CHECKOUT_SESSION_ID}`,
+  cancel_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/cancel.html`,
+  metadata: {
+    planId,
+    tipoSuscripcion: tipo,
+    clienteEmail,
+    nombrePaquete: orderData.nombrePaquete,
+    extrasSeleccionados: JSON.stringify(orderData.extrasSeleccionados || [])
+  }
+});
+
 
     // Guardar en base de datos
     await pool.query(`

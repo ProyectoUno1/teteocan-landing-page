@@ -22,6 +22,9 @@ const PORT = process.env.PORT || 3000;
 //permitir CORS (solicitudes desde otros dominios)
 app.use(cors());
 
+app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
+
+
 //parsear JSON en las solicitudes entrantes
 app.use(express.json());
 
