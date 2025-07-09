@@ -8,11 +8,11 @@ const authRoutes = require('./auth/routes/authRoutes'); // Nueva ruta
 const { verifyToken } = require('./auth/middlewares/authMiddleware'); // Middleware
 require('./crondb/cleanPendiente');
 
-// importar rutas definidas para pagos y webhook
+// importar rutas definidas para pagos
 const pagosRoutes = require('./routes/pagos');
-const webhookRoutes = require('./routes/webhook');
 const preciosRouter = require('./routes/precios'); //nueva ruta para obtener los precios
 const adminRoutes = require('./routes/adminPanel');
+const stripeRoutes = require('./routes/stripe'); // Nueva ruta para Stripe
 
 // carga las variables de entorno del archivo .env ubicado en la raíz del backend
 dotenv.config({ path: path.resolve(__dirname, '.env') });
@@ -29,8 +29,8 @@ app.use(express.json());
 // '/api/pagos' -> para crear suscripciones y pagos
 app.use('/api/pagos', pagosRoutes);  
 
-// '/api/webhook' -> para recibir notificaciones webhook de Mercado Pago
-app.use('/api/webhook', webhookRoutes);
+// '/api/stripe' -> para pagos con Stripe
+app.use('/api/stripe', stripeRoutes);
 
 app.use('/api/precios', preciosRouter);
 
