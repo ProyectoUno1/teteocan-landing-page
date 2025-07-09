@@ -2,8 +2,8 @@
   
   "dependencies": {
     "bcryptjs": "^3.0.2",
-    "mercadopago": "^2.8.0",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^2.7.0",
+    "stripe": "^14.0.0"
     
 
   }

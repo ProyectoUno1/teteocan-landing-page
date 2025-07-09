@@ -518,10 +518,32 @@ function openConfirmModal() {
     setPackageBasePrice(precioJSON);
     updateExtraPricesInForm();
 
+    // Actualizar display del tipo de suscripción
+    const subscriptionTypeDisplay = document.getElementById('subscriptionTypeDisplay');
+    if (subscriptionTypeDisplay) {
+        subscriptionTypeDisplay.textContent = tipo === 'anual' ? 'Suscripción Anual' : 'Suscripción Mensual';
+    }
+
     // reiniciar extras
     extraServicesForm.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-    extraServicesForm.style.display = 'none';
-    toggleExtrasBtn.textContent = '➕ AÑADIR SERVICIOS EXTRA';
+    
+    // Colapsar el contenedor de extras
+    const extrasContainer = document.getElementById('extrasContainer');
+    const toggleExtrasBtn = document.getElementById('toggleExtrasBtn');
+    const toggleText = toggleExtrasBtn.querySelector('.toggle-text');
+    
+    if (extrasContainer) {
+        extrasContainer.classList.remove('expanded');
+        extrasContainer.classList.add('collapsed');
+    }
+    
+    if (toggleExtrasBtn) {
+        toggleExtrasBtn.classList.remove('active');
+    }
+    
+    if (toggleText) {
+        toggleText.textContent = 'Añadir servicios';
+    }
 
     // clonar lista de servicios
     const selectedCard = document.querySelector(`.pricing-card[data-package-name="${selectedPackage.name}"]`);
@@ -537,6 +559,9 @@ function openConfirmModal() {
     } else {
         console.warn('No se encontró la lista de servicios o el contenedor.');
     }
+
+    // Actualizar precios iniciales
+    updatePriceWithExtras();
 
     // mostrar el modal
     confirmModal.style.display = 'flex';
@@ -565,15 +590,92 @@ confirmModal?.addEventListener('click', (e) => {
     }
 });
 
-toggleExtrasBtn.addEventListener('click', function () {
-    const isVisible = extraServicesForm.style.display === 'block';
-    if (isVisible) {
-        extraServicesForm.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-        updatePriceWithExtras();
+// Nuevo toggle para el carrito mejorado
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleExtrasBtn = document.getElementById('toggleExtrasBtn');
+    
+    if (toggleExtrasBtn) {
+        toggleExtrasBtn.addEventListener('click', function () {
+            const extrasContainer = document.getElementById('extrasContainer');
+            const toggleIcon = toggleExtrasBtn.querySelector('i');
+            const toggleText = toggleExtrasBtn.querySelector('.toggle-text');
+            
+            const isExpanded = extrasContainer.classList.contains('expanded');
+            
+            if (isExpanded) {
+                // Colapsar
+                extrasContainer.classList.remove('expanded');
+                extrasContainer.classList.add('collapsed');
+                toggleExtrasBtn.classList.remove('active');
+                toggleText.textContent = 'Añadir servicios';
+                
+                // Limpiar selecciones
+                extrasContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                updatePriceWithExtras();
+                updateSelectedExtrasList();
+            } else {
+                // Expandir
+                extrasContainer.classList.remove('collapsed');
+                extrasContainer.classList.add('expanded');
+                toggleExtrasBtn.classList.add('active');
+                toggleText.textContent = 'Ocultar servicios';
+            }
+        });
     }
-    extraServicesForm.style.display = isVisible ? 'none' : 'block';
-    toggleExtrasBtn.textContent = isVisible ? '➕ Añadir servicios extra' : '➖ Ocultar servicios extra';
+
+    // Agregar event listeners para los checkboxes de extras
+    const extraCheckboxes = document.querySelectorAll('#extraServicesForm input[type="checkbox"]');
+    extraCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            updatePriceWithExtras();
+            updateSelectedExtrasList();
+        });
+    });
 });
+
+// Función para actualizar la lista de extras seleccionados
+function updateSelectedExtrasList() {
+    const selectedList = document.getElementById('selectedExtrasList');
+    const extrasTotal = document.getElementById('extrasTotal');
+    const extrasTotalAmount = document.getElementById('extrasTotalAmount');
+    
+    selectedList.innerHTML = '';
+    
+    let totalExtras = 0;
+    let hasExtras = false;
+    
+    document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(cb => {
+        hasExtras = true;
+        const extraKey = cb.value;
+        const extraItem = cb.closest('.extra-item');
+        const extraName = extraItem.querySelector('.extra-name').textContent;
+        const extraPrice = parseFloat(cb.dataset.price || 0);
+        
+        // Verificar si es gratis en Titan anual
+        const isTitan = selectedPackage?.id === 'titan';
+        const isAnual = tipoSuscripcion === 'anual';
+        const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
+        const esGratis = isTitan && isAnual && freeExtrasInTitan.includes(extraKey);
+        
+        const finalPrice = esGratis ? 0 : extraPrice;
+        totalExtras += finalPrice;
+        
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <span>${extraName}</span>
+            <span>${esGratis ? 'Gratis' : '$' + finalPrice.toLocaleString('es-MX')}</span>
+        `;
+        selectedList.appendChild(li);
+    });
+    
+    // Mostrar/ocultar sección de extras en el total
+    if (hasExtras) {
+        extrasTotal.style.display = 'flex';
+        extrasTotalAmount.textContent = '$' + totalExtras.toLocaleString('es-MX');
+    } else {
+        extrasTotal.style.display = 'none';
+    }
+}
 
 // diferentes precios en formulario de extras
 function updateExtraPricesInForm() {
@@ -632,47 +734,46 @@ function updatePriceWithExtras() {
     const extras = preciosOficiales[tipoSuscripcion].extras;
 
     let total = basePrice;
+    let extrasTotal = 0;
 
-    const extrasList = document.getElementById('selectedExtrasList');
-    extrasList.innerHTML = '';
+    // Actualizar lista de extras seleccionados
+    updateSelectedExtrasList();
 
     document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(cb => {
         const extraKey = cb.value;
-        const labelEl = cb.closest('label');
-        const iconHTML = labelEl.querySelector('i')?.outerHTML || '';
-        const priceSpan = labelEl.querySelector('.extra-price');
-        const textoCompleto = labelEl.cloneNode(true);
-        
-        // Eliminar elementos innecesarios (input y .extra-price)
-        textoCompleto.querySelector('input')?.remove();
-        textoCompleto.querySelector('.extra-price')?.remove();
-        textoCompleto.querySelector('i')?.remove();
-
-        const nombreExtra = textoCompleto.textContent.trim();
-
-        const precioExtra = extras[extraKey];
+        const precioExtra = extras?.[extraKey] || 0;
         const esGratis = isTitan && isAnual && ['negocios', 'tpv', 'logotipo'].includes(extraKey);
 
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <span style="display: flex; align-items: center; gap: 0.5rem;">
-                ${iconHTML}<span>${nombreExtra}</span>
-            </span>
-            <span>${esGratis ? 'Gratis' : `$${precioExtra.toLocaleString('es-MX')}`}</span>
-        `;
-        extrasList.appendChild(li);
-
         if (!esGratis && precioExtra) {
-            total += precioExtra;
+            extrasTotal += precioExtra;
         }
     });
 
+    total = basePrice + extrasTotal;
     finalPrice = total;
 
-    confirmPackagePrice.textContent = `$${basePrice.toLocaleString('es-MX')} MXN`;
-
+    // Actualizar elementos del carrito
+    const packageSubtotal = document.getElementById('packageSubtotal');
+    const extrasTotalAmount = document.getElementById('extrasTotalAmount');
     const totalFinalPrice = document.getElementById('totalFinalPrice');
-    totalFinalPrice.textContent = `$${finalPrice.toLocaleString('es-MX')} MXN`;
+
+    if (packageSubtotal) {
+        packageSubtotal.textContent = `$${basePrice.toLocaleString('es-MX')}`;
+    }
+    
+    if (extrasTotalAmount) {
+        extrasTotalAmount.textContent = `$${extrasTotal.toLocaleString('es-MX')}`;
+    }
+    
+    if (totalFinalPrice) {
+        totalFinalPrice.textContent = `$${finalPrice.toLocaleString('es-MX')}`;
+    }
+
+    // Actualizar precio del paquete en la sección principal
+    if (confirmPackagePrice) {
+        const tipo = tipoSuscripcion || 'mensual';
+        confirmPackagePrice.textContent = `$${basePrice.toLocaleString('es-MX')}${tipo === 'anual' ? '/año' : '/mes'}`;
+    }
 }
 
 
@@ -682,16 +783,26 @@ function updatePriceWithExtras() {
 function setPackageBasePrice(price) {
     basePrice = parseFloat(price) || 0;
     finalPrice = basePrice;
-    confirmPackagePrice.textContent = `$${basePrice.toLocaleString('es-MX')} MXN`;
+    
+    // Actualizar precio del paquete en el modal
+    if (confirmPackagePrice) {
+        const tipo = tipoSuscripcion || 'mensual';
+        confirmPackagePrice.textContent = `$${basePrice.toLocaleString('es-MX')}${tipo === 'anual' ? '/año' : '/mes'}`;
+    }
 }
 
-extraServicesForm.addEventListener('change', updatePriceWithExtras);
+// Event listener para cambios en el formulario de extras
+if (extraServicesForm) {
+    extraServicesForm.addEventListener('change', updatePriceWithExtras);
+}
 
 // listener para cambiar tipo de suscripción con el switch
-toggleSubscriptionType.addEventListener('change', (e) => {
-    tipoSuscripcion = e.target.checked ? 'anual' : 'mensual';
-    actualizarPrecios(tipoSuscripcion);
-});
+if (toggleSubscriptionType) {
+    toggleSubscriptionType.addEventListener('change', (e) => {
+        tipoSuscripcion = e.target.checked ? 'anual' : 'mensual';
+        actualizarPrecios(tipoSuscripcion);
+    });
+}
 
 // confirmar compra
 btnConfirmPurchase?.addEventListener('click', async () => {
@@ -699,7 +810,10 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 
     if (!selectedPackage) return;
 
-    // 1. Pedir correo
+    // 1. Usar Stripe como método de pago único
+    const selectedPaymentMethod = 'stripe';
+
+    // 2. Pedir correo
     const { value: clienteEmail } = await Swal.fire({
         title: 'INGRESA TU CORREO ELECTRÓNICO',
         input: 'text',
@@ -726,7 +840,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 
     updatePriceWithExtras();
 
-    // 2. Obtener servicios seleccionados
+    // 3. Obtener servicios seleccionados
     const servicios = [];
     document.querySelectorAll('#servicesList li').forEach(li => {
         servicios.push(li.innerText.trim());
@@ -737,7 +851,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 
     document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(cb => {
         const extraKey = cb.value;
-        const label = cb.parentElement.textContent.trim();
+        const label = cb.closest('.extra-item').querySelector('.extra-name').textContent.trim();
 
         extrasKeys.push(extraKey);
         extrasSeleccionados.push(label);
@@ -758,16 +872,18 @@ btnConfirmPurchase?.addEventListener('click', async () => {
     };
 
     console.log('orderData antes de enviar:', orderData);
+    console.log('Método de pago seleccionado:', selectedPaymentMethod);
 
-    // 3. Mostrar loader
+    // 4. Mostrar loader
     Swal.fire({
         title: 'PROCESANDO...',
-        html: 'ESPERA UN MOMENTO MIENTRAS SE PROCESA LA SUSCRIPCION.',
+        html: 'ESPERA UN MOMENTO MIENTRAS SE PROCESA LA SUSCRIPCIÓN.',
         allowOutsideClick: false,
         didOpen: () => Swal.showLoading()
     });
 
     const isTitan = selectedPackage?.name.toLowerCase().includes('titan');
+    const isAnual = tipoSuscripcion === 'anual';
 
     const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
     const checkedExtras = document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked');
@@ -777,41 +893,41 @@ btnConfirmPurchase?.addEventListener('click', async () => {
     checkedExtras.forEach(cb => {
         const extraKey = cb.value;
         const precio = Number(cb.dataset.price || 0);
-        const esGratisEnTitan = isTitan && freeExtrasInTitan.includes(extraKey);
+        const esGratisEnTitan = isTitan && isAnual && freeExtrasInTitan.includes(extraKey);
 
         if (!esGratisEnTitan && precio > 0) {
             tieneExtrasConCosto = true;
         }
     });
 
-
-
     try {
-        const esConSuscripcion = paquetesConSuscripcion.includes(selectedPackage.id.toLowerCase());
-
-        if (esConSuscripcion || tieneExtrasConCosto) {
-
+        const esConSuscripcion = paquetesConSuscripcion.includes(selectedPackage.id.toLowerCase());        if (esConSuscripcion || tieneExtrasConCosto) {
             orderData.monto = finalPrice;
+            
+            // Usar Stripe como método de pago único
+            const endpoint = 'https://tlatec-backend.onrender.com/api/stripe/crear-suscripcion';
+            const redirectProperty = 'url';
+
             // Paquete con suscripción O gratuito con extras (requiere pago)
-            const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/suscripcion', {
+            const res = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     planId: selectedPackage.id,
                     clienteEmail,
                     orderData,
-                    tipoSuscripcion // <-- Aquí se envía el tipo mensual/anual al backend
+                    tipoSuscripcion
                 })
             });
 
             const result = await res.json();
 
-            if (!res.ok || !result.init_point) {
+            if (!res.ok || !result[redirectProperty]) {
                 throw new Error(result.message || 'ERROR AL CREAR SUSCRIPCIÓN');
             }
 
             Swal.close();
-            window.location.href = result.init_point;
+            window.location.href = result[redirectProperty];
 
         } else {
             // Paquete gratuito sin extras

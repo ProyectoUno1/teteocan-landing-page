@@ -136,14 +136,14 @@
                 <p class="section-description">
                     DESDE EMPRENDEDORES HASTA GRANDES EMPRESAS, TENEMOS EL PLAN PERFECTO PARA TU NEGOCIO
                 </p>
-            </div>
-            <div class="subscription-switch">
-                <span class="switch-option">Mensual</span>
+            </div>            <div class="subscription-switch">
                 <label class="switch">
                     <input type="checkbox" id="toggleSubscriptionType" />
-                    <span class="slider round"></span>
+                    <span class="slider round">
+                        <span class="text-mensual">Mensual</span>
+                        <span class="text-anual">Anual</span>
+                    </span>
                 </label>
-                <span class="switch-option">Anual</span>
             </div>
 
             <div class="pricing-grid">
@@ -411,71 +411,180 @@
             <h3 id="modalTitle"></h3>
             <p id="modalDescription"></p>
         </div>
-    </div>
-
-    <div id="confirmModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" id="closeConfirmModal">&times;</span>
-            <h2>CARRITO DE COMPRA</h2>
-            <div class="package-header">
-                <h3 id="confirmPackageName"></h3>
-                <span id="confirmPackagePrice"></span>
+    </div>    <div id="confirmModal" class="modal">
+        <div class="modal-content cart-modal">
+            <div class="cart-header">
+                <span class="close-button" id="closeConfirmModal">&times;</span>
+                <h2><i class="fas fa-shopping-cart"></i> CARRITO DE COMPRA</h2>
             </div>
-            <ul id="selectedExtrasList" class="extras-list"></ul>
+            
+            <div class="cart-body">
+                <!-- Sección del paquete principal -->
+                <div class="cart-section package-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-box"></i> PAQUETE SELECCIONADO</h3>
+                    </div>
+                    <div class="package-item">
+                        <div class="item-info">
+                            <h4 id="confirmPackageName"></h4>
+                            <div class="subscription-type">
+                                <span id="subscriptionTypeDisplay"></span>
+                            </div>
+                        </div>
+                        <div class="item-price">
+                            <span id="confirmPackagePrice"></span>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="total-line">
-                <span>Total a pagar:</span>
-                <strong id="totalFinalPrice"></strong>
+                <!-- Servicios incluidos -->
+                <div class="cart-section services-section" id="confirmPackageSummary">
+                    <div class="section-header">
+                        <h4><i class="fas fa-check-circle"></i> SERVICIOS INCLUIDOS</h4>
+                    </div>
+                    <ul id="servicesList" class="services-list">
+                        <!-- Inserción automática -->
+                    </ul>
+                </div>
+
+                <!-- Servicios extra -->
+                <div class="cart-section extras-section">
+                    <div class="section-header">
+                        <h4><i class="fas fa-plus-circle"></i> SERVICIOS EXTRA</h4>
+                        <button id="toggleExtrasBtn" class="btn-toggle-extras">
+                            <span class="toggle-text">Añadir servicios</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="extrasContainer" class="extras-container collapsed">
+                        <form id="extraServicesForm" class="extras-form">
+                            <div class="extras-grid-container">
+                                <label class="extra-item">
+                                    <input type="checkbox" name="extras" value="scraping" data-price="1000">
+                                    <div class="extra-content">
+                                        <div class="extra-icon">
+                                            <i class="fa-solid fa-location-dot"></i>
+                                        </div>
+                                        <div class="extra-details">
+                                            <span class="extra-name">SCRAPING POR SLOTS</span>
+                                            <span class="extra-description">Google Maps / 500 registros</span>
+                                        </div>
+                                        <div class="extra-price-tag">
+                                            <span class="extra-price"></span>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="extra-item">
+                                    <input type="checkbox" name="extras" value="basededatos" data-price="1000">
+                                    <div class="extra-content">
+                                        <div class="extra-icon">
+                                            <i class="fa-solid fa-database"></i>
+                                        </div>
+                                        <div class="extra-details">
+                                            <span class="extra-name">BASES DE DATOS LISTAS</span>
+                                            <span class="extra-description">500 registros listos para usar</span>
+                                        </div>
+                                        <div class="extra-price-tag">
+                                            <span class="extra-price"></span>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="extra-item">
+                                    <input type="checkbox" name="extras" value="negocios" data-price="999">
+                                    <div class="extra-content">
+                                        <div class="extra-icon">
+                                            <i class="fa-solid fa-briefcase"></i>
+                                        </div>
+                                        <div class="extra-details">
+                                            <span class="extra-name">ASESORÍA DE NEGOCIOS</span>
+                                            <span class="extra-description">Consultoría especializada</span>
+                                        </div>
+                                        <div class="extra-price-tag">
+                                            <span class="extra-price"></span>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="extra-item">
+                                    <input type="checkbox" name="extras" value="tpv" data-price="1500">
+                                    <div class="extra-content">
+                                        <div class="extra-icon">
+                                            <i class="fa-solid fa-credit-card"></i>
+                                        </div>
+                                        <div class="extra-details">
+                                            <span class="extra-name">TPV</span>
+                                            <span class="extra-description">Terminal punto de venta</span>
+                                        </div>
+                                        <div class="extra-price-tag">
+                                            <span class="extra-price"></span>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="extra-item">
+                                    <input type="checkbox" name="extras" value="logotipo" data-price="3999">
+                                    <div class="extra-content">
+                                        <div class="extra-icon">
+                                            <i class="fa-solid fa-pen-nib"></i>
+                                        </div>
+                                        <div class="extra-details">
+                                            <span class="extra-name">DISEÑO DE LOGOTIPO</span>
+                                            <span class="extra-description">Diseño profesional personalizado</span>
+                                        </div>
+                                        <div class="extra-price-tag">
+                                            <span class="extra-price"></span>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Lista de extras seleccionados -->
+                    <ul id="selectedExtrasList" class="selected-extras-list"></ul>
+                </div>
+
+                <!-- Total -->
+                <div class="cart-section total-section">
+                    <div class="total-breakdown">
+                        <div class="total-line subtotal">
+                            <span>Subtotal paquete:</span>
+                            <span id="packageSubtotal"></span>
+                        </div>
+                        <div class="total-line extras-total" id="extrasTotal" style="display: none;">
+                            <span>Servicios extra:</span>
+                            <span id="extrasTotalAmount"></span>
+                        </div>
+                        <div class="total-line final-total">
+                            <span>Total a pagar:</span>
+                            <strong id="totalFinalPrice"></strong>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-
-            <!-- Resumen de servicios incluidos -->
-            <div id="confirmPackageSummary" class="package-summary">
-                <h4>SERVICIOS INCLUIDOS:</h4>
-                <ul id="servicesList">
-                    <!-- Inserción automatica -->
-                </ul>
-            </div>
-
-            <button id="toggleExtrasBtn" class="btn-tertiary">➕ AÑADIR SERVICIOS EXTRA</button>
-            <form id="extraServicesForm">
-                <h4 id="extraServicesTitle">SERVICIOS EXTRA:</h4>
-
-                <label>
-                    <input type="checkbox" name="extras" value="scraping" data-price="1000">
-                    <i class="extra fa-solid fa-location-dot"></i>
-                    SCRAPING POR SLOTS (Google Maps) — <span class="extra-price"> / 500 REGISTROS</span>
-                </label><br>
-
-                <label>
-                    <input type="checkbox" name="extras" value="basededatos" data-price="1000">
-                    <i class="fa-solid fa-database"></i>
-                    BASES DE DATOS LISTAS — <span class="extra-price"> / 500 REGISTROS</span>
-                </label><br>
-
-                <label>
-                    <input type="checkbox" name="extras" value="negocios" data-price="999">
-                    <i class="fa-solid fa-briefcase"></i>
-                    ASESORÍA DE NEGOCIOS — <span class="extra-price"></span>
-                </label><br>
-
-                <label>
-                    <input type="checkbox" name="extras" value="tpv" data-price="1500">
-                    <i class="fa-solid fa-credit-card"></i>
-                    TPV — <span class="extra-price"></span>
-                </label><br>
-
-                <label>
-                    <input type="checkbox" name="extras" value="logotipo" data-price="3999">
-                    <i class="fa-solid fa-pen-nib"></i>
-                    DISEÑO DE LOGOTIPO — <span class="extra-price"></span>
-                </label>
-            </form>
-
-            <p>¿DESEAS CONTINUAR CON LA COMPRA?</p>
-            <div class="modal-actions">
-                <button id="btnConfirmPurchase" class="btn-primary">CONFIRMAR Y COMPRAR</button>
-                <button id="btnCancelPurchase" class="btn-secondary">CANCELAR</button>
+            <!-- Acciones del carrito -->
+            <div class="cart-footer">
+                <div class="payment-options">
+                    <div class="payment-method-info">
+                        <div class="payment-info-content">
+                            <i class="fab fa-stripe"></i>
+                            <span>Pago seguro procesado por Stripe</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cart-actions">
+                    <button id="btnCancelPurchase" class="btn-secondary">
+                        <i class="fas fa-times"></i> CANCELAR
+                    </button>
+                    <button id="btnConfirmPurchase" class="btn-primary">
+                        <i class="fas fa-lock"></i> PROCEDER AL PAGO
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -721,12 +830,5 @@
             <span class="headset-text">¡Hola!</span>
         </div>
     </div>
-    <div id="cart" class="cart hidden">
-        <h3>🛒 Tu carrito</h3>
-        <ul id="cartItems"></ul>
-        <p>Total: <span id="cartTotal">$0</span></p>
-        <button id="checkoutButton" class="btn-primary">PAGAR</button>
-    </div>
-
 
 </html>
