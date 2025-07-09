@@ -2,7 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const pool = require('../../db');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const emailController = require('../pdf/controllers/emailController'); 
+const emailController = require('../../pdf/controllers/emailController');
+
 
 const preciosFile = path.join(__dirname, '../../precios.json');
 
