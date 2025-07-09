@@ -701,7 +701,7 @@ btnConfirmPurchase?.addEventListener('click', async () => {
 
     // 1. Pedir correo
     const { value: clienteEmail } = await Swal.fire({
-        title: 'INGRESA TU CORREO ELECTRÓNICO',
+        title: 'INGRESA TU CORREO ELECTRÓNICO PARA ENVIAR TU COMPROBANTE',
         input: 'text',
         inputLabel: 'CORREO',
         inputPlaceholder: 'tucorreo@ejemplo.com',
