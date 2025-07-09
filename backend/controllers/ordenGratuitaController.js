@@ -5,20 +5,20 @@ const ordenGratuita = async (req, res) => {
   try {
     const { orderData } = req.body;
     const {
-      preapproval_id,
+      stripe_session_id,  
       clienteEmail,
       nombrePaquete,
       resumenServicios,
       monto,
       fecha,
       mensajeContinuar,
-      tipoSuscripcion  // <-- Recibimos aquí el tipo mensual/anual
+      tipoSuscripcion
     } = orderData;
 
-    // Validar límite de 10 órdenes gratuitas
-    if (preapproval_id && preapproval_id.startsWith('free-')) {
+    // Validar límite de 10 órdenes gratuitas usando stripe_session_id que empiece con 'free-'
+    if (stripe_session_id && stripe_session_id.startsWith('free-')) {
       const countResult = await pool.query(
-        `SELECT COUNT(*) FROM ventas WHERE preapproval_id LIKE 'free-%'`
+        `SELECT COUNT(*) FROM ventas WHERE stripe_session_id LIKE 'free-%'`
       );
       const ventaCount = parseInt(countResult.rows[0].count);
 
@@ -29,10 +29,9 @@ const ordenGratuita = async (req, res) => {
       }
     }
 
-    
     await pool.query(`
       INSERT INTO ventas (
-        preapproval_id,
+        stripe_session_id,
         cliente_email,
         nombre_paquete,
         resumen_servicios,
@@ -43,19 +42,19 @@ const ordenGratuita = async (req, res) => {
         estado
       ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'procesada')
     `, [
-      preapproval_id,
+      stripe_session_id,
       clienteEmail,
       nombrePaquete,
       resumenServicios,
       monto,
       fecha,
       mensajeContinuar,
-      tipoSuscripcion || null  // Guarda null si no viene
+      tipoSuscripcion || null
     ]);
 
     // Enviar correos
     const reqMock = { body: orderData };
-    const resMock = { status: () => ({ json: () => { } }) };
+    const resMock = { status: () => ({ json: () => {} }) };
 
     await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
     await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
