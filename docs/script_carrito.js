@@ -558,7 +558,7 @@ async function confirmarCompraHandler() {
         nombreCliente: clienteEmail.split('@')[0], // Extraer nombre del email como fallback
         resumenServicios,
         extrasSeleccionados: extrasKeys,
-        monto: finalPrice,
+        monto: basePrice, // Solo el precio base del paquete, los extras se procesan por separado
         fecha: new Date().toLocaleDateString('es-MX'),
         clienteEmail,
         mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.",
