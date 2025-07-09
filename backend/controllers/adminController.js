@@ -20,17 +20,24 @@ const registrarVentaManual = async (req, res) => {
     fecha,
     mensaje_continuar = 'Registro manual desde el panel administrador',
     tipo_suscripcion
-     
-    
   } = req.body;
 
   try {
     await pool.query(
       `INSERT INTO ventas 
-        (cliente_email, nombre_paquete, resumen_servicios, monto, fecha, estado, mensaje_continuar,tipo_suscripcion)
+        (stripe_session_id, cliente_email, nombre_paquete, resumen_servicios, monto, fecha, estado, mensaje_continuar, tipo_suscripcion)
        VALUES 
-        ($1, $2, $3, $4, $5, 'manual', $6, $7)`,
-      [cliente_email, nombre_paquete, resumen_servicios, monto, fecha, mensaje_continuar,tipo_suscripcion]
+        ($1, $2, $3, $4, $5, $6, 'manual', $7, $8)`,
+      [
+        `manual-${Date.now()}`, // stripe_session_id
+        cliente_email,
+        nombre_paquete,
+        resumen_servicios,
+        monto,
+        fecha,
+        mensaje_continuar,
+        tipo_suscripcion
+      ]
     );
 
     const reqMock = {
@@ -44,7 +51,8 @@ const registrarVentaManual = async (req, res) => {
         mensajeContinuar: mensaje_continuar,
       },
     };
-    const resMock = { status: () => ({ json: () => {} }) };
+
+    const resMock = { status: () => ({ json: () => { } }) };
 
     await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
     await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
