@@ -93,6 +93,10 @@
             text-decoration: none;
             font-weight: 600;
         }
+        ul {
+            padding-left: 20px;
+            margin: 6px 0;
+        }
     </style>
 </head>
 <body>
@@ -105,6 +109,7 @@
             Hemos recibido tu solicitud y uno de nuestros especialistas se pondrá en contacto contigo pronto para continuar con el proceso.<br>
             <b>¡Bienvenido a la transformación digital con TLATEC!</b>
         </div>
+
         <table class="details-table">
             <tr>
                 <td>Paquete contratado:</td>
@@ -121,13 +126,14 @@
             <tr>
                 <td>Servicios incluidos:</td>
                 <td>
-                    {{resumenServicios}}
-                    {{#if extras}}
+                    {{#if extras.length}}
                         <ul>
                             {{#each extras}}
                                 <li>{{nombre}} - ${{precio}} MXN</li>
                             {{/each}}
                         </ul>
+                    {{else}}
+                        {{resumenServicios}}
                     {{/if}}
                 </td>
             </tr>
@@ -154,8 +160,9 @@
                 <td>{{fecha}}</td>
             </tr>
         </table>
+
         <div class="contacto">
-            ¿Dudas? Escríbenos a <a href="mailto:contacto@teoteocan.com" class="web-link">contacto@tlatec.com</a>
+            ¿Dudas? Escríbenos a <a href="mailto:contacto@tlatec.com" class="web-link">contacto@tlatec.com</a>
         </div>
         <div class="footer">
             TLATEC · Soluciones Digitales Integrales<br>

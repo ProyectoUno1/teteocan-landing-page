@@ -277,7 +277,6 @@ const webhookStripe = async (req, res) => {
         const session = event.data.object;
 
         if (session.mode === 'subscription') {
-          // Actualizar estado
           await pool.query(`
             UPDATE ventas 
             SET estado = 'completado', 
@@ -291,23 +290,48 @@ const webhookStripe = async (req, res) => {
 
           if (ventaRes.rows.length > 0) {
             const venta = ventaRes.rows[0];
-
-            // Calcular monto de extras
             const extras = JSON.parse(venta.extras_separados || '[]');
-            const montoExtras = extras.reduce((sum, e) => sum + (e.precio || 0), 0);
-            const montoBase = venta.monto - montoExtras;
+
+            // Buscar si también pagó servicios extra aparte en pagos_unicos
+            const pagoExtraRes = await pool.query(`
+              SELECT * FROM pagos_unicos 
+              WHERE cliente_email = $1 
+              AND estado = 'completado' 
+              AND fecha_pago >= NOW() - INTERVAL '10 minutes'
+            `, [venta.cliente_email]);
+
+            let serviciosExtra = [];
+            let montoExtras = 0;
+
+            if (pagoExtraRes.rows.length > 0) {
+              const pagoExtra = pagoExtraRes.rows[0];
+              serviciosExtra = JSON.parse(pagoExtra.servicios || '[]');
+              montoExtras = parseFloat(pagoExtra.monto);
+
+              // Puedes marcar este pago como usado si gustas
+              await pool.query(`UPDATE pagos_unicos SET estado = 'usado_en_suscripcion' WHERE id = $1`, [pagoExtra.id]);
+            }
+
+            const montoBase = parseFloat(venta.monto);
+            const montoTotal = montoBase + montoExtras;
+
+            const resumenServicios = [
+              ...extras.map(e => e.nombre),
+              ...serviciosExtra.map(e => e.nombre)
+            ].join(', ');
 
             const reqMock = {
               body: {
                 ...venta,
                 nombrePaquete: venta.nombre_paquete,
-                resumenServicios: venta.resumen_servicios,
+                resumenServicios,
                 clienteEmail: venta.cliente_email,
                 mensajeContinuar: venta.mensaje_continuar,
                 tipoSuscripcion: venta.tipo_suscripcion,
+                monto: montoTotal,
                 montoBase,
                 montoExtras,
-                extras
+                extras: [...extras, ...serviciosExtra]
               }
             };
             const resMock = { status: () => ({ json: () => { } }) };
@@ -317,7 +341,6 @@ const webhookStripe = async (req, res) => {
           }
 
         } else if (session.mode === 'payment') {
-          // Actualizar estado
           await pool.query(`
             UPDATE pagos_unicos 
             SET estado = 'completado',
@@ -326,7 +349,9 @@ const webhookStripe = async (req, res) => {
             WHERE stripe_session_id = $2
           `, [session.customer, session.id]);
 
-          console.log('Pago único completado:', session.id); const pagoRes = await pool.query('SELECT * FROM pagos_unicos WHERE stripe_session_id = $1', [session.id]);
+          console.log('Pago único completado:', session.id);
+          const pagoRes = await pool.query('SELECT * FROM pagos_unicos WHERE stripe_session_id = $1', [session.id]);
+
           if (pagoRes.rows.length > 0) {
             const pago = pagoRes.rows[0];
             const servicios = JSON.parse(pago.servicios);
