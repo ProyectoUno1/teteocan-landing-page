@@ -154,9 +154,10 @@ const crearPagoUnicoStripe = async (req, res) => {
   try {
     const { clienteEmail, servicios, ventaId } = req.body;
 
-    if (!clienteEmail || !servicios || servicios.length === 0 || !ventaId) {
+    if (!clienteEmail || !servicios || servicios.length === 0) {
       return res.status(400).json({ message: 'Datos incompletos' });
     }
+
 
     const serviciosPagados = servicios.filter(servicio => servicio.precio > 0);
     if (serviciosPagados.length === 0) {
@@ -204,27 +205,27 @@ const crearPagoUnicoStripe = async (req, res) => {
         tipo: 'pago_unico',
         servicios: JSON.stringify(serviciosPagados),
         cantidad_servicios: serviciosPagados.length,
-        
+
       }
     });
 
     await pool.query(`
-      INSERT INTO pagos_unicos (
-        stripe_session_id,
-        cliente_email,
-        servicios,
-        monto,
-        fecha,
-        estado,
-        
-      ) VALUES ($1,$2,$3,$4,NOW(),'pendiente',$5)
-      ON CONFLICT (stripe_session_id) DO NOTHING;
-    `, [
+  INSERT INTO pagos_unicos (
+    stripe_session_id,
+    cliente_email,
+    servicios,
+    monto,
+    fecha,
+    estado,
+    venta_id
+  ) VALUES ($1, $2, $3, $4, NOW(), 'pendiente', $5)
+  ON CONFLICT (stripe_session_id) DO NOTHING;
+`, [
       session.id,
       clienteEmail,
       JSON.stringify(serviciosPagados),
       montoTotal,
-      ventaId
+      ventaId || null  // Si viene vacío, insertará NULL
     ]);
 
     res.json({
