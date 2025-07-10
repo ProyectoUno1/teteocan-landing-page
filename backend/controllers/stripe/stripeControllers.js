@@ -98,7 +98,6 @@ const crearSuscripcionStripe = async (req, res) => {
     cliente_email,
     nombre_paquete,
     resumen_servicios,
-    detalle_servicios,
     monto,
     fecha,
     mensaje_continuar,
@@ -110,7 +109,7 @@ const crearSuscripcionStripe = async (req, res) => {
       clienteEmail,
       orderData.nombrePaquete,
       orderData.resumenServicios,
-      JSON.stringify(orderData.detalleServicios), 
+      JSON.stringify(orderData.resumenServicios), 
       orderData.monto,
       orderData.mensajeContinuar || 'La empresa se pondrá en contacto contigo.',
       orderData.tipoSuscripcion
