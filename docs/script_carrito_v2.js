@@ -297,9 +297,6 @@ function updateSelectedExtrasList() {
         const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
         const esGratis = isTitan && isAnual && freeExtrasInTitan.includes(extraKey);
 
-        const finalPrice = esGratis ? 0 : extraPrice;
-        totalExtras += finalPrice;
-
         const li = document.createElement('li');
         li.innerHTML = `
             <span>${extraName}</span>
@@ -563,7 +560,7 @@ async function confirmarCompraHandler() {
     const resumenServicios = [...serviciosIncluidos, ...extrasSeleccionados].join(', ');
 
     // Total base + extras
-    const totalPrice = basePrice + extrasPrecioTotal;
+
 
     const orderData = {
         nombrePaquete: selectedPackage.name,
@@ -572,7 +569,7 @@ async function confirmarCompraHandler() {
         resumenServicios,
         extrasSeleccionados: extrasKeys,
         detalleServicios,
-        monto: totalPrice, // precio base + extras
+        monto: basePrice,// precio base + extras
         fecha: new Date().toLocaleDateString('es-MX'),
         clienteEmail,
         mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.",
