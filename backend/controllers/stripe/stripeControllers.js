@@ -216,16 +216,14 @@ const crearPagoUnicoStripe = async (req, res) => {
     servicios,
     monto,
     fecha,
-    estado,
-    venta_id
-  ) VALUES ($1, $2, $3, $4, NOW(), 'pendiente', $5)
+    estado
+  ) VALUES ($1, $2, $3, $4, NOW(), 'pendiente')
   ON CONFLICT (stripe_session_id) DO NOTHING;
 `, [
       session.id,
       clienteEmail,
       JSON.stringify(serviciosPagados),
       montoTotal,
-      ventaId || null  // Si viene vacío, insertará NULL
     ]);
 
     res.json({
