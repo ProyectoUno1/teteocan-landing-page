@@ -110,18 +110,45 @@
                 <td>Paquete contratado:</td>
                 <td class="highlight">{{nombrePaquete}}</td>
             </tr>
+
+            {{#if montoBase}}
+            <tr>
+                <td>Precio del paquete:</td>
+                <td class="highlight">${{montoBase}} MXN</td>
+            </tr>
+            {{/if}}
+
             <tr>
                 <td>Servicios incluidos:</td>
-                <td>{{resumenServicios}}</td>
+                <td>
+                    {{resumenServicios}}
+                    {{#if extras}}
+                        <ul>
+                            {{#each extras}}
+                                <li>{{nombre}} - ${{precio}} MXN</li>
+                            {{/each}}
+                        </ul>
+                    {{/if}}
+                </td>
             </tr>
+
+            {{#if montoExtras}}
             <tr>
-                <td>Monto pagado:</td>
-                <td class="highlight">${{monto}}</td>
+                <td>Servicios extra:</td>
+                <td class="highlight">${{montoExtras}} MXN</td>
             </tr>
-             <tr>
+            {{/if}}
+
+            <tr>
+                <td><strong>Total pagado:</strong></td>
+                <td class="highlight"><strong>${{monto}} MXN</strong></td>
+            </tr>
+
+            <tr>
                 <td>Tipo de suscripción:</td>
                 <td class="highlight">{{tipoSuscripcion}}</td>
             </tr>
+
             <tr>
                 <td>Fecha:</td>
                 <td>{{fecha}}</td>

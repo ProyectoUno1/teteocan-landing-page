@@ -66,49 +66,49 @@ const crearSuscripcionStripe = async (req, res) => {
     });
 
     // Armar los line_items con los priceId de stripePrices.js
-const line_items = [];
+    const line_items = [];
 
-// Paquete principal
-const priceIdPaquete = stripePrices[tipo]?.[planId.toLowerCase()];
-if (!priceIdPaquete) {
-  return res.status(400).json({ message: `No se encontró el priceId para el paquete "${planId}" tipo "${tipo}"` });
-}
-line_items.push({
-  price: priceIdPaquete,
-  quantity: 1
-});
-
-
-for (const extra of orderData.extrasSeleccionados || []) {
-  const esGratis = isTitan && isAnual && extrasGratis.includes(extra);
-  if (!esGratis) {
-    const priceIdExtra = stripePrices.extras[extra];
-    if (!priceIdExtra) {
-      return res.status(400).json({ message: `No se encontró el priceId para el extra "${extra}"` });
+    // Paquete principal
+    const priceIdPaquete = stripePrices[tipo]?.[planId.toLowerCase()];
+    if (!priceIdPaquete) {
+      return res.status(400).json({ message: `No se encontró el priceId para el paquete "${planId}" tipo "${tipo}"` });
     }
     line_items.push({
-      price: priceIdExtra,
+      price: priceIdPaquete,
       quantity: 1
     });
-  }
-}
 
-const session = await stripe.checkout.sessions.create({
-  customer: customer.id,
-  payment_method_types: ['card'],
-  line_items,        
-  mode: 'subscription',
-  success_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/success.html?session_id={CHECKOUT_SESSION_ID}`,
-  cancel_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/cancel.html`,
-  metadata: {
-    planId,
-    tipoSuscripcion: tipo,
-    clienteEmail,
-    nombrePaquete: orderData.nombrePaquete,
-    tipo: 'suscripcion',
-    extrasSeparados: JSON.stringify(extrasSeparados)
-  }
-});
+
+    for (const extra of orderData.extrasSeleccionados || []) {
+      const esGratis = isTitan && isAnual && extrasGratis.includes(extra);
+      if (!esGratis) {
+        const priceIdExtra = stripePrices.extras[extra];
+        if (!priceIdExtra) {
+          return res.status(400).json({ message: `No se encontró el priceId para el extra "${extra}"` });
+        }
+        line_items.push({
+          price: priceIdExtra,
+          quantity: 1
+        });
+      }
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      customer: customer.id,
+      payment_method_types: ['card'],
+      line_items,
+      mode: 'subscription',
+      success_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/success.html?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/cancel.html`,
+      metadata: {
+        planId,
+        tipoSuscripcion: tipo,
+        clienteEmail,
+        nombrePaquete: orderData.nombrePaquete,
+        tipo: 'suscripcion',
+        extrasSeparados: JSON.stringify(extrasSeparados)
+      }
+    });
 
 
     const result = await pool.query(`
@@ -124,14 +124,14 @@ const session = await stripe.checkout.sessions.create({
     estado
   ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'pendiente') RETURNING id;
 `, [
-      session.id,                            
-      clienteEmail,                          
-      orderData.nombrePaquete,              
-      orderData.resumenServicios,          
-      orderData.monto,                      
-      new Date(),                            
+      session.id,
+      clienteEmail,
+      orderData.nombrePaquete,
+      orderData.resumenServicios,
+      orderData.monto,
+      new Date(),
       orderData.mensajeContinuar || 'La empresa se pondrá en contacto contigo.',
-      orderData.tipoSuscripcion             
+      orderData.tipoSuscripcion
     ]);
 
     const ventaId = result.rows[0].id;
@@ -287,11 +287,15 @@ const webhookStripe = async (req, res) => {
           `, [session.customer, session.id]);
 
           console.log('Suscripción completada:', session.id);
-
-          // Enviar correos
           const ventaRes = await pool.query('SELECT * FROM ventas WHERE stripe_session_id = $1', [session.id]);
+
           if (ventaRes.rows.length > 0) {
             const venta = ventaRes.rows[0];
+
+            // Calcular monto de extras
+            const extras = JSON.parse(venta.extras_separados || '[]');
+            const montoExtras = extras.reduce((sum, e) => sum + (e.precio || 0), 0);
+            const montoBase = venta.monto - montoExtras;
 
             const reqMock = {
               body: {
@@ -300,7 +304,10 @@ const webhookStripe = async (req, res) => {
                 resumenServicios: venta.resumen_servicios,
                 clienteEmail: venta.cliente_email,
                 mensajeContinuar: venta.mensaje_continuar,
-                tipoSuscripcion: venta.tipo_suscripcion
+                tipoSuscripcion: venta.tipo_suscripcion,
+                montoBase,
+                montoExtras,
+                extras
               }
             };
             const resMock = { status: () => ({ json: () => { } }) };
