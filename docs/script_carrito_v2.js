@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!paqueteGuardado) {
         alert('No hay paquete seleccionado. Por favor, selecciona un paquete primero.');
-        window.location.href = 'index.html';
+        window.location.href = 'https://tlatec.teteocan.com/';
         return;
     }
 
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnCancelPurchase?.addEventListener('click', () => {
         localStorage.removeItem('selectedPackage');
         localStorage.removeItem('tipoSuscripcion');
-        window.location.href = 'index.html';
+        window.location.href = 'https://tlatec.teteocan.com/';
     });
 });
 
@@ -687,7 +687,7 @@ async function confirmarCompraHandler() {
                 }).then(() => {
                     localStorage.removeItem('selectedPackage');
                     localStorage.removeItem('tipoSuscripcion');
-                    window.location.href = 'index.html';
+                    window.location.href = 'https://tlatec.teteocan.com/';
                 });
             }
         }

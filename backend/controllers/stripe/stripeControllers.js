@@ -3,6 +3,8 @@ const path = require('path');
 const pool = require('../../db');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const emailController = require('../../pdf/controllers/emailController');
+const stripePrices = require('../stripePrices');
+
 
 
 const preciosFile = path.join(__dirname, '../../precios.json');
@@ -62,35 +64,51 @@ const crearSuscripcionStripe = async (req, res) => {
       name: orderData.nombreCliente || clienteEmail
     });
 
-    const session = await stripe.checkout.sessions.create({
-      customer: customer.id,
-      payment_method_types: ['card'],
-      line_items: [{
-        price_data: {
-          currency: 'mxn',
-          unit_amount: montoSuscripcion * 100,
-          product_data: {
-            name: `${orderData.nombrePaquete} - ${tipo}`,
-            description: `Plan ${orderData.nombrePaquete} - Suscripción ${tipo}`
-          },
-          recurring: {
-            interval: tipo === 'anual' ? 'year' : 'month'
-          }
-        },
-        quantity: 1
-      }],
-      mode: 'subscription',
-      success_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/success.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/cancel.html`,
-      metadata: {
-        planId,
-        tipoSuscripcion: tipo,
-        clienteEmail,
-        nombrePaquete: orderData.nombrePaquete,
-        tipo: 'suscripcion',
-        extrasSeparados: JSON.stringify(extrasSeparados)
-      }
+    // Armar los line_items con los priceId de stripePrices.js
+const line_items = [];
+
+// Paquete principal
+const priceIdPaquete = stripePrices[tipo]?.[planId.toLowerCase()];
+if (!priceIdPaquete) {
+  return res.status(400).json({ message: `No se encontró el priceId para el paquete "${planId}" tipo "${tipo}"` });
+}
+line_items.push({
+  price: priceIdPaquete,
+  quantity: 1
+});
+
+
+for (const extra of orderData.extrasSeleccionados || []) {
+  const esGratis = isTitan && isAnual && extrasGratis.includes(extra);
+  if (!esGratis) {
+    const priceIdExtra = stripePrices.extras[extra];
+    if (!priceIdExtra) {
+      return res.status(400).json({ message: `No se encontró el priceId para el extra "${extra}"` });
+    }
+    line_items.push({
+      price: priceIdExtra,
+      quantity: 1
     });
+  }
+}
+
+const session = await stripe.checkout.sessions.create({
+  customer: customer.id,
+  payment_method_types: ['card'],
+  line_items,        
+  mode: 'subscription',
+  success_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/success.html?session_id={CHECKOUT_SESSION_ID}`,
+  cancel_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/cancel.html`,
+  metadata: {
+    planId,
+    tipoSuscripcion: tipo,
+    clienteEmail,
+    nombrePaquete: orderData.nombrePaquete,
+    tipo: 'suscripcion',
+    extrasSeparados: JSON.stringify(extrasSeparados)
+  }
+});
+
 
     const result = await pool.query(`
   INSERT INTO ventas (
