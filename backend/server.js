@@ -7,6 +7,7 @@ const pool = require('./db');
 
 const authRoutes = require('./auth/routes/authRoutes');
 const { verifyToken } = require('./auth/middlewares/authMiddleware');
+const { webhookStripe } = require('./controllers/stripe/stripeControllers');
 
 require('./crondb/cleanPendiente');
 
@@ -18,7 +19,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 
 
-app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), require('./routes/webhookStripe'));
+app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), webhookStripe);
 
 
 app.use(express.json());
