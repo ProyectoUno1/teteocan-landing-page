@@ -535,30 +535,44 @@ async function confirmarCompraHandler() {
 
     updatePriceWithExtras();
 
-    const servicios = [];
+    // Servicios incluidos
+    const serviciosIncluidos = [];
     document.querySelectorAll('#servicesList li').forEach(li => {
-        servicios.push(li.innerText.trim());
+        serviciosIncluidos.push(li.innerText.trim());
     });
 
-    let extrasSeleccionados = [];
-    let extrasKeys = [];
+    // Extras seleccionados
+    const extrasSeleccionados = [];
+    const extrasKeys = [];
+    let extrasPrecioTotal = 0;
 
     document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(cb => {
         const extraKey = cb.value;
         const label = cb.closest('.extra-item').querySelector('.extra-name').textContent.trim();
+        const precioExtra = Number(cb.dataset.price || 0);
 
         extrasKeys.push(extraKey);
         extrasSeleccionados.push(label);
+        extrasPrecioTotal += precioExtra;
     });
 
-    const resumenServicios = [...servicios, ...extrasSeleccionados].join(', ');
+    // Detalle completo de servicios para backend (nombre + tipo: incluido/extra)
+    const detalleServicios = serviciosIncluidos.map(s => ({ nombre: s, tipo: 'incluido' }))
+        .concat(extrasSeleccionados.map(e => ({ nombre: e, tipo: 'extra' })));
+
+    const resumenServicios = [...serviciosIncluidos, ...extrasSeleccionados].join(', ');
+
+    // Total base + extras
+    const totalPrice = basePrice + extrasPrecioTotal;
 
     const orderData = {
         nombrePaquete: selectedPackage.name,
-        nombreCliente: clienteEmail.split('@')[0], // Extraer nombre del email como fallback
+        nombreCliente: clienteEmail.split('@')[0], // Nombre como fallback
+        serviciosIncluidos,
         resumenServicios,
         extrasSeleccionados: extrasKeys,
-        monto: basePrice, // Solo el precio base del paquete, los extras se procesan por separado
+        detalleServicios,
+        monto: totalPrice, // precio base + extras
         fecha: new Date().toLocaleDateString('es-MX'),
         clienteEmail,
         mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.",
@@ -577,7 +591,7 @@ async function confirmarCompraHandler() {
         const esConSuscripcion = paquetesConSuscripcion.includes(selectedPackage.id.toLowerCase());
 
         if (esConSuscripcion) {
-            // Crear suscripción con manejo de extrasSeparados
+            // Suscripción (con extras)
             const res = await fetch('https://tlatec-backend.onrender.com/api/stripe/crear-suscripcion', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -595,7 +609,6 @@ async function confirmarCompraHandler() {
                 throw new Error(result.message || 'ERROR AL CREAR SUSCRIPCIÓN');
             }
 
-            // Guardar extras para procesarlos después del éxito de la suscripción
             if (result.extrasSeparados && result.extrasSeparados.length > 0) {
                 localStorage.setItem('extrasPendientes', JSON.stringify({
                     email: clienteEmail,
@@ -608,7 +621,7 @@ async function confirmarCompraHandler() {
             window.location.href = result.url;
 
         } else {
-            // Paquete gratuito (explorador) - verificar si tiene extras con costo
+            // Paquete gratuito - revisar extras con costo
             const isTitan = selectedPackage?.name.toLowerCase().includes('titan');
             const isAnual = tipoSuscripcion === 'anual';
             const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
@@ -624,7 +637,7 @@ async function confirmarCompraHandler() {
             });
 
             if (tieneExtrasConCosto) {
-                // Procesar como suscripción para manejar extras
+                // Procesar extras con pago como suscripción
                 const res = await fetch('https://tlatec-backend.onrender.com/api/stripe/crear-suscripcion', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -642,7 +655,6 @@ async function confirmarCompraHandler() {
                     throw new Error(result.message || 'ERROR AL CREAR SUSCRIPCIÓN');
                 }
 
-                // Guardar extras para procesarlos después
                 if (result.extrasSeparados && result.extrasSeparados.length > 0) {
                     localStorage.setItem('extrasPendientes', JSON.stringify({
                         email: clienteEmail,
@@ -652,6 +664,7 @@ async function confirmarCompraHandler() {
 
                 Swal.close();
                 window.location.href = result.url;
+
             } else {
                 // Gratis sin extras con costo
                 orderData.stripe_session_id = 'free-' + Date.now();

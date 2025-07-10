@@ -93,28 +93,28 @@ const crearSuscripcionStripe = async (req, res) => {
     });
 
     const result = await pool.query(`
-      INSERT INTO ventas (
-        stripe_session_id,
-        cliente_email,
-        nombre_paquete,
-        resumen_servicios,
-        monto,
-        fecha,
-        mensaje_continuar,
-        tipo_suscripcion,
-        estado
-      ) VALUES ($1,$2,$3,$4,$5,NOW(),$6,$7,'pendiente')
-      RETURNING id;
-    `, [
+  INSERT INTO ventas (
+    stripe_session_id,
+    cliente_email,
+    nombre_paquete,
+    resumen_servicios,
+    detalle_servicios,
+    monto,
+    fecha,
+    mensaje_continuar,
+    tipo_suscripcion,
+    estado
+  ) VALUES ($1,$2,$3,$4,$5,$6,NOW(),$7,$8,'pendiente') RETURNING id;
+`, [
       session.id,
       clienteEmail,
       orderData.nombrePaquete,
-      `Plan ${orderData.nombrePaquete} - Suscripción ${tipo}`,
-      montoSuscripcion,
+      orderData.resumenServicios,
+      JSON.stringify(orderData.detalleServicios), 
+      orderData.monto,
       orderData.mensajeContinuar || 'La empresa se pondrá en contacto contigo.',
-      tipo
+      orderData.tipoSuscripcion
     ]);
-
     const ventaId = result.rows[0].id;
 
     const extrasDePago = extrasSeparados.filter(e => e.precio > 0);
