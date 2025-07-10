@@ -103,17 +103,18 @@ const crearSuscripcionStripe = async (req, res) => {
     mensaje_continuar,
     tipo_suscripcion,
     estado
-  ) VALUES ($1,$2,$3,$4,$5,$6,NOW(),$7,$8,'pendiente') RETURNING id;
+  ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'pendiente') RETURNING id;
 `, [
-      session.id,
-      clienteEmail,
-      orderData.nombrePaquete,
-      orderData.resumenServicios,
-      JSON.stringify(orderData.resumenServicios), 
-      orderData.monto,
+      session.id,                            
+      clienteEmail,                          
+      orderData.nombrePaquete,              
+      orderData.resumenServicios,          
+      orderData.monto,                      
+      new Date(),                            
       orderData.mensajeContinuar || 'La empresa se pondrá en contacto contigo.',
-      orderData.tipoSuscripcion
+      orderData.tipoSuscripcion             
     ]);
+
     const ventaId = result.rows[0].id;
 
     const extrasDePago = extrasSeparados.filter(e => e.precio > 0);
