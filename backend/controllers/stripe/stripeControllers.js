@@ -3,7 +3,8 @@ const path = require('path');
 const pool = require('../../db');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const emailController = require('../../pdf/controllers/emailController');
-const stripePrices = require('../stripePrices');
+const stripePrices = require('../../stripePrices');
+
 
 
 
