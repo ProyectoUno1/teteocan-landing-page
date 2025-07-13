@@ -2,14 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const pool = require('../../db');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const emailController = require('../../pdf/controllers/emailController');
 const stripePrices = require('../../stripePrices');
-const {
-  sendOrderConfirmationToCompany,
-  sendPaymentConfirmationToClient,
-  sendOrderConfirmationToCompanyRaw,
-  sendPaymentConfirmationToClientRaw
-} = require('../../pdf/controllers/emailController');
-
 
 
 
@@ -140,33 +134,6 @@ const crearSuscripcionStripe = async (req, res) => {
       orderData.tipoSuscripcion
     ]);
 
-    const ventaId = result.rows[0].id;
-
-    const extrasDePago = extrasSeparados.filter(e => e.precio > 0);
-    if (extrasDePago.length > 0) {
-      await pool.query(`
-    INSERT INTO extras_pendientes (
-      stripe_session_id,
-      cliente_email,
-      servicios,
-      estado,
-      fecha
-    ) VALUES ($1, $2, $3, 'pendiente', NOW())
-    ON CONFLICT (stripe_session_id) DO NOTHING;
-  `, [
-        session.id,
-        clienteEmail,
-        JSON.stringify(extrasDePago)
-      ]);
-    }
-
-    res.json({
-      sessionId: session.id,
-      url: session.url,
-      extrasSeparados,
-      montoSuscripcion,
-      ventaId
-    });
 
   } catch (error) {
     console.error('Error en crearSuscripcionStripe:', error);
@@ -292,39 +259,14 @@ const webhookStripe = async (req, res) => {
           `, [session.customer, session.id]);
 
           console.log('Suscripción completada:', session.id);
+
           const ventaRes = await pool.query('SELECT * FROM ventas WHERE stripe_session_id = $1', [session.id]);
 
           if (ventaRes.rows.length > 0) {
             const venta = ventaRes.rows[0];
             const extras = JSON.parse(venta.extras_separados || '[]');
-
-            // Buscar si también pagó servicios extra aparte en pagos_unicos
-            const pagoExtraRes = await pool.query(`
-              SELECT * FROM pagos_unicos 
-              WHERE cliente_email = $1 
-              AND estado = 'completado' 
-              AND fecha_pago >= NOW() - INTERVAL '10 minutes'
-            `, [venta.cliente_email]);
-
-            let serviciosExtra = [];
-            let montoExtras = 0;
-
-            if (pagoExtraRes.rows.length > 0) {
-              const pagoExtra = pagoExtraRes.rows[0];
-              serviciosExtra = JSON.parse(pagoExtra.servicios || '[]');
-              montoExtras = parseFloat(pagoExtra.monto);
-
-              // Puedes marcar este pago como usado si gustas
-              await pool.query(`UPDATE pagos_unicos SET estado = 'usado_en_suscripcion' WHERE id = $1`, [pagoExtra.id]);
-            }
-
             const montoBase = parseFloat(venta.monto);
-            const montoTotal = montoBase + montoExtras;
-
-            const resumenServicios = [
-              ...extras.map(e => e.nombre),
-              ...serviciosExtra.map(e => e.nombre)
-            ].join(', ');
+            const resumenServicios = extras.map(e => e.nombre).join(', ');
 
             const reqMock = {
               body: {
@@ -334,17 +276,17 @@ const webhookStripe = async (req, res) => {
                 clienteEmail: venta.cliente_email,
                 mensajeContinuar: venta.mensaje_continuar,
                 tipoSuscripcion: venta.tipo_suscripcion,
-                monto: montoTotal,
+                monto: montoBase,
                 montoBase,
-                montoExtras,
-                extras: [...extras, ...serviciosExtra]
+                montoExtras: 0,
+                extras
               }
             };
-            const resMock = { status: () => ({ json: () => { } }) };
 
-            await sendOrderConfirmationToCompany(reqMock, resMock);
-            await sendPaymentConfirmationToClient(reqMock, resMock);
+            const resMock = { status: () => ({ json: () => {} }) };
 
+            await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+            await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
           }
 
         } else if (session.mode === 'payment') {
@@ -357,6 +299,7 @@ const webhookStripe = async (req, res) => {
           `, [session.customer, session.id]);
 
           console.log('Pago único completado:', session.id);
+
           const pagoRes = await pool.query('SELECT * FROM pagos_unicos WHERE stripe_session_id = $1', [session.id]);
 
           if (pagoRes.rows.length > 0) {
@@ -374,50 +317,18 @@ const webhookStripe = async (req, res) => {
                 monto: pago.monto
               }
             };
-            const resMock = { status: () => ({ json: () => { } }) };
+            const resMock = { status: () => ({ json: () => {} }) };
 
-            await sendOrderConfirmationToCompany(reqMock, resMock);
-            await sendPaymentConfirmationToClient(reqMock, resMock);
-
+            await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+            await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
           }
         }
         break;
 
       case 'invoice.payment_succeeded':
         const invoice = event.data.object;
-
-        try {
-          if (!invoice.subscription || invoice.billing_reason !== 'subscription_create') {
-            console.log('Pago exitoso sin nueva suscripción, omitido.');
-            break;
-          }
-
-          const clienteEmail = invoice.customer_email;
-          const nombrePaquete = invoice.lines.data[0]?.description || 'Paquete';
-          const monto = invoice.amount_paid / 100;
-          const fecha = new Date(invoice.created * 1000).toLocaleDateString('es-MX');
-          const tipoSuscripcion = nombrePaquete.toLowerCase().includes('anual') ? 'anual' : 'mensual';
-          const mensajeContinuar = 'En breve nos pondremos en contacto contigo para continuar con la activación de tu servicio.';
-          const resumenServicios = nombrePaquete;
-
-          const data = {
-            nombrePaquete,
-            resumenServicios,
-            monto,
-            fecha,
-            clienteEmail,
-            mensajeContinuar,
-            tipoSuscripcion
-          };
-
-          await sendOrderConfirmationToCompany(reqMock, resMock);
-          await sendPaymentConfirmationToClient(reqMock, resMock);
-
-
-          console.log('Correos de confirmación enviados desde invoice.payment_succeeded');
-
-        } catch (err) {
-          console.error('Error al procesar invoice.payment_succeeded:', err.message);
+        if (invoice.subscription) {
+          console.log('Pago de suscripción exitoso:', invoice.subscription);
         }
         break;
 
@@ -441,6 +352,7 @@ const webhookStripe = async (req, res) => {
     res.status(500).json({ error: 'Error procesando webhook' });
   }
 };
+
 
 
 // Obtener suscripciones activas del cliente
@@ -541,70 +453,7 @@ const cancelarSuscripcion = async (req, res) => {
   }
 };
 
-// Obtener extras pendientes por sesión
-const obtenerExtrasPendientes = async (req, res) => {
-  const { sessionId } = req.params;
 
-  try {
-    const result = await pool.query(`
-      SELECT cliente_email, servicios
-      FROM extras_pendientes
-      WHERE stripe_session_id = $1 AND estado = 'pendiente'
-    `, [sessionId]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'No hay servicios extra pendientes' });
-    }
-
-    res.json(result.rows[0]);
-
-  } catch (error) {
-    console.error('Error al obtener extras pendientes:', error);
-    res.status(500).json({ message: 'Error al recuperar extras', error: error.message });
-  }
-};
-
-// Marcar extras como completados (después de pagar)
-const marcarExtrasCompletados = async (req, res) => {
-  const { stripeSessionId } = req.body;
-
-  if (!stripeSessionId) {
-    return res.status(400).json({ message: 'stripeSessionId requerido' });
-  }
-
-  try {
-    await pool.query(`
-      UPDATE extras_pendientes
-      SET estado = 'completado'
-      WHERE stripe_session_id = $1
-    `, [stripeSessionId]);
-
-    res.json({ success: true });
-  } catch (error) {
-    console.error('Error al marcar extras completados:', error);
-    res.status(500).json({ message: 'Error actualizando estado de extras', error: error.message });
-  }
-};
-const marcarExtrasCancelados = async (req, res) => {
-  try {
-    const { stripeSessionId } = req.body;
-
-    if (!stripeSessionId) {
-      return res.status(400).json({ message: 'Falta stripeSessionId' });
-    }
-
-    await pool.query(`
-      UPDATE pagos_unicos
-      SET estado = 'cancelado'
-      WHERE stripe_session_id = $1 AND estado = 'pendiente'
-    `, [stripeSessionId]);
-
-    res.json({ message: 'Servicios extra marcados como cancelados' });
-  } catch (error) {
-    console.error('Error marcando extras cancelados:', error);
-    res.status(500).json({ message: 'Error interno del servidor' });
-  }
-};
 
 
 module.exports = {
@@ -613,9 +462,5 @@ module.exports = {
   webhookStripe,
   obtenerSuscripcionesCliente,
   cancelarSuscripcion,
-  obtenerExtrasPendientes,
   marcarExtrasCompletados,
-  marcarExtrasCancelados, sendOrderConfirmationToCompanyRaw,
-  sendPaymentConfirmationToClientRaw, sendOrderConfirmationToCompany,
-  sendPaymentConfirmationToClient
 };
