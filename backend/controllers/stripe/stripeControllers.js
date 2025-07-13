@@ -336,8 +336,8 @@ const webhookStripe = async (req, res) => {
             };
             const resMock = { status: () => ({ json: () => { } }) };
 
-            //await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
-            //await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+            await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+            await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
           }
 
         } else if (session.mode === 'payment') {
@@ -369,8 +369,8 @@ const webhookStripe = async (req, res) => {
             };
             const resMock = { status: () => ({ json: () => { } }) };
 
-            //await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
-            //await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+            await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+            await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
           }
         }
         break;
