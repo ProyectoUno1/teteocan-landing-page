@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const {
   crearSuscripcionStripe,
-  crearPagoUnicoStripe,
   webhookStripe,
   obtenerSuscripcionesCliente,
   cancelarSuscripcion
@@ -12,8 +11,7 @@ const {
 const webhookMiddleware = express.raw({ type: 'application/json' });
 
 // Rutas para suscripciones
-router.post('/crear-suscripcion', crearSuscripcionStripe);
-router.post('/pago-unico', crearPagoUnicoStripe);
+router.post('/crear-suscripcion', crearSuscripcionStripe);router.post('/pago-unico', crearPagoUnicoStripe);
 
 // Webhook de Stripe (debe usar raw body)
 router.post('/webhook', webhookMiddleware, webhookStripe);
