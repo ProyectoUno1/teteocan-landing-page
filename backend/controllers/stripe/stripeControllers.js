@@ -4,6 +4,11 @@ const pool = require('../../db');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const emailController = require('../../pdf/controllers/emailController');
 const stripePrices = require('../../stripePrices');
+const {
+  sendOrderConfirmationToCompanyRaw,
+  sendPaymentConfirmationToClientRaw
+} = require('../../pdf/controllers/emailController');
+
 
 
 
@@ -377,8 +382,38 @@ const webhookStripe = async (req, res) => {
 
       case 'invoice.payment_succeeded':
         const invoice = event.data.object;
-        if (invoice.subscription) {
-          console.log('Pago de suscripción exitoso:', invoice.subscription);
+
+        try {
+          if (!invoice.subscription || invoice.billing_reason !== 'subscription_create') {
+            console.log('Pago exitoso sin nueva suscripción, omitido.');
+            break;
+          }
+
+          const clienteEmail = invoice.customer_email;
+          const nombrePaquete = invoice.lines.data[0]?.description || 'Paquete';
+          const monto = invoice.amount_paid / 100;
+          const fecha = new Date(invoice.created * 1000).toLocaleDateString('es-MX');
+          const tipoSuscripcion = nombrePaquete.toLowerCase().includes('anual') ? 'anual' : 'mensual';
+          const mensajeContinuar = 'En breve nos pondremos en contacto contigo para continuar con la activación de tu servicio.';
+          const resumenServicios = nombrePaquete;
+
+          const data = {
+            nombrePaquete,
+            resumenServicios,
+            monto,
+            fecha,
+            clienteEmail,
+            mensajeContinuar,
+            tipoSuscripcion
+          };
+
+          await emailController.sendOrderConfirmationToCompanyRaw(data);
+          await emailController.sendPaymentConfirmationToClientRaw(data);
+
+          console.log('📧 Correos de confirmación enviados desde invoice.payment_succeeded');
+
+        } catch (err) {
+          console.error('❌ Error al procesar invoice.payment_succeeded:', err.message);
         }
         break;
 
@@ -576,5 +611,6 @@ module.exports = {
   cancelarSuscripcion,
   obtenerExtrasPendientes,
   marcarExtrasCompletados,
-  marcarExtrasCancelados
+  marcarExtrasCancelados, sendOrderConfirmationToCompanyRaw,
+  sendPaymentConfirmationToClientRaw
 };
