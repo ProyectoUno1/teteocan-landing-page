@@ -520,7 +520,7 @@ async function confirmarCompraHandler() {
         cancelButtonText: 'CANCELAR',
         customClass: {
             confirmButton: 'custom-alert-button',
-            cancelButton: 'btn-secondary'
+            cancelButton: '.cancel-alert-button'
         },
         inputValidator: (value) => {
             if (!value) return 'DEBES INGRESAR UN CORREO VÁLIDO';
