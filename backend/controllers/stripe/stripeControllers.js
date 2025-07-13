@@ -28,7 +28,14 @@ const crearSuscripcionStripe = async (req, res) => {
     const isAnual = tipo === 'anual';
     const extrasGratis = ['logotipo', 'tpv', 'negocios'];
     const preciosExtras = precios[tipo]?.extras || {};
-    const extrasSeparados = [];
+    let extras = [];
+    try {
+      const rawExtras = session.metadata.extrasSeparados;
+      extras = typeof rawExtras === 'string' ? JSON.parse(rawExtras) : [];
+    } catch (e) {
+      console.error('Error parseando extrasSeparados:', e);
+      extras = [];
+    }
 
     // Separar extras pagados y gratis
     for (const extra of orderData.extrasSeleccionados || []) {
@@ -241,7 +248,7 @@ const webhookStripe = async (req, res) => {
                 extras: [...extras, ...serviciosExtra]
               }
             };
-            const resMock = { status: () => ({ json: () => {} }) };
+            const resMock = { status: () => ({ json: () => { } }) };
 
             // Enviar correos
             await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
@@ -277,7 +284,7 @@ const webhookStripe = async (req, res) => {
                 monto: pago.monto
               }
             };
-            const resMock = { status: () => ({ json: () => {} }) };
+            const resMock = { status: () => ({ json: () => { } }) };
 
             await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
             await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
@@ -471,5 +478,5 @@ module.exports = {
   crearSuscripcionStripe,
   webhookStripe,
   obtenerSuscripcionesCliente,
-  cancelarSuscripcion,crearPagoUnicoStripe
+  cancelarSuscripcion, crearPagoUnicoStripe
 };
