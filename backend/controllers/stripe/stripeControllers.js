@@ -5,12 +5,8 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const emailController = require('../../pdf/controllers/emailController');
 const stripePrices = require('../../stripePrices');
 
-
-
-
 const preciosFile = path.join(__dirname, '../../precios.json');
 
-// crearSuscripcionStripe (modificado para retornar ventaId)
 const crearSuscripcionStripe = async (req, res) => {
   try {
     const { clienteEmail, orderData, tipoSuscripcion, planId } = req.body;
@@ -41,13 +37,12 @@ const crearSuscripcionStripe = async (req, res) => {
       }
 
       const esGratis = isTitan && isAnual && extrasGratis.includes(extra);
-
       extrasSeparados.push({
         nombre: extra,
         precio: esGratis ? 0 : precioExtra,
         cantidad: 1,
         descripcion: `Servicio extra: ${extra}`,
-        esGratis: esGratis
+        esGratis
       });
     }
 
@@ -58,26 +53,22 @@ const crearSuscripcionStripe = async (req, res) => {
       });
     }
 
-    let customer;
     const existing = await stripe.customers.list({ email: clienteEmail, limit: 1 });
-    customer = existing.data.length ? existing.data[0] : await stripe.customers.create({
-      email: clienteEmail,
-      name: orderData.nombreCliente || clienteEmail
-    });
+    const customer = existing.data.length
+      ? existing.data[0]
+      : await stripe.customers.create({
+          email: clienteEmail,
+          name: orderData.nombreCliente || clienteEmail
+        });
 
-    // Armar los line_items con los priceId de stripePrices.js
     const line_items = [];
 
-    // Paquete principal
     const priceIdPaquete = stripePrices[tipo]?.[planId.toLowerCase()];
     if (!priceIdPaquete) {
       return res.status(400).json({ message: `No se encontró el priceId para el paquete "${planId}" tipo "${tipo}"` });
     }
-    line_items.push({
-      price: priceIdPaquete,
-      quantity: 1
-    });
 
+    line_items.push({ price: priceIdPaquete, quantity: 1 });
 
     for (const extra of orderData.extrasSeleccionados || []) {
       const esGratis = isTitan && isAnual && extrasGratis.includes(extra);
@@ -86,10 +77,7 @@ const crearSuscripcionStripe = async (req, res) => {
         if (!priceIdExtra) {
           return res.status(400).json({ message: `No se encontró el priceId para el extra "${extra}"` });
         }
-        line_items.push({
-          price: priceIdExtra,
-          quantity: 1
-        });
+        line_items.push({ price: priceIdExtra, quantity: 1 });
       }
     }
 
@@ -110,128 +98,44 @@ const crearSuscripcionStripe = async (req, res) => {
       }
     });
 
+    const result = await pool.query(
+      `INSERT INTO ventas (
+        stripe_session_id,
+        cliente_email,
+        nombre_paquete,
+        resumen_servicios,
+        monto,
+        fecha,
+        mensaje_continuar,
+        tipo_suscripcion,
+        estado
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'pendiente') RETURNING id`,
+      [
+        session.id,
+        clienteEmail,
+        orderData.nombrePaquete,
+        orderData.resumenServicios,
+        orderData.monto,
+        new Date(),
+        orderData.mensajeContinuar || 'La empresa se pondrá en contacto contigo.',
+        orderData.tipoSuscripcion
+      ]
+    );
 
-    const result = await pool.query(`
-  INSERT INTO ventas (
-    stripe_session_id,
-    cliente_email,
-    nombre_paquete,
-    resumen_servicios,
-    monto,
-    fecha,
-    mensaje_continuar,
-    tipo_suscripcion,
-    estado
-  ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'pendiente') RETURNING id;
-`, [
-      session.id,
-      clienteEmail,
-      orderData.nombrePaquete,
-      orderData.resumenServicios,
-      orderData.monto,
-      new Date(),
-      orderData.mensajeContinuar || 'La empresa se pondrá en contacto contigo.',
-      orderData.tipoSuscripcion
-    ]);
+    const ventaId = result.rows[0].id;
 
-
+    res.json({
+      sessionId: session.id,
+      url: session.url,
+      extrasSeparados,
+      montoSuscripcion,
+      ventaId
+    });
   } catch (error) {
     console.error('Error en crearSuscripcionStripe:', error);
     res.status(500).json({ message: 'Error al crear suscripción', error: error.message });
   }
 };
-
-// crearPagoUnicoStripe (modificado para usar ventaId)
-const crearPagoUnicoStripe = async (req, res) => {
-  try {
-    const { clienteEmail, servicios, ventaId } = req.body;
-
-    if (!clienteEmail || !servicios || servicios.length === 0) {
-      return res.status(400).json({ message: 'Datos incompletos' });
-    }
-
-
-    const serviciosPagados = servicios.filter(servicio => servicio.precio > 0);
-    if (serviciosPagados.length === 0) {
-      return res.status(400).json({
-        message: 'No hay servicios con costo para procesar',
-        serviciosGratuitos: servicios.filter(s => s.precio === 0)
-      });
-    }
-
-    const montoTotal = serviciosPagados.reduce((total, s) => total + (s.precio * (s.cantidad || 1)), 0);
-
-    let customer;
-    const existing = await stripe.customers.list({ email: clienteEmail, limit: 1 });
-    customer = existing.data.length ? existing.data[0] : await stripe.customers.create({ email: clienteEmail });
-
-    const lineItems = [];
-    for (const servicio of serviciosPagados) {
-      const product = await stripe.products.create({
-        name: `Servicio Extra: ${servicio.nombre}`,
-        description: servicio.descripcion || `Servicio adicional: ${servicio.nombre}`,
-        metadata: {
-          tipo: 'servicio_extra',
-          nombre_servicio: servicio.nombre
-        }
-      });
-
-      const price = await stripe.prices.create({
-        unit_amount: servicio.precio * 100,
-        currency: 'mxn',
-        product: product.id
-      });
-
-      lineItems.push({ price: price.id, quantity: servicio.cantidad || 1 });
-    }
-
-    const session = await stripe.checkout.sessions.create({
-      customer: customer.id,
-      payment_method_types: ['card'],
-      line_items: lineItems,
-      mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/extras-success.html?session_id={CHECKOUT_SESSION_ID}&tipo=extras`,
-      cancel_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/cancel.html`,
-      metadata: {
-        clienteEmail,
-        tipo: 'pago_unico',
-        servicios: JSON.stringify(serviciosPagados),
-        cantidad_servicios: serviciosPagados.length,
-
-      }
-    });
-
-    await pool.query(`
-  INSERT INTO pagos_unicos (
-    stripe_session_id,
-    cliente_email,
-    servicios,
-    monto,
-    fecha,
-    estado
-  ) VALUES ($1, $2, $3, $4, NOW(), 'pendiente')
-  ON CONFLICT (stripe_session_id) DO NOTHING;
-`, [
-      session.id,
-      clienteEmail,
-      JSON.stringify(serviciosPagados),
-      montoTotal,
-    ]);
-
-    res.json({
-      sessionId: session.id,
-      url: session.url,
-      serviciosProcesados: serviciosPagados,
-      montoTotal,
-      serviciosGratuitos: servicios.filter(s => s.precio === 0)
-    });
-
-  } catch (error) {
-    console.error('Error en crearPagoUnicoStripe:', error);
-    res.status(500).json({ message: 'Error al crear pago único', error: error.message });
-  }
-};
-
 
 const webhookStripe = async (req, res) => {
   const sig = req.headers['stripe-signature'];
@@ -246,26 +150,27 @@ const webhookStripe = async (req, res) => {
 
   try {
     switch (event.type) {
-      case 'checkout.session.completed':
+      case 'checkout.session.completed': {
         const session = event.data.object;
 
         if (session.mode === 'subscription') {
-          await pool.query(`
-            UPDATE ventas 
-            SET estado = 'completado', 
-                stripe_customer_id = $1,
-                fecha_pago = NOW()
-            WHERE stripe_session_id = $2
-          `, [session.customer, session.id]);
+          await pool.query(
+            `UPDATE ventas 
+             SET estado = 'completado', 
+                 stripe_customer_id = $1,
+                 fecha_pago = NOW()
+             WHERE stripe_session_id = $2`,
+            [session.customer, session.id]
+          );
 
           console.log('Suscripción completada:', session.id);
-
           const ventaRes = await pool.query('SELECT * FROM ventas WHERE stripe_session_id = $1', [session.id]);
 
           if (ventaRes.rows.length > 0) {
             const venta = ventaRes.rows[0];
-            const extras = JSON.parse(venta.extras_separados || '[]');
+            const extras = JSON.parse(session.metadata.extrasSeparados || '[]');
             const montoBase = parseFloat(venta.monto);
+
             const resumenServicios = extras.map(e => e.nombre).join(', ');
 
             const reqMock = {
@@ -282,41 +187,6 @@ const webhookStripe = async (req, res) => {
                 extras
               }
             };
-
-            const resMock = { status: () => ({ json: () => {} }) };
-
-            await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
-            await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
-          }
-
-        } else if (session.mode === 'payment') {
-          await pool.query(`
-            UPDATE pagos_unicos 
-            SET estado = 'completado',
-                stripe_customer_id = $1,
-                fecha_pago = NOW()
-            WHERE stripe_session_id = $2
-          `, [session.customer, session.id]);
-
-          console.log('Pago único completado:', session.id);
-
-          const pagoRes = await pool.query('SELECT * FROM pagos_unicos WHERE stripe_session_id = $1', [session.id]);
-
-          if (pagoRes.rows.length > 0) {
-            const pago = pagoRes.rows[0];
-            const servicios = JSON.parse(pago.servicios);
-
-            const reqMock = {
-              body: {
-                ...pago,
-                nombrePaquete: 'Servicios Extra',
-                resumenServicios: servicios.map(s => `${s.nombre} (${s.cantidad || 1}x)`).join(', '),
-                clienteEmail: pago.cliente_email,
-                mensajeContinuar: 'Servicios extra procesados correctamente.',
-                tipoSuscripcion: 'pago_unico',
-                monto: pago.monto
-              }
-            };
             const resMock = { status: () => ({ json: () => {} }) };
 
             await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
@@ -324,23 +194,27 @@ const webhookStripe = async (req, res) => {
           }
         }
         break;
+      }
 
-      case 'invoice.payment_succeeded':
+      case 'invoice.payment_succeeded': {
         const invoice = event.data.object;
         if (invoice.subscription) {
           console.log('Pago de suscripción exitoso:', invoice.subscription);
         }
         break;
+      }
 
-      case 'customer.subscription.deleted':
+      case 'customer.subscription.deleted': {
         const subscription = event.data.object;
-        await pool.query(`
-          UPDATE ventas 
-          SET estado = 'cancelado'
-          WHERE stripe_customer_id = $1 AND estado = 'completado'
-        `, [subscription.customer]);
+        await pool.query(
+          `UPDATE ventas 
+           SET estado = 'cancelado'
+           WHERE stripe_customer_id = $1 AND estado = 'completado'`,
+          [subscription.customer]
+        );
         console.log('Suscripción cancelada:', subscription.id);
         break;
+      }
 
       default:
         console.log(`Evento no manejado: ${event.type}`);
@@ -353,9 +227,6 @@ const webhookStripe = async (req, res) => {
   }
 };
 
-
-
-// Obtener suscripciones activas del cliente
 const obtenerSuscripcionesCliente = async (req, res) => {
   try {
     const { clienteEmail } = req.params;
@@ -364,22 +235,20 @@ const obtenerSuscripcionesCliente = async (req, res) => {
       return res.status(400).json({ message: 'Email requerido' });
     }
 
-    // Buscar en base de datos
-    const result = await pool.query(`
-      SELECT * FROM ventas 
-      WHERE cliente_email = $1 AND estado = 'completado'
-      ORDER BY fecha DESC
-    `, [clienteEmail]);
+    const result = await pool.query(
+      `SELECT * FROM ventas 
+       WHERE cliente_email = $1 AND estado = 'completado'
+       ORDER BY fecha DESC`,
+      [clienteEmail]
+    );
 
     const suscripciones = [];
 
     for (const venta of result.rows) {
       if (venta.stripe_customer_id) {
         try {
-          // Obtener suscripciones de Stripe
-          const customer = await stripe.customers.retrieve(venta.stripe_customer_id);
           const subscriptions = await stripe.subscriptions.list({
-            customer: customer.id,
+            customer: venta.stripe_customer_id,
             status: 'active'
           });
 
@@ -395,24 +264,19 @@ const obtenerSuscripcionesCliente = async (req, res) => {
               interval: sub.items.data[0].price.recurring.interval
             });
           }
-        } catch (stripeError) {
-          console.error('Error obteniendo datos de Stripe:', stripeError);
+        } catch (err) {
+          console.error('Error obteniendo suscripciones en Stripe:', err);
         }
       }
     }
 
     res.json({ suscripciones });
-
   } catch (error) {
     console.error('Error obteniendo suscripciones:', error);
-    res.status(500).json({
-      message: 'Error obteniendo suscripciones',
-      error: error.message
-    });
+    res.status(500).json({ message: 'Error al obtener suscripciones', error: error.message });
   }
 };
 
-// Cancelar suscripción
 const cancelarSuscripcion = async (req, res) => {
   try {
     const { subscriptionId } = req.params;
@@ -422,17 +286,16 @@ const cancelarSuscripcion = async (req, res) => {
       return res.status(400).json({ message: 'Datos incompletos' });
     }
 
-    // Verificar que la suscripción pertenece al cliente
-    const result = await pool.query(`
-      SELECT stripe_customer_id FROM ventas 
-      WHERE cliente_email = $1 AND estado = 'completado'
-    `, [clienteEmail]);
+    const result = await pool.query(
+      `SELECT stripe_customer_id FROM ventas 
+       WHERE cliente_email = $1 AND estado = 'completado'`,
+      [clienteEmail]
+    );
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Suscripción no encontrada' });
     }
 
-    // Cancelar en Stripe
     const subscription = await stripe.subscriptions.cancel(subscriptionId);
 
     res.json({
@@ -443,24 +306,15 @@ const cancelarSuscripcion = async (req, res) => {
         canceled_at: new Date(subscription.canceled_at * 1000)
       }
     });
-
   } catch (error) {
     console.error('Error cancelando suscripción:', error);
-    res.status(500).json({
-      message: 'Error cancelando suscripción',
-      error: error.message
-    });
+    res.status(500).json({ message: 'Error cancelando suscripción', error: error.message });
   }
 };
 
-
-
-
 module.exports = {
   crearSuscripcionStripe,
-  crearPagoUnicoStripe,
   webhookStripe,
   obtenerSuscripcionesCliente,
   cancelarSuscripcion
- 
 };
