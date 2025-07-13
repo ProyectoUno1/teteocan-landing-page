@@ -1150,3 +1150,39 @@ input[type="checkbox"]:focus {
     scroll-behavior: auto !important;
   }
 }
+
+.custom-alert-button {
+  background: linear-gradient(135deg, #3773b8, #5f8fc5);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 153, 255, 0.3);
+  transition: background 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.custom-alert-button:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #008ae6, #2eb8ff);
+}
+
+.cancel-alert-button {
+  background: linear-gradient(135deg, #62697159, #455363);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 153, 255, 0.3);
+  transition: background 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.cancel-alert-button:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #486679, #2eb8ff);
+}
