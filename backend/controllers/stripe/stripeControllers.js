@@ -28,16 +28,8 @@ const crearSuscripcionStripe = async (req, res) => {
     const isAnual = tipo === 'anual';
     const extrasGratis = ['logotipo', 'tpv', 'negocios'];
     const preciosExtras = precios[tipo]?.extras || {};
-    let extras = [];
-    try {
-      const rawExtras = session.metadata.extrasSeparados;
-      extras = typeof rawExtras === 'string' ? JSON.parse(rawExtras) : [];
-    } catch (e) {
-      console.error('Error parseando extrasSeparados:', e);
-      extras = [];
-    }
+    const extrasSeparados = [];
 
-    // Separar extras pagados y gratis
     for (const extra of orderData.extrasSeleccionados || []) {
       const precioExtra = preciosExtras[extra];
       if (precioExtra === undefined) {
