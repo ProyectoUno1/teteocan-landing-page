@@ -11,10 +11,10 @@ module.exports = {
     impulso: 'price_1RjDVN4TRm9gbpiRa1LiD5pw'
   },
   extras: {
-    scraping: 'price_1RjFQcIy1pR29nhZgbnntTFm',
-    basededatos: 'price_1RjFRIIy1pR29nhZe6tPrDMN',
-    negocios: 'price_1RjFRuIy1pR29nhZPivjnIR5',
-    tpv: 'price_1RimHQIy1pR29nhZLlkXucgM',
-    logotipo: 'price_1RjFScIy1pR29nhZR51sNMMs'
+    scraping: 'price_1RjDOF4TRm9gbpiRSIkaK3vL',
+    basededatos: 'price_1RjDPZ4TRm9gbpiRDozpb8gI',
+    negocios: 'price_1RjDQ24TRm9gbpiRHnRNWhNP',
+    tpv: 'price_1RjDQO4TRm9gbpiRSX0EKT2y',
+    logotipo: 'price_1RjDR44TRm9gbpiRAxQso5Lj'
   }
 };
