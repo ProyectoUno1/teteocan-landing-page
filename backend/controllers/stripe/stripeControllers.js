@@ -197,15 +197,19 @@ const webhookStripe = async (req, res) => {
             let extras = [];
             try {
               const rawExtras = session.metadata.extrasSeparados;
-              if (typeof rawExtras === 'string' && rawExtras.trim().startsWith('[')) {
+
+              if (typeof rawExtras === 'string') {
                 extras = JSON.parse(rawExtras);
+              } else if (Array.isArray(rawExtras)) {
+                extras = rawExtras;
               } else {
-                console.warn('Formato inesperado en metadata.extrasSeparados:', rawExtras);
+                console.warn('Formato inesperado en extrasSeparados:', rawExtras);
               }
             } catch (e) {
               console.error('Error parseando extrasSeparados en webhook:', e);
               extras = [];
             }
+
 
             const montoBase = parseFloat(venta.monto);
 
