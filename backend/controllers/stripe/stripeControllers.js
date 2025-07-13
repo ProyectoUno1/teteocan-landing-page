@@ -227,11 +227,29 @@ const webhookStripe = async (req, res) => {
 
             if (pagoExtraRes.rows.length > 0) {
               const pagoExtra = pagoExtraRes.rows[0];
-              serviciosExtra = JSON.parse(pagoExtra.servicios || '[]');
+
+              try {
+                const rawServicios = pagoExtra.servicios;
+
+                if (typeof rawServicios === 'string') {
+                  serviciosExtra = JSON.parse(rawServicios);
+                } else if (Array.isArray(rawServicios)) {
+                  serviciosExtra = rawServicios;
+                } else {
+                  console.warn('Formato inesperado en pagoExtra.servicios:', rawServicios);
+                }
+              } catch (e) {
+                console.error('Error parseando serviciosExtra en webhook:', e);
+                serviciosExtra = [];
+              }
+
               montoExtras = parseFloat(pagoExtra.monto);
 
               // Marcar pago único como usado para evitar doble uso
-              await pool.query(`UPDATE pagos_unicos SET estado = 'usado_en_suscripcion' WHERE id = $1`, [pagoExtra.id]);
+              await pool.query(
+                `UPDATE pagos_unicos SET estado = 'usado_en_suscripcion' WHERE id = $1`,
+                [pagoExtra.id]
+              );
             }
 
             const resumenServicios = [
