@@ -2,9 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const pool = require('../../db');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const emailController = require('../../pdf/controllers/emailController');
 const stripePrices = require('../../stripePrices');
 const {
+  sendOrderConfirmationToCompany,
+  sendPaymentConfirmationToClient,
   sendOrderConfirmationToCompanyRaw,
   sendPaymentConfirmationToClientRaw
 } = require('../../pdf/controllers/emailController');
@@ -341,8 +342,9 @@ const webhookStripe = async (req, res) => {
             };
             const resMock = { status: () => ({ json: () => { } }) };
 
-            await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
-            await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+            await sendOrderConfirmationToCompany(reqMock, resMock);
+            await sendPaymentConfirmationToClient(reqMock, resMock);
+
           }
 
         } else if (session.mode === 'payment') {
@@ -374,8 +376,9 @@ const webhookStripe = async (req, res) => {
             };
             const resMock = { status: () => ({ json: () => { } }) };
 
-            await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
-            await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+            await sendOrderConfirmationToCompany(reqMock, resMock);
+            await sendPaymentConfirmationToClient(reqMock, resMock);
+
           }
         }
         break;
@@ -407,13 +410,14 @@ const webhookStripe = async (req, res) => {
             tipoSuscripcion
           };
 
-          await emailController.sendOrderConfirmationToCompanyRaw(data);
-          await emailController.sendPaymentConfirmationToClientRaw(data);
+          await sendOrderConfirmationToCompany(reqMock, resMock);
+          await sendPaymentConfirmationToClient(reqMock, resMock);
 
-          console.log('📧 Correos de confirmación enviados desde invoice.payment_succeeded');
+
+          console.log('Correos de confirmación enviados desde invoice.payment_succeeded');
 
         } catch (err) {
-          console.error('❌ Error al procesar invoice.payment_succeeded:', err.message);
+          console.error('Error al procesar invoice.payment_succeeded:', err.message);
         }
         break;
 
@@ -612,5 +616,6 @@ module.exports = {
   obtenerExtrasPendientes,
   marcarExtrasCompletados,
   marcarExtrasCancelados, sendOrderConfirmationToCompanyRaw,
-  sendPaymentConfirmationToClientRaw
+  sendPaymentConfirmationToClientRaw, sendOrderConfirmationToCompany,
+  sendPaymentConfirmationToClient
 };
