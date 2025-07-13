@@ -30,6 +30,7 @@ const crearSuscripcionStripe = async (req, res) => {
     const preciosExtras = precios[tipo]?.extras || {};
     const extrasSeparados = [];
 
+    // Separar extras pagados y gratis
     for (const extra of orderData.extrasSeleccionados || []) {
       const precioExtra = preciosExtras[extra];
       if (precioExtra === undefined) {
@@ -37,6 +38,7 @@ const crearSuscripcionStripe = async (req, res) => {
       }
 
       const esGratis = isTitan && isAnual && extrasGratis.includes(extra);
+
       extrasSeparados.push({
         nombre: extra,
         precio: esGratis ? 0 : precioExtra,
@@ -53,39 +55,39 @@ const crearSuscripcionStripe = async (req, res) => {
       });
     }
 
+    let customer;
     const existing = await stripe.customers.list({ email: clienteEmail, limit: 1 });
-    const customer = existing.data.length
-      ? existing.data[0]
-      : await stripe.customers.create({
-          email: clienteEmail,
-          name: orderData.nombreCliente || clienteEmail
-        });
+    customer = existing.data.length ? existing.data[0] : await stripe.customers.create({
+      email: clienteEmail,
+      name: orderData.nombreCliente || clienteEmail
+    });
 
     const line_items = [];
 
+    // Precio del paquete principal (suscripción)
     const priceIdPaquete = stripePrices[tipo]?.[planId.toLowerCase()];
     if (!priceIdPaquete) {
       return res.status(400).json({ message: `No se encontró el priceId para el paquete "${planId}" tipo "${tipo}"` });
     }
-
     line_items.push({ price: priceIdPaquete, quantity: 1 });
 
-    for (const extra of orderData.extrasSeleccionados || []) {
-      const esGratis = isTitan && isAnual && extrasGratis.includes(extra);
-      if (!esGratis) {
-        const priceIdExtra = stripePrices.extras[extra];
+    // Extras que NO son gratis, agregados como pago único con su priceId
+    for (const extra of extrasSeparados) {
+      if (!extra.esGratis && extra.precio > 0) {
+        const priceIdExtra = stripePrices.extras[extra.nombre];
         if (!priceIdExtra) {
-          return res.status(400).json({ message: `No se encontró el priceId para el extra "${extra}"` });
+          return res.status(400).json({ message: `No se encontró el priceId para el extra "${extra.nombre}"` });
         }
-        line_items.push({ price: priceIdExtra, quantity: 1 });
+        line_items.push({ price: priceIdExtra, quantity: extra.cantidad || 1 });
       }
     }
 
+    // Crear sesión stripe con todos los items juntos (modo suscripción)
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
       payment_method_types: ['card'],
       line_items,
-      mode: 'subscription',
+      mode: 'subscription',  // TODO: confirmar si Stripe acepta line_items con productos únicos aquí
       success_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/cancel.html`,
       metadata: {
@@ -98,8 +100,9 @@ const crearSuscripcionStripe = async (req, res) => {
       }
     });
 
-    const result = await pool.query(
-      `INSERT INTO ventas (
+    // Guardar venta en la tabla ventas
+    const result = await pool.query(`
+      INSERT INTO ventas (
         stripe_session_id,
         cliente_email,
         nombre_paquete,
@@ -109,20 +112,40 @@ const crearSuscripcionStripe = async (req, res) => {
         mensaje_continuar,
         tipo_suscripcion,
         estado
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'pendiente') RETURNING id`,
-      [
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'pendiente') RETURNING id;
+    `, [
+      session.id,
+      clienteEmail,
+      orderData.nombrePaquete,
+      orderData.resumenServicios,
+      orderData.monto,
+      new Date(),
+      orderData.mensajeContinuar || 'La empresa se pondrá en contacto contigo.',
+      orderData.tipoSuscripcion
+    ]);
+    const ventaId = result.rows[0].id;
+
+    // Guardar pagos únicos en la tabla pagos_unicos, pero solo extras pagados > 0
+    const extrasPagados = extrasSeparados.filter(e => !e.esGratis && e.precio > 0);
+    if (extrasPagados.length > 0) {
+      await pool.query(`
+        INSERT INTO pagos_unicos (
+          stripe_session_id,
+          cliente_email,
+          servicios,
+          monto,
+          fecha,
+          estado
+        ) VALUES ($1,$2,$3,$4,$5,'pendiente')
+        ON CONFLICT (stripe_session_id) DO NOTHING;
+      `, [
         session.id,
         clienteEmail,
-        orderData.nombrePaquete,
-        orderData.resumenServicios,
-        orderData.monto,
-        new Date(),
-        orderData.mensajeContinuar || 'La empresa se pondrá en contacto contigo.',
-        orderData.tipoSuscripcion
-      ]
-    );
-
-    const ventaId = result.rows[0].id;
+        JSON.stringify(extrasPagados),
+        extrasPagados.reduce((acc, e) => acc + e.precio * (e.cantidad || 1), 0),
+        new Date()
+      ]);
+    }
 
     res.json({
       sessionId: session.id,
@@ -131,11 +154,13 @@ const crearSuscripcionStripe = async (req, res) => {
       montoSuscripcion,
       ventaId
     });
+
   } catch (error) {
     console.error('Error en crearSuscripcionStripe:', error);
     res.status(500).json({ message: 'Error al crear suscripción', error: error.message });
   }
 };
+
 
 const webhookStripe = async (req, res) => {
   const sig = req.headers['stripe-signature'];
@@ -154,6 +179,7 @@ const webhookStripe = async (req, res) => {
         const session = event.data.object;
 
         if (session.mode === 'subscription') {
+          // Actualizar estado de venta en 'ventas'
           await pool.query(
             `UPDATE ventas 
              SET estado = 'completado', 
@@ -164,6 +190,7 @@ const webhookStripe = async (req, res) => {
           );
 
           console.log('Suscripción completada:', session.id);
+
           const ventaRes = await pool.query('SELECT * FROM ventas WHERE stripe_session_id = $1', [session.id]);
 
           if (ventaRes.rows.length > 0) {
@@ -171,8 +198,35 @@ const webhookStripe = async (req, res) => {
             const extras = JSON.parse(session.metadata.extrasSeparados || '[]');
             const montoBase = parseFloat(venta.monto);
 
-            const resumenServicios = extras.map(e => e.nombre).join(', ');
+            // Buscar pagos únicos relacionados a la misma sesión
+            const pagoExtraRes = await pool.query(`
+              SELECT * FROM pagos_unicos
+              WHERE cliente_email = $1
+                AND stripe_session_id = $2
+                AND estado IN ('pendiente', 'completado')
+                AND fecha >= NOW() - INTERVAL '10 minutes'
+            `, [venta.cliente_email, session.id]);
 
+            let serviciosExtra = [];
+            let montoExtras = 0;
+
+            if (pagoExtraRes.rows.length > 0) {
+              const pagoExtra = pagoExtraRes.rows[0];
+              serviciosExtra = JSON.parse(pagoExtra.servicios || '[]');
+              montoExtras = parseFloat(pagoExtra.monto);
+
+              // Marcar pago único como usado para evitar doble uso
+              await pool.query(`UPDATE pagos_unicos SET estado = 'usado_en_suscripcion' WHERE id = $1`, [pagoExtra.id]);
+            }
+
+            const resumenServicios = [
+              ...extras.map(e => e.nombre),
+              ...serviciosExtra.map(e => e.nombre)
+            ].join(', ');
+
+            const montoTotal = montoBase + montoExtras;
+
+            // Preparar objeto simulado para enviar correos
             const reqMock = {
               body: {
                 ...venta,
@@ -181,10 +235,46 @@ const webhookStripe = async (req, res) => {
                 clienteEmail: venta.cliente_email,
                 mensajeContinuar: venta.mensaje_continuar,
                 tipoSuscripcion: venta.tipo_suscripcion,
-                monto: montoBase,
+                monto: montoTotal,
                 montoBase,
-                montoExtras: 0,
-                extras
+                montoExtras,
+                extras: [...extras, ...serviciosExtra]
+              }
+            };
+            const resMock = { status: () => ({ json: () => {} }) };
+
+            // Enviar correos
+            await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
+            await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
+          }
+        } else if (session.mode === 'payment') {
+          // Caso para pagos únicos directos (sin suscripción)
+          await pool.query(
+            `UPDATE pagos_unicos 
+             SET estado = 'completado',
+                 stripe_customer_id = $1,
+                 fecha_pago = NOW()
+             WHERE stripe_session_id = $2`,
+            [session.customer, session.id]
+          );
+
+          console.log('Pago único completado:', session.id);
+
+          const pagoRes = await pool.query('SELECT * FROM pagos_unicos WHERE stripe_session_id = $1', [session.id]);
+
+          if (pagoRes.rows.length > 0) {
+            const pago = pagoRes.rows[0];
+            const servicios = JSON.parse(pago.servicios);
+
+            const reqMock = {
+              body: {
+                ...pago,
+                nombrePaquete: 'Servicios Extra',
+                resumenServicios: servicios.map(s => `${s.nombre} (${s.cantidad || 1}x)`).join(', '),
+                clienteEmail: pago.cliente_email,
+                mensajeContinuar: 'Servicios extra procesados correctamente.',
+                tipoSuscripcion: 'pago_unico',
+                monto: pago.monto
               }
             };
             const resMock = { status: () => ({ json: () => {} }) };
@@ -226,6 +316,7 @@ const webhookStripe = async (req, res) => {
     res.status(500).json({ error: 'Error procesando webhook' });
   }
 };
+
 
 const obtenerSuscripcionesCliente = async (req, res) => {
   try {
