@@ -461,6 +461,6 @@ module.exports = {
   crearPagoUnicoStripe,
   webhookStripe,
   obtenerSuscripcionesCliente,
-  cancelarSuscripcion,
-  marcarExtrasCompletados,
+  cancelarSuscripcion
+ 
 };
