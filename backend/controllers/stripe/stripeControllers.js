@@ -403,9 +403,73 @@ const cancelarSuscripcion = async (req, res) => {
   }
 };
 
+const crearPagoUnicoStripe = async (req, res) => {
+  try {
+    const { clienteEmail, serviciosSeleccionados = [], resumenServicios, monto } = req.body;
+
+    if (!clienteEmail || !serviciosSeleccionados.length || !monto) {
+      return res.status(400).json({ message: 'Faltan datos obligatorios para el pago único' });
+    }
+
+    const line_items = serviciosSeleccionados.map(servicio => {
+      const priceId = stripePrices.extras[servicio.nombre];
+      if (!priceId) throw new Error(`No se encontró priceId para el servicio ${servicio.nombre}`);
+
+      return {
+        price: priceId,
+        quantity: servicio.cantidad || 1
+      };
+    });
+
+    const customer = await stripe.customers.create({
+      email: clienteEmail
+    });
+
+    const session = await stripe.checkout.sessions.create({
+      customer: customer.id,
+      payment_method_types: ['card'],
+      line_items,
+      mode: 'payment',
+      success_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/success.html?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL || 'https://tlatec.teteocan.com'}/stripe/cancel.html`,
+      metadata: {
+        tipo: 'pago_unico',
+        clienteEmail
+      }
+    });
+
+    await pool.query(`
+      INSERT INTO pagos_unicos (
+        stripe_session_id,
+        cliente_email,
+        servicios,
+        monto,
+        fecha,
+        estado
+      ) VALUES ($1, $2, $3, $4, $5, 'pendiente')
+    `, [
+      session.id,
+      clienteEmail,
+      JSON.stringify(serviciosSeleccionados),
+      monto,
+      new Date()
+    ]);
+
+    res.json({
+      sessionId: session.id,
+      url: session.url
+    });
+
+  } catch (error) {
+    console.error('Error en crearPagoUnicoStripe:', error);
+    res.status(500).json({ message: 'Error al crear pago único', error: error.message });
+  }
+};
+
+
 module.exports = {
   crearSuscripcionStripe,
   webhookStripe,
   obtenerSuscripcionesCliente,
-  cancelarSuscripcion
+  cancelarSuscripcion,crearPagoUnicoStripe
 };
