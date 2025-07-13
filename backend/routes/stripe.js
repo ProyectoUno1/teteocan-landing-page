@@ -5,8 +5,7 @@ const {
   crearPagoUnicoStripe,
   webhookStripe,
   obtenerSuscripcionesCliente,
-  cancelarSuscripcion,obtenerExtrasPendientes,
-  marcarExtrasCompletados,marcarExtrasCancelados
+  cancelarSuscripcion
 } = require('../controllers/stripe/stripeControllers');
 
 // Middleware para webhook (raw body)
@@ -23,9 +22,6 @@ router.post('/webhook', webhookMiddleware, webhookStripe);
 router.get('/suscripciones/:clienteEmail', obtenerSuscripcionesCliente);
 router.delete('/suscripciones/:subscriptionId', cancelarSuscripcion);
 
-router.get('/extras-pendientes/:sessionId', obtenerExtrasPendientes);
-router.post('/extras/marcar-completado', marcarExtrasCompletados);
-router.post('/extras/cancelar', marcarExtrasCancelados);
 
 
 module.exports = router;
