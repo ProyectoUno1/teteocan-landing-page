@@ -194,7 +194,19 @@ const webhookStripe = async (req, res) => {
 
           if (ventaRes.rows.length > 0) {
             const venta = ventaRes.rows[0];
-            const extras = JSON.parse(session.metadata.extrasSeparados || '[]');
+            let extras = [];
+            try {
+              const rawExtras = session.metadata.extrasSeparados;
+              if (typeof rawExtras === 'string' && rawExtras.trim().startsWith('[')) {
+                extras = JSON.parse(rawExtras);
+              } else {
+                console.warn('Formato inesperado en metadata.extrasSeparados:', rawExtras);
+              }
+            } catch (e) {
+              console.error('Error parseando extrasSeparados en webhook:', e);
+              extras = [];
+            }
+
             const montoBase = parseFloat(venta.monto);
 
             // Buscar pagos únicos relacionados a la misma sesión
