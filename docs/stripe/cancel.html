@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pago Cancelado - Tlatec</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-     <link rel="icon" href="/docs/assets/images/LogoTlatec.ico" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/docs/assets/images/LogoTlatec.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="cancelStyle_v1.css">
 </head>
+
 <body>
     <div class="cancel-container">
         <div class="cancel-header">
             <div class="cancel-icon">
                 <i class="fas fa-times-circle"></i>
             </div>
-            
+
             <h1 class="cancel-title">Pago Cancelado</h1>
-            
+
             <p class="cancel-message">
                 Tu proceso de pago ha sido cancelado. No se ha realizado ningún cargo a tu método de pago.
             </p>
         </div>
-        
+
         <div class="info-section">
             <h4><i class="fas fa-info-circle"></i> Posibles razones:</h4>
             <ul>
@@ -34,7 +37,7 @@
                 <li>Cerraste la ventana de pago accidentalmente</li>
             </ul>
         </div>
-        
+
         <div class="action-buttons">
             <a href="../index.html#package" class="btn btn-retry">
                 <i class="fas fa-redo"></i> Intentar de nuevo
@@ -43,34 +46,121 @@
                 <i class="fas fa-home"></i> Volver al inicio
             </a>
         </div>
-        
+
         <div class="info-section help">
             <h4><i class="fas fa-headset"></i> ¿Necesitas ayuda?</h4>
-            <p>Si experimentaste algún problema técnico o tienes preguntas sobre nuestros paquetes, no dudes en contactarnos.</p>
-            
+            <p>Si experimentaste algún problema técnico o tienes preguntas sobre nuestros paquetes, no dudes en
+                contactarnos.</p>
+
             <div class="contact-info">
-                <a href="mailto:soporte@teteocan.com" class="contact-item">
+                <a href="mailto:contacto@teteocan.com?subject=Consulta%20desde%20la%20página%20de%20pago&body=Hola,%20tengo%20una%20consulta%20sobre%20los%20paquetes."
+                    class="contact-item" id="correoBtn">
                     <i class="fas fa-envelope"></i>
-                    <span>tlatec@teteocan.com</span>
+                    <span>contacto@teteocan.com</span>
                 </a>
-                <a href="https://wa.me/contacto" class="contact-item" target="_blank">
+
+                <a href="#" id="whatsappBtn" class="contact-item">
                     <i class="fab fa-whatsapp"></i>
                     <span>WhatsApp</span>
                 </a>
+
+                <!-- Formulario oculto -->
+                <div id="formContainer" style="display: none; margin-top: 20px;">
+                    <form id="contactForm">
+                        <input type="text" name="nombre" placeholder="Tu nombre" required
+                            style="width: 100%; padding: 8px; margin-bottom: 8px;">
+                        <input type="email" name="email" placeholder="Tu correo" required
+                            style="width: 100%; padding: 8px; margin-bottom: 8px;">
+                        <textarea name="mensaje" placeholder="Tu mensaje" required
+                            style="width: 100%; padding: 8px; margin-bottom: 8px;"></textarea>
+                        <button type="submit">Enviar mensaje</button>
+                        <p id="responseMessage" style="color: green; margin-top: 10px;"></p>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>
-    
+
     <script>
         // Opcional: obtener parámetros de la URL para logging
         const urlParams = new URLSearchParams(window.location.search);
         const sessionId = urlParams.get('session_id');
-        
+
         if (sessionId) {
             console.log('Cancelled Session ID:', sessionId);
-            // Aquí podrías hacer una llamada al backend para logging
+
         }
-        
+        document.addEventListener('DOMContentLoaded', function () {
+            const correoBtn = document.getElementById('correoBtn');
+            const formContainer = document.getElementById('formContainer');
+            const responseMessage = document.getElementById('responseMessage');
+
+            correoBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                formContainer.style.display = 'block';
+                formContainer.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            document.getElementById('contactForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+
+                try {
+                    const res = await fetch('/api/contacto', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await res.json();
+
+                    if (res.ok) {
+                        responseMessage.style.color = 'green';
+                        responseMessage.textContent = result.message || 'Mensaje enviado correctamente.';
+                        e.target.reset();
+                    } else {
+                        responseMessage.style.color = 'red';
+                        responseMessage.textContent = result.message || 'Error enviando el mensaje.';
+                    }
+                } catch (error) {
+                    responseMessage.style.color = 'red';
+                    responseMessage.textContent = 'Error enviando el mensaje. Intenta nuevamente.';
+                    console.error(error);
+                }
+            });
+
+            const whatsappBtn = document.getElementById('whatsappBtn');
+
+            if (whatsappBtn) {
+                function handleClick(e) {
+                    e.preventDefault();
+                    this.style.opacity = '1';
+
+                    const phoneNumber = '5511987439';
+                    const message = encodeURIComponent('¡Hola! Estoy teniendo problemas. ¿Podrían brindarme ayuda?');
+                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                    const whatsappUrl = isMobile
+                        ? `https://wa.me/${phoneNumber}?text=${message}`
+                        : `https://web.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
+
+                    window.open(whatsappUrl, '_blank');
+                }
+
+                whatsappBtn.addEventListener('click', handleClick);
+
+                whatsappBtn.addEventListener('touchstart', function () {
+                    this.style.opacity = '0.9';
+                });
+
+                whatsappBtn.addEventListener('touchend', function () {
+                    this.style.opacity = '1';
+                });
+            }
+        });
+
         // Auto-redirect después de 30 segundos (opcional)
         setTimeout(() => {
             const autoRedirect = confirm('¿Te gustaría volver a la página principal?');
@@ -80,4 +170,5 @@
         }, 30000);
     </script>
 </body>
+
 </html>

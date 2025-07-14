@@ -24,7 +24,7 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), webho
 
 app.use(express.json());
 
-
+app.use('/api/contacto', require('./routes/contacto'));
 app.use('/api/pagos', require('./routes/pagos'));
 app.use('/api/stripe', require('./routes/stripe'));
 app.use('/api/precios', require('./routes/precios'));
