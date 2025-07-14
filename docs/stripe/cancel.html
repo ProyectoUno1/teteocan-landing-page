@@ -109,7 +109,7 @@
                 const data = Object.fromEntries(formData.entries());
 
                 try {
-                    const res = await fetch('/api/contacto', {
+                    const res = await fetch('https://tlatec-backend.onrender.com/api/contacto', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
@@ -162,12 +162,7 @@
         });
 
         // Auto-redirect después de 30 segundos (opcional)
-        setTimeout(() => {
-            const autoRedirect = confirm('¿Te gustaría volver a la página principal?');
-            if (autoRedirect) {
-                window.location.href = 'https://tlatec.teteocan.com/';
-            }
-        }, 30000);
+        
     </script>
 </body>
 
