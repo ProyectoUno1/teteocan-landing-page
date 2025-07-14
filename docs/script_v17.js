@@ -530,5 +530,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+fetch('https://tlatec-backend.onrender.com/ping')
+    .then(() => console.log('Ping enviado al backend para despertarlo'))
+    .catch(err => console.warn('Error al hacer ping al backend:', err));
+
 
 
