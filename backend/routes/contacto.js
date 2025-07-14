@@ -21,9 +21,9 @@ router.post('/', async (req, res) => {
     });
 
     const mailOptions = {
-      from: `"Formulario Tlatec" <${process.env.EMAIL_USER}>`,
+      from: `"Reporte de problema Tlatec" <${process.env.EMAIL_USER}>`,
       to: process.env.EMPRESA_EMAIL,
-      subject: `Consulta desde la página: ${nombre}`,
+      subject: `Consulta desde la página Tlatec: ${nombre}`,
       text: `Nombre: ${nombre}\nCorreo: ${email}\nMensaje:\n${mensaje}`,
       html: `<p><strong>Nombre:</strong> ${nombre}</p>
              <p><strong>Correo:</strong> ${email}</p>
