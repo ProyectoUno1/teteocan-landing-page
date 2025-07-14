@@ -245,9 +245,7 @@ function formatCurrency(amount) {
     }).format(amount);
 }
 
-// Log page load for analytics (demo)
-console.log('Teteocan Landing Page loaded successfully');
-console.log('Page load time:', performance.now(), 'ms');
+
 
 // Performance monitoring
 window.addEventListener('load', function () {
@@ -347,28 +345,30 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-// Modal for service details
 const serviceModal = document.getElementById('serviceModal');
 const closeModalBtn = document.getElementById('closeModal');
 
-document.querySelectorAll('.feature-item').forEach(item => {
-    item.addEventListener('click', () => {
-        const title = item.getAttribute('data-title');
-        const description = item.getAttribute('data-description');
-        const iconClass = item.querySelector('i')?.className || '';
 
-        const iconDiv = document.getElementById('modalIcon');
-        iconDiv.innerHTML = `<i class="${iconClass} modal-icon"></i>`;
+document.addEventListener('click', (e) => {
+    const item = e.target.closest('.feature-item');
+    if (!item) return;
 
-        document.getElementById('modalTitle').innerText = title;
-        document.getElementById('modalDescription').innerText = description;
+    const title = item.getAttribute('data-title');
+    const description = item.getAttribute('data-description');
+    const iconClass = item.querySelector('i')?.className || '';
 
-        serviceModal.style.display = 'flex';
-        serviceModal.classList.remove('fade-out');
-        serviceModal.classList.add('fade-in');
-    });
+    const iconDiv = document.getElementById('modalIcon');
+    iconDiv.innerHTML = `<i class="${iconClass} modal-icon"></i>`;
+
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('modalDescription').innerText = description;
+
+    serviceModal.style.display = 'flex';
+    serviceModal.classList.remove('fade-out');
+    serviceModal.classList.add('fade-in');
 });
 
+// Cerrar modal con botón
 closeModalBtn?.addEventListener('click', () => {
     serviceModal.classList.remove('fade-in');
     serviceModal.classList.add('fade-out');
@@ -377,6 +377,7 @@ closeModalBtn?.addEventListener('click', () => {
     }, 300);
 });
 
+// Cerrar modal haciendo clic fuera
 serviceModal?.addEventListener('click', (e) => {
     if (e.target === serviceModal) {
         serviceModal.classList.remove('fade-in');
@@ -386,6 +387,7 @@ serviceModal?.addEventListener('click', (e) => {
         }, 300);
     }
 });
+
 
 // Variables esenciales
 let tipoSuscripcion = 'mensual';
@@ -402,8 +404,6 @@ const extraServicesForm = document.getElementById('extraServicesForm');
 const servicesList = document.getElementById('servicesList');
 
 
-// Escuchar cambios del switch mensual/anual
-const toggleSubscriptionType = document.getElementById('toggleSubscriptionType');
 toggleSubscriptionType?.addEventListener('change', (e) => {
     tipoSuscripcion = e.target.checked ? 'anual' : 'mensual';
     actualizarPrecios(tipoSuscripcion);
@@ -414,7 +414,38 @@ toggleSubscriptionType?.addEventListener('change', (e) => {
     if (exploradorCard) {
         exploradorCard.classList.toggle('oculto', tipoSuscripcion === 'anual');
     }
-});
+
+    document.querySelectorAll('.pricing-card').forEach(card => {
+        const packageId = card.dataset.packageId;
+        const ul = card.querySelector('.features-list');
+        const yaExiste = card.querySelector('.feature-item.mes-gratis');
+
+        const paquetesConMesGratis = ['impulso'];
+
+        if (tipoSuscripcion === 'anual' && paquetesConMesGratis.includes(packageId)) {
+            if (!yaExiste && ul) {
+                const li = document.createElement('li');
+                li.classList.add('feature-item', 'mes-gratis');
+                li.setAttribute('data-title', '1 mes gratis');
+                li.setAttribute('data-description', 'Obtienes 1 mes completamente gratis al contratar el plan anual.');
+
+                const icon = document.createElement('i');
+                icon.className = 'fa-solid fa-gift color-regalo';
+                
+                const span = document.createElement('span');
+                span.textContent = '1 mes gratis';
+
+                li.appendChild(icon);
+                li.appendChild(span);
+                ul.appendChild(li);
+            }
+        } else if (yaExiste) {
+            yaExiste.remove();
+        }
+    }); 
+}); 
+
+
 
 // Cargar precios desde backend
 let preciosOficiales = {};

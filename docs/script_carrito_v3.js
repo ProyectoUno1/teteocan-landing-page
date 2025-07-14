@@ -285,6 +285,15 @@ function updateSelectedExtrasList() {
     let totalExtras = 0;
     let hasExtras = false;
 
+    // Define extras gratis según paquete (para anual)
+    const freeExtrasByPackage = {
+        titan: ['negocios', 'tpv', 'logotipo'],
+        dominio: ['negocios'],  // asesoría gratis en dominio anual
+    };
+
+    const isAnual = tipoSuscripcion === 'anual';
+    const freeExtras = freeExtrasByPackage[selectedPackage?.id] || [];
+
     document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(cb => {
         hasExtras = true;
         const extraKey = cb.value;
@@ -292,17 +301,18 @@ function updateSelectedExtrasList() {
         const extraName = extraItem.querySelector('.extra-name').textContent;
         const extraPrice = parseFloat(cb.dataset.price || 0);
 
-        const isTitan = selectedPackage?.id === 'titan';
-        const isAnual = tipoSuscripcion === 'anual';
-        const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
-        const esGratis = isTitan && isAnual && freeExtrasInTitan.includes(extraKey);
+        const esGratis = isAnual && freeExtras.includes(extraKey);
 
         const li = document.createElement('li');
         li.innerHTML = `
             <span>${extraName}</span>
-            <span>${esGratis ? 'Gratis' : '$' + finalPrice.toLocaleString('es-MX')}</span>
+            <span>${esGratis ? 'Gratis' : '$' + extraPrice.toLocaleString('es-MX')}</span>
         `;
         selectedList.appendChild(li);
+
+        if (!esGratis) {
+            totalExtras += extraPrice;
+        }
     });
 
     if (hasExtras) {
@@ -317,8 +327,13 @@ function updateSelectedExtrasList() {
 function updateExtraPricesInForm() {
     if (!selectedPackage || !preciosOficiales?.[tipoSuscripcion]?.extras) return;
 
-    const isTitan = selectedPackage.id === 'titan';
+    const freeExtrasByPackage = {
+        titan: ['negocios', 'tpv', 'logotipo'],
+        dominio: ['negocios'],
+    };
+
     const isAnual = tipoSuscripcion === 'anual';
+    const freeExtras = freeExtrasByPackage[selectedPackage?.id] || [];
     const extras = preciosOficiales[tipoSuscripcion].extras;
 
     extraServicesForm.querySelectorAll('label').forEach(label => {
@@ -334,7 +349,7 @@ function updateExtraPricesInForm() {
             return;
         }
 
-        const esGratis = isTitan && isAnual && ['negocios', 'tpv', 'logotipo'].includes(extraKey);
+        const esGratis = isAnual && freeExtras.includes(extraKey);
 
         if (esGratis) {
             priceSpan.textContent = 'Gratis';
@@ -361,25 +376,28 @@ function updateExtraPricesInForm() {
     });
 }
 
-
-
+// Actualizar el precio total con extras
 function updatePriceWithExtras() {
     if (!selectedPackage || !preciosOficiales?.[tipoSuscripcion]?.extras) return;
 
-    const isTitan = selectedPackage.id === 'titan';
+    const freeExtrasByPackage = {
+        titan: ['negocios', 'tpv', 'logotipo'],
+        dominio: ['negocios'],
+    };
+
     const isAnual = tipoSuscripcion === 'anual';
+    const freeExtras = freeExtrasByPackage[selectedPackage?.id] || [];
     const extras = preciosOficiales[tipoSuscripcion].extras;
 
     let total = basePrice;
     let extrasTotal = 0;
 
-    // Lista de extras seleccionados
     updateSelectedExtrasList();
 
     document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(cb => {
         const extraKey = cb.value;
         const precioExtra = extras?.[extraKey] || 0;
-        const esGratis = isTitan && isAnual && ['negocios', 'tpv', 'logotipo'].includes(extraKey);
+        const esGratis = isAnual && freeExtras.includes(extraKey);
 
         if (!esGratis && precioExtra) {
             extrasTotal += precioExtra;
@@ -403,6 +421,7 @@ function updatePriceWithExtras() {
         confirmPackagePrice.textContent = `$${basePrice.toLocaleString('es-MX')}${tipo === 'anual' ? '/año' : '/mes'}`;
     }
 }
+
 
 function setPackageBasePrice(price) {
     basePrice = parseFloat(price) || 0;

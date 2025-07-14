@@ -1,20 +1,20 @@
 module.exports = {
   mensual: {
-    titan: 'price_1RjDJY4TRm9gbpiRiZXB4uur',
-    dominio: 'price_1RjDKD4TRm9gbpiRSnvZB1pQ',
-    impulso: 'price_1RjDMv4TRm9gbpiR5u9XVNd2',
-    explorador: 'price_1RjDNV4TRm9gbpiRCR0Az2In'
+    titan: 'price_1RjFNYIy1pR29nhZBEJKKPaG',
+    dominio: 'price_1RjFLnIy1pR29nhZyq1VteI3',
+    impulso: 'price_1RimQfIy1pR29nhZLVINiWGH',
+    explorador: 'price_1RjFN9Iy1pR29nhZJ921SwUy'
   },
   anual: {
-    titan: 'price_1RjDRy4TRm9gbpiR5q3rNcQa',
-    dominio: 'price_1RjDUl4TRm9gbpiRw5GUEDjw',
-    impulso: 'price_1RjDVN4TRm9gbpiRa1LiD5pw'
+    titan: 'price_1RjFP6Iy1pR29nhZvrbiiD3X',
+    dominio: 'price_1RjFP6Iy1pR29nhZvrbiiD3X',
+    impulso: 'price_1RjFPbIy1pR29nhZfVUmrogK'
   },
   extras: {
-    scraping: 'price_1RjDOF4TRm9gbpiRSIkaK3vL',
-    basededatos: 'price_1RjDPZ4TRm9gbpiRDozpb8gI',
-    negocios: 'price_1RjDQ24TRm9gbpiRHnRNWhNP',
-    tpv: 'price_1RjDQO4TRm9gbpiRSX0EKT2y',
-    logotipo: 'price_1RjDR44TRm9gbpiRAxQso5Lj'
+    scraping: 'price_1RjFQcIy1pR29nhZgbnntTFm',
+    basededatos: 'price_1RjFRIIy1pR29nhZe6tPrDMN',
+    negocios: 'price_1RjFRuIy1pR29nhZPivjnIR5',
+    tpv: 'price_1RimHQIy1pR29nhZLlkXucgM',
+    logotipo: 'price_1RjFScIy1pR29nhZR51sNMMs'
   }
 };
