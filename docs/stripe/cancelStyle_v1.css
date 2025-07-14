@@ -203,6 +203,65 @@ body {
   transform: translateY(-1px);
 }
 
+#formContainer {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+  max-width: 480px;
+  margin-top: 1rem;
+}
+
+/* Inputs y textarea */
+#contactForm input[type="text"],
+#contactForm input[type="email"],
+#contactForm textarea {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+  resize: vertical;
+}
+
+#contactForm input[type="text"]:focus,
+#contactForm input[type="email"]:focus,
+#contactForm textarea:focus {
+  border-color: #3b82f6; /* Azul suave para foco */
+  outline: none;
+}
+
+/* Botón enviar */
+#contactForm button[type="submit"] {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+  width: 100%;
+  margin-top: 8px;
+}
+
+#contactForm button[type="submit"]:hover {
+  background: #2563eb;
+}
+
+/* Mensaje de respuesta */
+#responseMessage {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  margin-top: 12px;
+  color: #16a34a; /* Verde */
+}
+
 /* Animaciones de entrada */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(20px); }
