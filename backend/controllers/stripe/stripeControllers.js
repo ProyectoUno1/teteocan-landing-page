@@ -39,7 +39,7 @@ const crearSuscripcionStripe = async (req, res) => {
       const esGratis = isTitan && isAnual && extrasGratis.includes(extra);
 
       extrasSeparados.push({
-        nombre: extra.trim(), 
+        nombre: extra.trim(),
         precio: esGratis ? 0 : precioExtra,
         cantidad: 1,
         esGratis
@@ -252,10 +252,9 @@ const webhookStripe = async (req, res) => {
               );
             }
 
-            const resumenServicios = [
-              ...extras.map(e => e.nombre),
-              ...serviciosExtra.map(e => e.nombre)
-            ].join(', ');
+            const resumenServicios = venta.resumen_servicios;
+            extras = serviciosExtra; 
+
 
             const montoTotal = montoBase + montoExtras;
 
