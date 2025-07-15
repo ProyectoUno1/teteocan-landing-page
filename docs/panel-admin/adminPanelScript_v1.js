@@ -1,3 +1,4 @@
+
 const saleForm = document.getElementById('saleForm');
 const packageSelect = document.getElementById('packageSelect');
 const servicesSummary = document.getElementById('servicesSummary');
@@ -8,8 +9,6 @@ const saleSubscription = document.getElementById('saleSubscription');
 const filterPackageSelect = document.getElementById('filterPackage');
 const filterMonthSelect = document.getElementById('filterMonth');
 
-
-// Definición de paquetes y servicios
 const paquetes = {
   explorador: {
     nombre: "Paquete Explorador",
@@ -20,7 +19,10 @@ const paquetes = {
       "app para registro simple",
       "canal de whatsapp",
     ],
-    precio: 0
+    precios: {
+      mensual: 0,
+      anual: 0
+    }
   },
   impulso: {
     nombre: "Paquete Impulso",
@@ -30,7 +32,10 @@ const paquetes = {
       "sitio web profesional express",
       "guía de uso",
     ],
-    precio: 299,
+    precios: {
+      mensual: 299,
+      anual: 3588 // ejemplo con descuento
+    }
   },
   dominio: {
     nombre: "Paquete Dominio",
@@ -43,7 +48,10 @@ const paquetes = {
       "calendario de redes sociales",
       "bienvenida para tus clientes",
     ],
-    precio: 359,
+    precios: {
+      mensual: 359,
+      anual: 4308
+    }
   },
   titan: {
     nombre: "Paquete Titan",
@@ -61,9 +69,27 @@ const paquetes = {
       "Reporte mensual de ventas (basado en los datos analizados)",
       "QR vinculado a menú o tiendas",
     ],
-    precio: 499,
+    precios: {
+      mensual: 499,
+      anual: 4788
+    }
   },
 };
+
+// Cargar opciones dinámicamente en el select de paquetes
+function cargarOpcionesPaquetes() {
+  packageSelect.innerHTML = '<option value="">Selecciona un paquete</option>';
+
+  Object.entries(paquetes).forEach(([key, datos]) => {
+    const option = document.createElement('option');
+    option.value = key;
+    option.textContent = datos.nombre;
+    packageSelect.appendChild(option);
+  });
+}
+
+// Llama esta función al inicio
+cargarOpcionesPaquetes();
 
 // Establece la fecha por defecto
 saleDate.valueAsDate = new Date();
@@ -88,7 +114,6 @@ function getKeyByPackageName(nombrePaquete) {
   return null;
 }
 
-// Actualiza el resumen visual y el total
 function updateSummaryAndTotal() {
   const selectedOption = packageSelect.options[packageSelect.selectedIndex];
   const packageId = selectedOption.value;
@@ -100,11 +125,21 @@ function updateSummaryAndTotal() {
     return { packageName: '', total: 0 };
   }
 
-  servicesSummary.innerHTML = paquete.servicios.map(s => `<li>${s}</li>`).join('');
-  totalSale.textContent = `$${paquete.precio.toLocaleString()}`;
+  const tipoSuscripcion = saleSubscription.value || 'mensual';
+  const precio = paquete.precios?.[tipoSuscripcion] ?? 0;
 
-  return { packageName: paquete.nombre, total: paquete.precio, servicios: paquete.servicios };
+  servicesSummary.innerHTML = paquete.servicios.map(s => `<li>${s}</li>`).join('');
+  totalSale.textContent = `$${precio.toLocaleString('es-MX')}`;
+  totalSale.textContent = `$${precio.toLocaleString('es-MX')} ${tipoSuscripcion === 'anual' ? '/año' : '/mes'}`;
+
+
+  return {
+    packageName: paquete.nombre,
+    total: precio,
+    servicios: paquete.servicios
+  };
 }
+
 
 // Renderizar tabla de ventas con filtros
 function renderSales(data) {
@@ -159,6 +194,12 @@ async function fetchSales() {
   }
 }
 
+// Cargar opciones dinámicamente en el select de paquetes
+
+
+// Llama esta función al inicio
+
+
 
 // Registrar una nueva venta
 saleForm.addEventListener('submit', async e => {
@@ -171,7 +212,7 @@ saleForm.addEventListener('submit', async e => {
   const date = saleDate.value;
   const tipoSuscripcion = document.getElementById('saleSubscription').value;
 
-   if (!email || !paquete || packageId === '' || !date || !tipoSuscripcion) {
+  if (!email || !paquete || packageId === '' || !date || !tipoSuscripcion) {
     Swal.fire({
       icon: 'warning',
       title: 'CAMPOS INCOMPLETOS',
@@ -180,15 +221,18 @@ saleForm.addEventListener('submit', async e => {
     return;
   }
 
+  const precioSeleccionado = paquete.precios?.[tipoSuscripcion] ?? 0;
+
   const ventaData = {
     cliente_email: email,
     nombre_paquete: paquete.nombre,
     resumen_servicios: paquete.servicios.join(', '),
-    monto: paquete.precio,
+    monto: precioSeleccionado,
     fecha: date,
     mensaje_continuar: 'La empresa se pondrá en contacto contigo.',
     tipo_suscripcion: tipoSuscripcion,
   };
+
 
   try {
     Swal.fire({
@@ -239,6 +283,8 @@ saleForm.addEventListener('submit', async e => {
 packageSelect.addEventListener('change', updateSummaryAndTotal);
 filterPackageSelect.addEventListener('change', fetchSales);
 filterMonthSelect.addEventListener('change', fetchSales);
+saleSubscription.addEventListener('change', updateSummaryAndTotal);
+
 
 updateSummaryAndTotal();
 cargarOpcionesFiltroPaquetes();
@@ -327,10 +373,10 @@ clearDBButton.addEventListener('click', async () => {
 // Registrar nuevo administrador
 // Este botón redirige a la página de registro de administrador
 document.addEventListener('DOMContentLoaded', () => {
-    const registerBtn = document.getElementById('registerAdminButton');
-    if (registerBtn) {
-      registerBtn.addEventListener('click', () => {
-        window.location.href = '../login-admin/register.html';
-      });
-    }
-  });
+  const registerBtn = document.getElementById('registerAdminButton');
+  if (registerBtn) {
+    registerBtn.addEventListener('click', () => {
+      window.location.href = '../login-admin/register.html';
+    });
+  }
+});
