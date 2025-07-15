@@ -5,7 +5,7 @@ const ordenGratuita = async (req, res) => {
   try {
     const { orderData } = req.body;
     const {
-      stripe_session_id,  
+      stripe_session_id,
       clienteEmail,
       nombrePaquete,
       resumenServicios,
@@ -29,6 +29,9 @@ const ordenGratuita = async (req, res) => {
       }
     }
 
+    
+    const fechaValida = new Date(fecha);
+
     await pool.query(`
       INSERT INTO ventas (
         stripe_session_id,
@@ -47,14 +50,15 @@ const ordenGratuita = async (req, res) => {
       nombrePaquete,
       resumenServicios,
       monto,
-      fecha,
+      fechaValida, // usamos la fecha convertida
       mensajeContinuar,
       tipoSuscripcion || null
     ]);
 
+
     // Enviar correos
     const reqMock = { body: orderData };
-    const resMock = { status: () => ({ json: () => {} }) };
+    const resMock = { status: () => ({ json: () => { } }) };
 
     await emailController.sendOrderConfirmationToCompany(reqMock, resMock);
     await emailController.sendPaymentConfirmationToClient(reqMock, resMock);
