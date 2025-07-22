@@ -105,7 +105,7 @@ const crearSuscripcionStripe = async (req, res) => {
       INSERT INTO ventas (
         stripe_session_id,
         cliente_email,
-        clienteTelefono,
+        cliente_telefono,
         nombre_paquete,
         resumen_servicios,
         monto,
