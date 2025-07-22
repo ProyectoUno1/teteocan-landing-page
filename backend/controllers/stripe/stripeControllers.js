@@ -9,9 +9,9 @@ const preciosFile = path.join(__dirname, '../../precios.json');
 
 const crearSuscripcionStripe = async (req, res) => {
   try {
-    const { clienteEmail, orderData, tipoSuscripcion, planId } = req.body;
+    const { clienteEmail, orderData, tipoSuscripcion, planId, clienteTelefono } = req.body;
 
-    if (!clienteEmail || !orderData || !planId) {
+    if (!clienteEmail || !orderData || !planId || !clienteTelefono) {
       return res.status(400).json({ message: 'Datos incompletos' });
     }
 
@@ -93,6 +93,7 @@ const crearSuscripcionStripe = async (req, res) => {
         planId,
         tipoSuscripcion: tipo,
         clienteEmail,
+        clienteTelefono,
         nombrePaquete: orderData.nombrePaquete,
         tipo: 'suscripcion',
         extrasSeparados: JSON.stringify(extrasSeparados)
@@ -104,6 +105,7 @@ const crearSuscripcionStripe = async (req, res) => {
       INSERT INTO ventas (
         stripe_session_id,
         cliente_email,
+        clienteTelefono,
         nombre_paquete,
         resumen_servicios,
         monto,
@@ -111,10 +113,11 @@ const crearSuscripcionStripe = async (req, res) => {
         mensaje_continuar,
         tipo_suscripcion,
         estado
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'pendiente') RETURNING id;
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,'pendiente') RETURNING id;
     `, [
       session.id,
       clienteEmail,
+      clienteTelefono,
       orderData.nombrePaquete,
       orderData.resumenServicios,
       orderData.monto,
@@ -265,6 +268,7 @@ const webhookStripe = async (req, res) => {
                 nombrePaquete: venta.nombre_paquete,
                 resumenServicios,
                 clienteEmail: venta.cliente_email,
+                clienteTelefono: venta.cliente_telefono,
                 mensajeContinuar: venta.mensaje_continuar,
                 tipoSuscripcion: venta.tipo_suscripcion,
                 monto: montoTotal,

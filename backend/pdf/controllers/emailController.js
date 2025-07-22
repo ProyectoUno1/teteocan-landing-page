@@ -7,7 +7,7 @@ const path = require('path');
  */
 async function sendOrderConfirmationToCompany(req, res) {
     try {
-        const { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, tipoSuscripcion } = req.body;
+        const { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, clienteTelefono, tipoSuscripcion } = req.body;
 
         if (
             !nombrePaquete ||
@@ -18,7 +18,7 @@ async function sendOrderConfirmationToCompany(req, res) {
             return res.status(400).json({ message: 'Faltan datos para generar la orden de pago.' });
         }
 
-        const data = { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, tipoSuscripcion };
+        const data = { nombrePaquete, resumenServicios, monto, fecha, clienteEmail,clienteTelefono, tipoSuscripcion };
         await sendOrderConfirmationToCompanyRaw(data);
 
         res.status(200).json({ message: 'Correo de orden de pago enviado a la empresa con éxito.' });
@@ -61,7 +61,7 @@ async function sendPaymentConfirmationToClient(req, res) {
  */
 async function sendOrderConfirmationToCompanyRaw(data) {
     try {
-        const { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, tipoSuscripcion } = data;
+        const { nombrePaquete, resumenServicios, monto, fecha, clienteEmail, clienteTelefono, tipoSuscripcion } = data;
         const templatePath = path.resolve(__dirname, '../templates/empresa.html');
         const pdfBuffer = await emailService.generatePdf(data, templatePath);
 
