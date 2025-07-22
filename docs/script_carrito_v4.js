@@ -187,7 +187,6 @@ function validateEmail(email) {
 
 
 
-
 function cargarDatosPaqueteEnCarrito(selectedPackage, tipoSuscripcion) {
     const tipo = tipoSuscripcion || 'mensual';
     const spId = selectedPackage.id?.toLowerCase();
@@ -529,27 +528,45 @@ async function confirmarCompraHandler() {
 
     if (!selectedPackage) return;
 
-    const { value: clienteEmail } = await Swal.fire({
-        title: 'INGRESA TU CORREO ELECTRÓNICO PARA ENVIAR TU COMPROBANTE',
-        input: 'text',
-        inputLabel: 'CORREO',
-        inputPlaceholder: 'tucorreo@ejemplo.com',
+    const { value: formValues } = await Swal.fire({
+        title: 'INGRESA TUS DATOS DE CONTACTO',
+        html:
+            `<input id="swal-email" class="swal2-input" placeholder="Correo electrónico">
+             <input id="swal-phone" class="swal2-input" placeholder="Número de teléfono">`,
+        focusConfirm: false,
         showCancelButton: true,
         confirmButtonText: 'ENVIAR',
         cancelButtonText: 'CANCELAR',
         customClass: {
             confirmButton: 'custom-alert-button',
-            cancelButton: '.cancel-alert-button'
+            cancelButton: 'cancel-alert-button'
         },
-        inputValidator: (value) => {
-            if (!value) return 'DEBES INGRESAR UN CORREO VÁLIDO';
-            if (!validateEmail(value)) return 'POR FAVOR INGRESA UN CORREO ELECTRÓNICO VÁLIDO';
+        preConfirm: () => {
+            const email = document.getElementById('swal-email').value;
+            const phone = document.getElementById('swal-phone').value;
+
+            if (!email || !validateEmail(email)) {
+                Swal.showValidationMessage('Por favor, ingresa un correo válido');
+                return false;
+            }
+            if (!phone || !/^\d{10,15}$/.test(phone)) {
+                Swal.showValidationMessage('Por favor, ingresa un número de teléfono válido');
+                return false;
+            }
+
+            return { email, phone };
         }
     });
 
-    if (!clienteEmail) return;
+    if (!formValues) return;
+
+    const clienteEmail = formValues.email;
+    const clienteTelefono = formValues.phone;
+
 
     updatePriceWithExtras();
+
+
 
     // Servicios incluidos
     const serviciosIncluidos = [];
@@ -589,8 +606,9 @@ async function confirmarCompraHandler() {
         extrasSeleccionados: extrasKeys,
         detalleServicios,
         monto: basePrice,// precio base + extras
-        fecha: new Date().toLocaleDateString('es-MX'),
+        fecha: new Date().toISOString(),
         clienteEmail,
+        clienteTelefono,
         mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.",
         planId: selectedPackage.id,
         tipoSuscripcion
@@ -614,6 +632,7 @@ async function confirmarCompraHandler() {
                 body: JSON.stringify({
                     planId: selectedPackage.id,
                     clienteEmail,
+                    clienteTelefono,
                     orderData,
                     tipoSuscripcion
                 })
@@ -623,14 +642,6 @@ async function confirmarCompraHandler() {
 
             if (!res.ok || !result.url) {
                 throw new Error(result.message || 'ERROR AL CREAR SUSCRIPCIÓN');
-            }
-
-            if (result.extrasSeparados && result.extrasSeparados.length > 0) {
-                localStorage.setItem('extrasPendientes', JSON.stringify({
-                    email: clienteEmail,
-                    extras: result.extrasSeparados
-                }));
-                console.log('Extras guardados para procesamiento posterior:', result.extrasSeparados);
             }
 
             Swal.close();
@@ -660,6 +671,7 @@ async function confirmarCompraHandler() {
                     body: JSON.stringify({
                         planId: selectedPackage.id,
                         clienteEmail,
+                        clienteTelefono,
                         orderData,
                         tipoSuscripcion
                     })
@@ -669,13 +681,6 @@ async function confirmarCompraHandler() {
 
                 if (!res.ok || !result.url) {
                     throw new Error(result.message || 'ERROR AL CREAR SUSCRIPCIÓN');
-                }
-
-                if (result.extrasSeparados && result.extrasSeparados.length > 0) {
-                    localStorage.setItem('extrasPendientes', JSON.stringify({
-                        email: clienteEmail,
-                        extras: result.extrasSeparados
-                    }));
                 }
 
                 Swal.close();

@@ -7,6 +7,7 @@ const ordenGratuita = async (req, res) => {
     const {
       stripe_session_id,
       clienteEmail,
+      clienteTelefono,
       nombrePaquete,
       resumenServicios,
       monto,
@@ -36,6 +37,7 @@ const ordenGratuita = async (req, res) => {
       INSERT INTO ventas (
         stripe_session_id,
         cliente_email,
+        clienteTelefono,
         nombre_paquete,
         resumen_servicios,
         monto,
@@ -43,10 +45,11 @@ const ordenGratuita = async (req, res) => {
         mensaje_continuar,
         tipo_suscripcion,
         estado
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'procesada')
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,'procesada')
     `, [
       stripe_session_id,
       clienteEmail,
+      clienteTelefono,
       nombrePaquete,
       resumenServicios,
       monto,
