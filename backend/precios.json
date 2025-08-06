@@ -1,9 +1,9 @@
 {
   "mensual": {
-    "explorador": 0,
-    "impulso": 299,
-    "dominio": 359,
-    "titan": 399,
+    "explorador": 99,
+    "impulso": 499,
+    "dominio": 799,
+    "titan": 1499,
     "extras": {
       "scraping": 1000,
       "basededatos": 1000,
