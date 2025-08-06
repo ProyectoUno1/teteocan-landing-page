@@ -3,7 +3,7 @@ module.exports = {
     titan: 'price_1Rt9FSIy1pR29nhZnEPwTiak',
     dominio: 'price_1Rt9G2Iy1pR29nhZUhRmG04g',
     impulso: 'price_1Rt95aIy1pR29nhZCNKAdLA7',
-    explorador: 'price_1RjFN9Iy1pR29nhZJ921SwUy'
+    explorador: 'price_1RtAirIy1pR29nhZcWjI5SWw'
   },
   anual: {
     titan: 'price_1RjFP6Iy1pR29nhZvrbiiD3X',
