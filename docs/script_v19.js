@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-async function verificarEstadoExplorador() {
+/*async function verificarEstadoExplorador() {
     const exploradorCard = document.querySelector('.pricing-card[data-package-id="explorador"]');
     if (!exploradorCard) return;
 
@@ -92,7 +92,7 @@ async function verificarEstadoExplorador() {
         console.error('Error al verificar estado del paquete explorador:', err);
     }
 }
-verificarEstadoExplorador()
+verificarEstadoExplorador()*/
 
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -249,13 +249,12 @@ function formatCurrency(amount) {
 
 // Performance monitoring
 window.addEventListener('load', function () {
-    console.log('All resources loaded');
+   
 
     // Track loading performance
     const navigation = performance.getEntriesByType('navigation')[0];
     if (navigation) {
-        console.log('DOM Content Loaded:', navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart, 'ms');
-        console.log('Full Load Time:', navigation.loadEventEnd - navigation.loadEventStart, 'ms');
+        
     }
 });
 
@@ -562,7 +561,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 fetch('https://tlatec-backend.onrender.com/ping')
-    .then(() => console.log('Ping enviado al backend para despertarlo'))
     .catch(err => console.warn('Error al hacer ping al backend:', err));
 
 

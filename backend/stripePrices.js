@@ -1,8 +1,8 @@
 module.exports = {
   mensual: {
-    titan: 'price_1RjFNYIy1pR29nhZBEJKKPaG',
-    dominio: 'price_1RjFLnIy1pR29nhZyq1VteI3',
-    impulso: 'price_1RimQfIy1pR29nhZLVINiWGH',
+    titan: 'price_1Rt9FSIy1pR29nhZnEPwTiak',
+    dominio: 'price_1Rt9G2Iy1pR29nhZUhRmG04g',
+    impulso: 'price_1Rt95aIy1pR29nhZCNKAdLA7',
     explorador: 'price_1RjFN9Iy1pR29nhZJ921SwUy'
   },
   anual: {
