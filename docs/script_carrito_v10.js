@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 menuIcon.className = 'fas fa-bars';
                 document.body.style.overflow = '';
                 document.body.classList.remove('mobile-menu-open');
+
             });
         }
     }
@@ -447,7 +448,7 @@ async function procesarServiciosExtra(clienteEmail, servicios) {
     try {
         // Filtrar solo servicios con costo
         const serviciosConCosto = servicios.filter(servicio => servicio.precio > 0);
-        
+
         if (serviciosConCosto.length === 0) {
             return { success: true, message: 'Solo servicios gratuitos' };
         }
@@ -464,7 +465,7 @@ async function procesarServiciosExtra(clienteEmail, servicios) {
         });
 
         const data = await response.json();
-        
+
         if (response.ok) {
             // Redirigir a Stripe para el pago de extras
             window.location.href = data.url;
@@ -482,11 +483,11 @@ async function procesarServiciosExtra(clienteEmail, servicios) {
 function manejarExitoSuscripcion() {
     // Esta función se ejecuta en la página de éxito
     const extrasPendientes = localStorage.getItem('extrasPendientes');
-    
+
     if (extrasPendientes) {
         const datos = JSON.parse(extrasPendientes);
         const serviciosConCosto = datos.extras.filter(extra => extra.precio > 0);
-        
+
         if (serviciosConCosto.length > 0) {
             // Mostrar modal o confirmación para procesar extras
             Swal.fire({
@@ -521,202 +522,182 @@ function manejarExitoSuscripcion() {
         }
     }
 }
+async function obtenerPrecioOficialTotal() {
+    const response = await fetch('/api/precios');
+    const preciosOficiales = await response.json();
+
+    const tipo = tipoSuscripcion || 'mensual';
+    const spId = selectedPackage.id.toLowerCase();
+    const base = preciosOficiales[tipo]?.[spId];
+    if (typeof base !== 'number') throw new Error('Precio base no encontrado');
+
+    // Extras
+    const extrasChecked = Array.from(document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked')).map(cb => cb.value);
+    const freeExtrasByPackage = {
+        titan: ['negocios', 'tpv', 'logotipo'],
+        dominio: ['negocios'],
+    };
+    const isAnual = tipo === 'anual';
+    const freeExtras = freeExtrasByPackage[spId] || [];
+    const extras = preciosOficiales[tipo].extras;
+
+    let extrasTotal = 0;
+    extrasChecked.forEach(extraKey => {
+        const precioExtra = extras?.[extraKey] || 0;
+        if (!(isAnual && freeExtras.includes(extraKey))) {
+            extrasTotal += precioExtra;
+        }
+    });
+
+    return base + extrasTotal;
+}
+
 
 async function confirmarCompraHandler() {
-    const paquetesConSuscripcion = ['impulso', 'dominio', 'titan'];
-
     if (!selectedPackage) return;
+     const esConSuscripcion = finalPrice > 0;
 
     const { value: formValues } = await Swal.fire({
-        title: 'INGRESA TUS DATOS DE CONTACTO',
-        html:
+      title: 'INGRESA TUS DATOS DE CONTACTO',
+      html:
             `<input id="swal-email" class="swal2-input" placeholder="Correo electrónico">
-             <input id="swal-phone" class="swal2-input" placeholder="Número de teléfono">`,
-        focusConfirm: false,
-        showCancelButton: true,
-        confirmButtonText: 'ENVIAR',
-        cancelButtonText: 'CANCELAR',
-        customClass: {
-            confirmButton: 'custom-alert-button',
-            cancelButton: 'cancel-alert-button'
-        },
-        preConfirm: () => {
-            const email = document.getElementById('swal-email').value;
-            const phone = document.getElementById('swal-phone').value;
+            <input id="swal-phone" class="swal2-input" placeholder="Número de teléfono">`,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'ENVIAR',
+        cancelButtonText: 'CANCELAR',
+        customClass: {
+            confirmButton: 'custom-alert-button',
+            cancelButton: 'cancel-alert-button'
+        },
+        preConfirm: () => {
+            const email = document.getElementById('swal-email').value;
+            const phone = document.getElementById('swal-phone').value;
 
-            if (!email || !validateEmail(email)) {
-                Swal.showValidationMessage('Por favor, ingresa un correo válido');
-                return false;
-            }
-            if (!phone || !/^\d{10,15}$/.test(phone)) {
-                Swal.showValidationMessage('Por favor, ingresa un número de teléfono válido');
-                return false;
-            }
+            if (!email || !validateEmail(email)) {
+                Swal.showValidationMessage('Por favor, ingresa un correo válido');
+                return false;
+            }
+            if (!phone || !/^\d{10,15}$/.test(phone)) {
+                Swal.showValidationMessage('Por favor, ingresa un número de teléfono válido');
+                return false;
+            }
 
-            return { email, phone };
-        }
-    });
+            return { email, phone };
+        }
+    });
 
-    if (!formValues) return;
+    if (!formValues) return;
 
-    const clienteEmail = formValues.email;
-    const clienteTelefono = formValues.phone;
+    const clienteEmail = formValues.email;
+    const clienteTelefono = formValues.phone;
+
+    // Muestra el modal de "Procesando"
+    Swal.fire({
+        title: 'PROCESANDO...',
+        html: 'ESPERA UN MOMENTO MIENTRAS SE PROCESA LA SUSCRIPCIÓN.',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    try {
+        // Llama a la función para obtener el precio oficial TOTAL (paquete + extras)
+        const finalPrice = await obtenerPrecioOficialTotal();
+
+        // La variable 'finalPrice' ahora tiene el precio total correcto
+        const esConSuscripcion = finalPrice > 0;
+
+        // Servicios incluidos
+        const serviciosIncluidos = [];
+        document.querySelectorAll('#servicesList li').forEach(li => {
+            serviciosIncluidos.push(li.innerText.trim());
+        });
+
+        // Extras seleccionados
+        const extrasSeleccionados = [];
+        const extrasKeys = [];
+        document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(cb => {
+            extrasKeys.push(cb.value);
+            const label = cb.closest('.extra-item').querySelector('.extra-name').textContent.trim();
+            extrasSeleccionados.push(label);
+        });
+
+        // Detalle completo de servicios para backend (nombre + tipo: incluido/extra)
+        const detalleServicios = serviciosIncluidos.map(s => ({ nombre: s, tipo: 'incluido' }))
+            .concat(extrasSeleccionados.map(e => ({ nombre: e, tipo: 'extra' })));
+
+        const resumenServicios = [...serviciosIncluidos, ...extrasSeleccionados].join(', ');
+
+        // CREAMOS EL OBJETO orderData DESPUÉS DE OBTENER EL PRECIO FINAL
+        const orderData = {
+            nombrePaquete: selectedPackage.name,
+            nombreCliente: clienteEmail.split('@')[0],
+            serviciosIncluidos,
+            resumenServicios,
+            extrasSeleccionados: extrasKeys,
+            detalleServicios,
+            monto: finalPrice, // AQUÍ SE USA EL VALOR CORRECTO
+            fecha: new Date().toISOString(),
+            clienteEmail,
+            clienteTelefono,
+            mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.",
+            planId: selectedPackage.id,
+            tipoSuscripcion
+        };
 
 
-    updatePriceWithExtras();
-
-
-
-    // Servicios incluidos
-    const serviciosIncluidos = [];
-    document.querySelectorAll('#servicesList li').forEach(li => {
-        serviciosIncluidos.push(li.innerText.trim());
-    });
-
-    // Extras seleccionados
-    const extrasSeleccionados = [];
-    const extrasKeys = [];
-    let extrasPrecioTotal = 0;
-
-    document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(cb => {
-        const extraKey = cb.value;
-        const label = cb.closest('.extra-item').querySelector('.extra-name').textContent.trim();
-        const precioExtra = Number(cb.dataset.price || 0);
-
-        extrasKeys.push(extraKey);
-        extrasSeleccionados.push(label);
-        extrasPrecioTotal += precioExtra;
-    });
-
-    // Detalle completo de servicios para backend (nombre + tipo: incluido/extra)
-    const detalleServicios = serviciosIncluidos.map(s => ({ nombre: s, tipo: 'incluido' }))
-        .concat(extrasSeleccionados.map(e => ({ nombre: e, tipo: 'extra' })));
-
-    const resumenServicios = [...serviciosIncluidos, ...extrasSeleccionados].join(', ');
-
-    // Total base + extras
-
-
-    const orderData = {
-        nombrePaquete: selectedPackage.name,
-        nombreCliente: clienteEmail.split('@')[0], // Nombre como fallback
-        serviciosIncluidos,
-        resumenServicios,
-        extrasSeleccionados: extrasKeys,
-        detalleServicios,
-        monto: basePrice,// precio base + extras
-        fecha: new Date().toISOString(),
-        clienteEmail,
-        clienteTelefono,
-        mensajeContinuar: "La empresa se pondrá en contacto contigo para continuar con los siguientes pasos.",
-        planId: selectedPackage.id,
-        tipoSuscripcion
-    };
-
-    Swal.fire({
-        title: 'PROCESANDO...',
-        html: 'ESPERA UN MOMENTO MIENTRAS SE PROCESA LA SUSCRIPCIÓN.',
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading()
-    });
-
-    try {
-        const esConSuscripcion = paquetesConSuscripcion.includes(selectedPackage.id.toLowerCase());
-
-        if (esConSuscripcion) {
-            // Suscripción (con extras)
-            const res = await fetch('https://tlatec-backend.onrender.com/api/stripe/crear-suscripcion', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    planId: selectedPackage.id,
-                    clienteEmail,
-                    clienteTelefono,
-                    orderData,
+        if (esConSuscripcion) {
+            // Enviar a Stripe
+            const res = await fetch('https://tlatec-backend.onrender.com/api/stripe/crear-suscripcion', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    planId: selectedPackage.id,
+                    clienteEmail,
+                    clienteTelefono,
+                    orderData,
                     tipoSuscripcion
-                })
-            });
+                })
+            });
 
-            const result = await res.json();
+            const result = await res.json();
 
-            if (!res.ok || !result.url) {
-                throw new Error(result.message || 'ERROR AL CREAR SUSCRIPCIÓN');
-            }
+            if (!res.ok || !result.url) {
+                throw new Error(result.message || 'ERROR AL CREAR SUSCRIPCIÓN');
+            }
 
-            Swal.close();
-            window.location.href = result.url;
+            Swal.close();
+            window.location.href = result.url;
+        } else {
+            // Código para orden gratuita
+            orderData.stripe_session_id = 'free-' + Date.now();
+            const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/orden-gratis', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderData })
+            });
 
-        } else {
-            // Paquete gratuito - revisar extras con costo
-            const isTitan = selectedPackage?.name.toLowerCase().includes('titan');
-            const isAnual = tipoSuscripcion === 'anual';
-            const freeExtrasInTitan = ['negocios', 'tpv', 'logotipo'];
+            if (!res.ok) {
+                const result = await res.json();
+                throw new Error(result.message || 'Error al registrar orden gratuita');
+            }
 
-            let tieneExtrasConCosto = false;
-            document.querySelectorAll('#extraServicesForm input[type="checkbox"]:checked').forEach(cb => {
-                const extraKey = cb.value;
-                const precio = Number(cb.dataset.price || 0);
-                const esGratisEnTitan = isTitan && isAnual && freeExtrasInTitan.includes(extraKey);
-                if (!esGratisEnTitan && precio > 0) {
-                    tieneExtrasConCosto = true;
-                }
-            });
+            Swal.close();
+            Swal.fire({
+                title: '¡REGISTRO COMPLETO!',
+                text: `TE HAS REGISTRADO AL ${selectedPackage.name}. REVISA TU CORREO.`,
+                icon: 'success',
+                confirmButtonText: 'ACEPTAR',
+                customClass: { confirmButton: 'custom-alert-button' }
+            }).then(() => {
+                localStorage.removeItem('selectedPackage');
+                localStorage.removeItem('tipoSuscripcion');
+                window.location.href = 'https://tlatec.teteocan.com/';
+            });
+        }
 
-            if (tieneExtrasConCosto) {
-                // Procesar extras con pago como suscripción
-                const res = await fetch('https://tlatec-backend.onrender.com/api/stripe/crear-suscripcion', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        planId: selectedPackage.id,
-                        clienteEmail,
-                        clienteTelefono,
-                        orderData,
-                        tipoSuscripcion
-                    })
-                });
-
-                const result = await res.json();
-
-                if (!res.ok || !result.url) {
-                    throw new Error(result.message || 'ERROR AL CREAR SUSCRIPCIÓN');
-                }
-
-                Swal.close();
-                window.location.href = result.url;
-
-            } else {
-                // Gratis sin extras con costo
-                orderData.stripe_session_id = 'free-' + Date.now();
-
-                const res = await fetch('https://tlatec-backend.onrender.com/api/pagos/orden-gratis', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ orderData })
-                });
-
-                if (!res.ok) {
-                    const result = await res.json();
-                    throw new Error(result.message || 'Error al registrar orden gratuita');
-                }
-
-                Swal.close();
-                Swal.fire({
-                    title: '¡REGISTRO COMPLETO!',
-                    text: `TE HAS REGISTRADO AL ${selectedPackage.name}. REVISA TU CORREO.`,
-                    icon: 'success',
-                    confirmButtonText: 'ACEPTAR',
-                    customClass: { confirmButton: 'custom-alert-button' }
-                }).then(() => {
-                    localStorage.removeItem('selectedPackage');
-                    localStorage.removeItem('tipoSuscripcion');
-                    window.location.href = 'https://tlatec.teteocan.com/';
-                });
-            }
-        }
-
-    } catch (error) {
-        console.error('Error en el proceso de pago:', error);
-        Swal.fire('Error', error.message || 'Hubo un error al procesar la compra.', 'error');
-    }
+    } catch (error) {
+        console.error('Error en el proceso de pago:', error);
+        Swal.fire('Error', error.message || 'Hubo un error al procesar la compra.', 'error');
+    }
 }

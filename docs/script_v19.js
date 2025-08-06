@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 menuIcon.className = 'fas fa-bars';
                 document.body.style.overflow = '';
                 document.body.classList.remove('mobile-menu-open');
+                
             });
         }
     }
@@ -523,6 +524,7 @@ document.querySelectorAll('.pricing-footer button').forEach(button => {
 
         // Redirigir al carrito
         window.location.href = 'carrito.html';
+
     });
 });
 
