@@ -449,7 +449,6 @@ async function procesarServiciosExtra(clienteEmail, servicios) {
         const serviciosConCosto = servicios.filter(servicio => servicio.precio > 0);
         
         if (serviciosConCosto.length === 0) {
-            console.log('No hay servicios extra con costo para procesar');
             return { success: true, message: 'Solo servicios gratuitos' };
         }
 

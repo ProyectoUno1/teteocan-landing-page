@@ -559,7 +559,13 @@ button {
   justify-content: center;
   margin-bottom: 1rem;
 }
-
+.plan-price-dominio {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+}
 .price-amount {
   font-size: 3.5rem;
   text-shadow: 1px 1px 1px rgb(6, 0, 0), 1px 1px 1px rgb(0, 0, 0);
