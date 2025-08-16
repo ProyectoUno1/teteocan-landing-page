@@ -567,3 +567,26 @@ fetch('https://tlatec-backend.onrender.com/ping')
 
 
 
+document.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.getElementById('toggleSubscriptionType');
+    const titanCard = document.querySelector('.pricing-card[data-package-id="dominio"]');
+    
+    // Función para actualizar la visibilidad
+    function updatePricingCards() {
+        if (toggle.checked) {
+            // Si el interruptor está en 'Anual'
+            titanCard.classList.add('is-annual');
+        } else {
+            // Si el interruptor está en 'Mensual'
+            titanCard.classList.remove('is-annual');
+        }
+    }
+    
+    // Escucha los cambios en el interruptor
+    if (toggle) {
+        toggle.addEventListener('change', updatePricingCards);
+    }
+    
+    // Llama a la función al cargar la página para aplicar el estado inicial
+    updatePricingCards();
+});
