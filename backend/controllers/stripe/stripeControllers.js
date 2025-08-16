@@ -26,7 +26,7 @@ const crearSuscripcionStripe = async (req, res) => {
 
     const isTitan = planId.toLowerCase() === 'titan';
     const isAnual = tipo === 'anual';
-    const extrasGratis = ['logotipo', 'tpv', 'negocios'];
+    const extrasGratis = ['negocios'];
     const preciosExtras = precios[tipo]?.extras || {};
     const extrasSeparados = [];
 

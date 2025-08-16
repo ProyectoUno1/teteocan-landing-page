@@ -926,6 +926,13 @@ input:checked + .slider::after {
   transition: transform 0.2s ease;
 }
 
+.feature-item[data-plan-annual="true"] {
+    display: none;
+}
+
+.pricing-card[data-package-id="dominio"].is-annual .feature-item[data-plan-annual="true"] {
+    display: flex; /* Se usa 'flex' para mantener la alineación original del ícono y el texto */
+}
 
 .color-regalo {
   color: #36cfc9;
